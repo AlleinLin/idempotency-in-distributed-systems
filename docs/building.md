@@ -17,7 +17,7 @@ macOS 可安装 MacTeX。Windows 使用 TeX Live 或 MiKTeX，并确认 `xelatex
 
 仓库根执行 `.\build.ps1`；Linux / macOS 执行 `bash book/build.sh`。脚本至少运行两遍，最多四遍，直到交叉引用稳定。输出在 `book/build/main.pdf`，诊断在同目录 `main.log`。
 
-字体依次选择系统宋体/微软雅黑、Noto CJK、TeX 自带 Fandol；西文选择 TeX Gyre 或 Latin Modern；等宽字体优先 Consolas，后备 Latin Modern Mono。中文引语以倾斜字形排版。使用作者原字体时保留原排版，其他字体可能改变分页。
+字体依次选择系统宋体/微软雅黑、Noto CJK、TeX 自带 Fandol。Fandol 后备字体通过 `.otf` 文件名从 TeX 字体目录加载。西文选择 TeX Gyre 或 Latin Modern；等宽字体优先 Consolas，后备 Latin Modern Mono。中文引语以倾斜字形排版。使用作者原字体时保留原排版，其他字体可能改变分页。
 
 ## 检查与清理
 

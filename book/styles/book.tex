@@ -1,8 +1,9 @@
 \usepackage[a4paper,left=25mm,right=25mm,top=23mm,bottom=22mm,headheight=15pt]{geometry}
 \usepackage{fontspec}
 \usepackage{amsmath}
-\IfFontExistsTF{Microsoft YaHei}{\setCJKsansfont{Microsoft YaHei}}{\IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{\setCJKsansfont{FandolHei-Regular}}}
-\IfFontExistsTF{SimSun}{\setCJKmainfont{SimSun}[BoldFont=Microsoft YaHei]}{\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{\setCJKmainfont{FandolSong-Regular}[BoldFont=FandolHei-Regular]}}
+% TeX 自带的 Fandol 字体按文件名加载，由 kpathsea 定位字体目录。
+\IfFontExistsTF{Microsoft YaHei}{\setCJKsansfont{Microsoft YaHei}}{\IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{\setCJKsansfont{FandolHei-Regular.otf}}}
+\IfFontExistsTF{SimSun}{\setCJKmainfont{SimSun}[BoldFont=Microsoft YaHei]}{\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{\setCJKmainfont{FandolSong-Regular.otf}[BoldFont=FandolHei-Regular.otf]}}
 \IfFileExists{texgyrepagella-regular.otf}{\setmainfont{TeX Gyre Pagella}}{\setmainfont{Latin Modern Roman}}
 \IfFileExists{texgyreheros-regular.otf}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Latin Modern Sans}}
 \usepackage{xcolor}
@@ -41,7 +42,7 @@
 \usepackage{booktabs}
 \usepackage{placeins}
 \IfFontExistsTF{Consolas}{\setmonofont{Consolas}}{\setmonofont{Latin Modern Mono}}
-\IfFontExistsTF{SimSun}{\setCJKmonofont{SimSun}}{\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmonofont{Noto Serif CJK SC}}{\setCJKmonofont{FandolSong-Regular}}}
+\IfFontExistsTF{SimSun}{\setCJKmonofont{SimSun}}{\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmonofont{Noto Serif CJK SC}}{\setCJKmonofont{FandolSong-Regular.otf}}}
 \DefineVerbatimEnvironment{BookCode}{Verbatim}{fontsize=\footnotesize,
   baselinestretch=1.04,breaklines=true,breakanywhere=true,samepage=true,
   xleftmargin=1em,xrightmargin=.5em,tabsize=4}
@@ -73,7 +74,7 @@
 }{\IfFontExistsTF{Noto Serif CJK SC}{%
   \newCJKfontfamily\BookQuoteCJK[ItalicFont={Noto Serif CJK SC},ItalicFeatures={FakeSlant=.18}]{Noto Serif CJK SC}%
 }{%
-  \newCJKfontfamily\BookQuoteCJK[ItalicFont=FandolSong-Regular,ItalicFeatures={FakeSlant=.18}]{FandolSong-Regular}%
+  \newCJKfontfamily\BookQuoteCJK[ItalicFont=FandolSong-Regular.otf,ItalicFeatures={FakeSlant=.18}]{FandolSong-Regular.otf}%
 }}
 \newcommand{\DeclareBookEpigraph}[4]{%
   \expandafter\gdef\csname BookEpigraphText@#1\endcsname{#2}%
