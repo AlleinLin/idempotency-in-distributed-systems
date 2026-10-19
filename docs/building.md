@@ -32,4 +32,4 @@ Windows 在仓库根运行：
 
 清理脚本只处理列明的构建目录、缓存和本地编译二进制。`examples/*/runs/` 中的实验记录由使用者自行归档。
 
-整书 PDF 适合通过 GitHub Releases 发布；Git 仓库保留可复现源文件。CI 会构建 PDF 并保存为工作流产物。
+整书 PDF 在 [GitHub Releases](https://github.com/AlleinLin/idempotency-in-distributed-systems/releases/latest) 中发布；Git 仓库保留可复现源文件。推送 `v*` 版本标签后，发布工作流调用同一套整书构建流程，生成 PDF 与 SHA-256 校验文件，再发布对应版本。常规 CI 同时将 PDF 保存为工作流产物。

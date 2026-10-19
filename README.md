@@ -4,7 +4,7 @@
 
 **Allein** · [AlleinLin@outlook.com](mailto:AlleinLin@outlook.com)
 
-[全书目录](docs/reading-guide.md) · [构建 PDF](docs/building.md) · [实验代码](examples/README.md) · [贡献指南](CONTRIBUTING.md) · [许可](#许可)
+[下载整书 PDF](https://github.com/AlleinLin/idempotency-in-distributed-systems/releases/latest) · [全书目录](docs/reading-guide.md) · [构建 PDF](docs/building.md) · [实验代码](examples/README.md) · [贡献指南](CONTRIBUTING.md) · [许可](#许可)
 
 <img src="book/assets/cover-art/cover-background.png" alt="《分布式系统中的幂等性》封面背景" width="220" align="right">
 
@@ -118,7 +118,7 @@ book/build/main.pdf
 
 工程优先使用系统字体，并提供 Noto CJK、Fandol 和 Latin Modern 后备。字体差异会影响分页。Ubuntu 依赖安装、字体选择和日志排错见[构建指南](docs/building.md)。
 
-GitHub Actions 的 `Build book` 工作流会构建并上传整书 PDF；可在仓库的 Actions 页面下载成功运行的产物。发行版 PDF 也适合通过 GitHub Releases 分发。
+完整 PDF 在 [GitHub Releases](https://github.com/AlleinLin/idempotency-in-distributed-systems/releases/latest) 中下载，每个版本附有 SHA-256 校验文件。GitHub Actions 的 `Build book` 工作流也会构建并上传整书 PDF；可在仓库的 Actions 页面下载成功运行的产物。
 
 ## 配套实验
 

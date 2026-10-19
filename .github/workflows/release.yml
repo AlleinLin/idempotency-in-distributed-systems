@@ -1,0 +1,55 @@
+name: Publish release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  book:
+    uses: ./.github/workflows/book.yml
+  publish:
+    needs: book
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: idempotency-in-distributed-systems
+          path: release
+      - name: Prepare PDF and checksum
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cd release
+          mv main.pdf "idempotency-in-distributed-systems-${RELEASE_TAG}.pdf"
+          sha256sum "idempotency-in-distributed-systems-${RELEASE_TAG}.pdf" > SHA256SUMS
+      - name: Publish full book
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cat > release-notes.md <<'NOTES'
+          《分布式系统中的幂等性：从一次重复扣款开始》完整 PDF。
+
+          包含概论、21 章正文、四部分结语、全书结语与参考文献，涵盖事务、外部支付、消息交付、复制、历史恢复和多分区系统架构。
+
+          下载下方的 PDF 即可阅读；`SHA256SUMS` 提供文件校验值。TeX 工程与配套实验代码可通过本版本的源码压缩包获取。
+
+          书稿及原创图示采用 CC BY-SA 4.0，代码采用 MIT。
+          NOTES
+          gh release create "$RELEASE_TAG" \
+            "release/idempotency-in-distributed-systems-${RELEASE_TAG}.pdf" \
+            release/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --draft \
+            --title "《分布式系统中的幂等性》 ${RELEASE_TAG}" \
+            --notes-file release-notes.md
+          gh release edit "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft=false \
+            --latest
