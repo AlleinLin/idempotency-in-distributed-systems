@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (d) at (0,0) {driver 提交 A\\取得 ObjectRef};
+\node[good] (a) at (4,0) {A：固定图像\\规范化记录对象};
+\node[box] (b) at (8,1.5) {B1：付款分组};
+\node[box] (c) at (8,-1.5) {B2：事件分组};
+\node[good,text width=7cm] (f) at (4,-3.6) {下游任务接收对象引用，依赖就绪后计算\\汇合差异 → 发布持久结果};
+\draw[ctl] (d)--(a);\draw[arr] (a)--(b);\draw[arr] (a)--(c);
+\draw[arr] (b.east)--(10,1.5)--(10,-3.6)--(f.east);
+\draw[arr] (c.south)--(8,-3.6)--(f.east);
+
+\end{tikzpicture}

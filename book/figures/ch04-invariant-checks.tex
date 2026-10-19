@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4.8cm] (id) at (3,0) {同 S 至多一笔购买\\完整身份唯一、记录保留};
+\node[booknode,text width=4.8cm] (input) at (11,0) {两次合法购买分别受理\\输入绑定按身份核对};
+\node[booknode,text width=4.8cm] (money) at (3,-1.9) {余额非负与资金核对\\条件更新、正金额、共同提交};
+\node[booknode,text width=4.8cm] (result) at (11,-1.9) {恢复原终态与原编号\\保存并读取原结果};
+\node[bookresult,text width=10.5cm] (all) at (7,-3.8) {检查同一条已提交历史\\S → P → O、D；金额、余额与原结果共同一致};
+\draw[bookarrow] (id.south)--(money.north);
+\draw[bookarrow] (input.south)--(result.north);
+\draw[bookarrow] (money.south)--(all.north west);
+\draw[bookarrow] (result.south)--(all.north east);
+\end{tikzpicture}
+\caption{身份、输入、资金和结果各有检查对象，业务正确性需要这些关系共同成立。}
+\label{fig:ch04-invariant-checks}
+\end{figure}

@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box] (j) at (0,1.2) {同一 J 目标图像\\原 T1／O1／EV1\\原归属与完整报文};
+\node[box] (t) at (4.5,1.2) {本地事务先准备\\补写缺失 T1\\尚未提交};
+\node[warn] (o) at (9,1.2) {读取已有 O1\\正文引用 P-other\\与原决定冲突};
+\draw[arr] (j)--(t);\draw[arr] (t)--(o);
+\node[warn,text width=12cm] (r) at (4.5,-1.5) {抛错 → 整批回滚\\T1 继续缺失，损坏 O1 留待核查，P/C/EV 与物化游标共同保持冲突前状态};
+\draw[arr] (o)--(r);
+\end{tikzpicture}

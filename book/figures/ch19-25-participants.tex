@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box,text width=3cm] (a) at (0,0) {b2：库存A\\当前由G2承载\\(TX,b2)／原数量\\投票／准备／终态};
+\node[good,text width=3.2cm] (c) at (5.4,0) {b1：购买与协调\\当前由G1承载\\S／原输入／P-C-T\\TX／参与者\\共同决定};
+\node[box,text width=3cm] (b) at (10.8,0) {b3：库存B\\当前由G3承载\\(TX,b3)／原数量\\投票／准备／终态};
+\draw[ctl] (c)--node[above,note]{准备／决定} (a);
+\draw[ctl] (c)--node[above,note]{准备／决定} (b);
+\node[warn,text width=3.2cm] (w) at (5.4,-3) {原C/T\\等待库存资格\\工作者读取持久责任};
+\node[box,text width=3cm] (p) at (10.8,-3) {独立支付平台\\原scope／pay-C\\平台收款X};
+\draw[arr] (c)--(w);\draw[arr] (w)--node[above,note]{资格满足后} (p);
+\node[note,text width=3.4cm] at (0,-3) {b标记稳定归属\\G标记当前副本组\\各组独立持久复制};
+\end{tikzpicture}

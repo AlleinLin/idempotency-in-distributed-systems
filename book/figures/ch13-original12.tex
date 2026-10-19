@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,3.5) {已核验受理事实\\O1 / F1（实际 501）\\初次履约归属明确};
+\node[box] (b) at (5,3.5) {已核验发货事实\\原 dispatch 身份\\平台成功与包裹依据};
+\node[box] (c) at (10,3.5) {已核验送达事实\\同一包裹\\承运回执};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=12cm] at (5,1.3) {$\mathcal E_{\rm ful}$ 累计已确认事实，再计算阶段 $0\to1\to2\to3$\\阶段 2 先到且前驱已核验，迟到阶段 1 只补充已有事实};
+\node[warn,text width=12cm] at (5,-.5) {孤立来件先保存待核验，补取原关系；实际发货由 dispatch 工作流继续};
+
+\end{tikzpicture}

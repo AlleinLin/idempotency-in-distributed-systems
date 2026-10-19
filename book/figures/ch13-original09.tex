@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5,4.7) {共同初态：A、B 均已观察 gift 的添加 A1};
+\node[box] (a) at (0,3.2) {A 移除 gift\\只移除已观察的 A1\\删除依据包含 A1};
+\node[box] (b) at (10,3.2) {B 移除 A1 后重新添加\\新标记 B1\\活项 gift:B1};
+\node[good,text width=11cm] (m) at (5,.9) {合并：A1 已删除；B1 在 A 的移除发生时尚不可见\\活项保留 gift:B1，显示 gift 存在};
+\draw[arr] (a.south)--++(0,-.5)-|(m.north);\draw[arr] (b.south)--++(0,-.5)-|(m.north);
+\node[note,text width=13cm] at (5,-.7) {同一添加的传播沿用原标记；真正的新添加分配新标记；本例采用添加优先语义};
+
+\end{tikzpicture}

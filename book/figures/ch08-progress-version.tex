@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=12.2cm] at (4.4,7)
+  {独立初态：报告端 high\_water=8，progress\_version=0\\T1 的持久进度先保存 a／版本1，后保存 b／版本2；两次发送均属第8代};
+\node[note] at (0,5.6) {W2：读取已保存快照};
+\node[note] at (8.8,5.6) {报告服务：同一资源行锁};
+\draw[lane] (0,5.2)--(0,-.2);
+\draw[lane] (8.8,5.2)--(8.8,-.2);
+\draw[arr,draw=Gold] (0,4.7)--node[note,above]{先发送 a，版本1}(3.1,4.7);
+\draw[Gold,densely dashed,thick] (3.1,4.7)--(3.1,.3);
+\draw[arr] (0,3.5)--node[note,above]{后发送 b，版本2，先到达}(8.8,3.5);
+\node[good,text width=5.3cm] at (8.8,2.1)
+  {代次8通过，业务版本 $2>0$\\提交水位8、版本2、完整内容 b};
+\draw[arr,draw=Gold] (3.1,.3)--node[note,above]{a 迟到：代次8通过，$1<2$}(8.8,.3);
+\node[good,text width=12.2cm] at (4.4,-1.5)
+  {a 只留下迟到观察，展示保持 b／版本2；代次与业务版本分别核验\\若更高代次携旧版本到达，水位推进，展示版本和内容保留};
+\end{tikzpicture}

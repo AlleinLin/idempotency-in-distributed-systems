@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[box,text width=3.5cm] (old) at (0,4.6)
+  {初态：资源当前值 $r_1$\\W1 曾获原资格\\W1 暂停};
+\node[box,text width=3.5cm] (install) at (4.4,4.6)
+  {W2 申请安装 $r_2$\\在安装原子边界\\核验合法前驱与当前资格};
+\node[good,text width=3.5cm] (current) at (8.8,4.6)
+  {合法安装提交\\当前值变为 $r_2$\\W2 按 $r_2$ 写入};
+\draw[arr] (old)--(install);
+\draw[arr] (install)--(current);
+\node[warn,text width=5.7cm] (write) at (1.1,1.6)
+  {W1 的旧业务写迟到，携带 $r_1$\\资源原子比较 $r_1\ne r_2$\\拒绝旧写，保留当前内容};
+\node[warn,text width=5.7cm] (late) at (7.7,1.6)
+  {W1 的旧安装请求迟到，想装回 $r_1$\\合法前驱或当前资格不满足\\拒绝旧安装，当前值保留 $r_2$};
+\draw[arr] (current.south)--++(0,-.5)-|(write.north);
+\draw[arr] (current.south)--++(0,-.5)-|(late.north);
+\node[note,text width=12.2cm] at (4.4,-.6)
+  {随机值供资源比较是否属于同一次安装；合法安装由原子准入规则决定\\若允许旧请求无条件装回 $r_1$，旧写就会重新获得表面匹配};
+\end{tikzpicture}

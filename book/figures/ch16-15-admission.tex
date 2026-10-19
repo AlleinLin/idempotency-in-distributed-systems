@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box] (s) at (0,1.5) {提交 $S$ 与原输入};
+\node[warn,text width=3.2cm] (gate) at (4.5,1.5) {权威先检查 E1\\截止／关闭资格};
+\node[good,text width=3.5cm] (accept) at (9,1.5) {会话有效\\已有 $S$：核验并恢复\\新 $S$：业务判断与受理};
+\node[warn,text width=3.2cm] (expired) at (4.5,-.5) {会话关闭\\operation\_expired};
+\node[box] (q) at (0,-2.5) {账户授权查询};
+\node[box] (w) at (4.5,-2.5) {服务端恢复者};
+\node[good,text width=3.5cm] (old) at (9,-2.5) {已受理事实保持\\原 $A_J$／C-T／$R_J$\\原键查询与安全继续};
+\draw[arr] (s)--(gate);\draw[arr] (gate)--(accept);
+\draw[arr] (gate)--(expired);
+\draw[arr] (q) to[bend right=15] node[below,note]{读取原关系} (old);
+\draw[arr] (w)--node[below,note]{枚举} (old);
+\end{tikzpicture}

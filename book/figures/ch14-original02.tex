@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=2.8cm] (a) at (0,0) {A 路由第 8 代开放\\S1 已绑定 C1\\S2 在途};
+\node[warn,text width=2.8cm] (b) at (3.7,0) {权威入口冻结\\撤销 A 写资格\\等待 S2 提交/回滚};
+\node[box,text width=2.8cm] (c) at (7.4,0) {完整交接边界 b\\业务与 S/C/结果\\Γ 与编号进度};
+\node[good,text width=2.8cm] (d) at (11.1,0) {授予 B 路由第 9 代\\重试恢复原 C\\新意图才新分配};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\node[note,text width=13cm] at (5.5,-1.6) {S2 提交则进入 b；回滚则撤销候选。B 恢复完整 b 以后开放，归属始终是 g7。};
+
+\end{tikzpicture}

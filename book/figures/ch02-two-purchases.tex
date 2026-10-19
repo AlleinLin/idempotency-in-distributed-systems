@@ -1,0 +1,21 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.1cm] (r1) at (0,0) {R1\\第一次请求};
+\node[booknode,text width=3.2cm] (p1) at (4.4,0) {P1 $\to$ O1 $\to$ D1\\扣款 3000};
+\node[booknode,text width=2.5cm] (b1) at (9.6,0) {余额\\10000 $\to$ 7000};
+\draw[bookarrow] (r1)--(p1);
+\draw[bookarrow] (p1)--(b1);
+\node[bookresult,text width=2.1cm] (r2) at (0,-2) {R2\\超时后重试};
+\node[bookresult,text width=3.2cm] (p2) at (4.4,-2) {P2 $\to$ O2 $\to$ D2\\再扣 3000};
+\node[bookresult,text width=2.5cm] (b2) at (9.6,-2) {余额\\7000 $\to$ 4000};
+\draw[bookalert] (r2)--(p2);
+\draw[bookalert] (p2)--(b2);
+\draw[bookarrow] (b1.south)--(b2.north);
+\draw[bookalert,dashed] (r1.south)--node[right,font=\scriptsize]{未取得结果后再发}(r2.north);
+\node[booknote,text width=4.4cm] at (4.4,-3.4) {每个购买编号各对应一张订单\\P1、P2 都满足现有唯一约束};
+\node[booknote,text width=3.3cm] at (9.6,-3.4) {流水合计 6000\\余额与账本仍相符};
+\end{tikzpicture}
+\caption{两个请求建立两组独立记录。数据库约束检查各组内部关系，Alice 的一次购买意图尚未作为跨请求关系保存。}
+\label{fig:ch02-two-purchases}
+\end{figure}

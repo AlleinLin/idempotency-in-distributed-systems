@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=5.5cm] at (0,4.8) {RabbitMQ，同一 channel};
+\node[box,text width=5.5cm] at (7.4,4.8) {Kafka，传统组的同一分区};
+\node[warn,text width=2cm] at (-1.5,3) {tag 7\\尚未提交};
+\node[good,text width=2cm] at (1.5,3) {tag 8\\已经提交};
+\node[good,text width=1.6cm] at (5.1,3) {100\\已完成};
+\node[warn,text width=1.6cm] at (7.4,3) {101\\未完成};
+\node[good,text width=1.6cm] at (9.7,3) {102\\已完成};
+\node[good,text width=5.5cm] at (0,1.1) {ack(8,false) 只确认 8\\7 继续保留恢复责任};
+\node[good,text width=5.5cm] at (7.4,1.1) {安全提交 next=101\\102 可已提交效果，重读时恢复};
+\node[warn,text width=5.5cm] at (0,-.9) {ack(8,true) 连带确认 7\\会越过尚未提交的处理};
+\node[warn,text width=5.5cm] at (7.4,-.9) {提交 next=103 越过 101\\重派后从 103 开始，101 遗漏};
+\node[note,text width=13cm] at (3.7,-2.6) {累计边界按当前 channel 未确认集／当前分区实际记录的完成前缀判断\\Kafka 压缩与事务控制记录可留下数值空隙，进度无需等待不存在的整数记录};
+
+\end{tikzpicture}
+

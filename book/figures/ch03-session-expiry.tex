@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.6cm] (c) at (1.8,0) {可核验会话 E1\\固定截止 10 月 18 日 10:00\\操作使用 (E1, K1)};
+\node[booknode,text width=3.6cm] (r) at (6.5,0) {截止前的同身份恢复\\找到 P1，核对输入\\返回原结果};
+\node[bookresult,text width=3.6cm] (e) at (11.2,0) {持久关闭后的旧 E1\\关闭或缺失均拒绝\\返回 410};
+\draw[bookarrow] (c)--(r);
+\draw[bookalert] (r)--(e);
+\node[booknote,text width=12cm] at (6.5,-1.6)
+ {先持久关闭会话，再等待在途执行安全终结，最后清理逐笔结果\\关闭不可撤回；缺失拒绝；旧 E1 不重新注册};
+\node[booknode,text width=10.5cm] at (6.5,-2.9)
+ {完整身份：账户、动作、登记会话 E1、幂等键 K1\\新 E2 属于另一身份，切换会话不能查清旧 E1 的购买};
+\end{tikzpicture}
+\caption{完整身份在有效会话内使用，关闭后旧身份不再取得受理资格。}
+\label{fig:ch03-session-expiry}
+\end{figure}

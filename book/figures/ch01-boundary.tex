@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.5cm] (app) at (0,0) {应用线程\\或多个进程};
+\node[booknode,text width=2.2cm] (a) at (5,1) {账户};
+\node[booknode,text width=2.2cm] (p) at (8.3,1) {购买};
+\node[booknode,text width=2.2cm] (o) at (5,-1) {订单};
+\node[booknode,text width=2.2cm] (d) at (8.3,-1) {扣款流水};
+\begin{scope}[on background layer]
+\node[draw=Ink!55,fill=Paper!35,rounded corners=5pt,fit=(a)(p)(o)(d),inner sep=13pt] (tx) {};
+\end{scope}
+\node[booknote] at (6.65,2.15) {同一数据库、同一连接的一笔事务};
+\draw[bookarrow] (app.east)--node[above,font=\scriptsize]{业务写入}(tx.west);
+\node[bookresult,text width=2.4cm] (ext) at (12.6,0) {外部支付平台\\使用独立账本};
+\draw[bookalert,dashed] (tx.east)--node[above,font=\scriptsize]{独立调用}(ext.west);
+\node[booknote,text width=3.4cm] at (12.4,-2) {本地回滚的作用\\止于数据库事务边界};
+\end{tikzpicture}
+\caption{事务的范围由参与写入的数据与连接决定。增加应用进程仍可共用本地事务规则，外部支付则引入新的边界。}
+\label{fig:ch01-boundary}
+\end{figure}

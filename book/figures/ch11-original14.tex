@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box,text width=8.8cm,minimum height=1.1cm] (s) at (3,3.4) {应用内容：同一 Σ$_k$\\W$_k$ + M$_k$ + Γ$_k$};
+\node[good,text width=8.8cm,minimum height=1.1cm] (m) at (3,1.6) {复制元数据\\lastIncludedIndex=k，lastIncludedTerm\\边界处所需配置及相关位置};
+\node[box,text width=3.3cm] (l) at (11.2,2.5) {已提交日志后缀\\k+1，k+2，…\\检查边界前驱后应用};
+\draw[arr] (s.east)--++(.7,0)|-(l);\draw[arr] (m.east)--++(.7,0)|-(l);
+\node[warn,text width=13cm] at (5.4,-.6) {余额取自 50、M 取自 49，再标 k=50，会得到撕裂状态\\先捕获一致状态并持久发布快照，再截去它覆盖的前缀};
+
+\end{tikzpicture}

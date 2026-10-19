@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/b2：SKU-A,4.5/b1：协调记录,9/b3：SKU-B}{
+ \node[font=\bfseries] at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-6.6);}
+\draw[arr] (4.5,-1)--node[above,note]{prepare／子操作身份} (0,-1);
+\draw[arr] (4.5,-1.7)--node[above,note]{prepare／子操作身份} (9,-1.7);
+\draw[arr] (0,-2.4)--node[above,note]{持久 yes} (4.5,-2.4);
+\draw[arr] (9,-3.1)--node[above,note]{持久 yes} (4.5,-3.1);
+\node[good,text width=3cm] at (4.5,-4.1) {本组持久保存\\commit 决定};
+\draw[arr] (4.5,-5.6)--node[above,note]{原决定通知} (0,-5.6);
+\draw[arr] (4.5,-6.3)--node[below,note]{原决定通知} (9,-6.3);
+
+\end{tikzpicture}

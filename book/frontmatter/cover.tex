@@ -1,0 +1,23 @@
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+\clip (current page.south west) rectangle (current page.north east);
+\node[inner sep=0pt] at (current page.center)
+  {\includegraphics[width=\paperwidth]{assets/cover-art/cover-background.png}};
+\node[anchor=north west,inner sep=0pt,align=left,text width=160mm,
+  font=\sffamily\bfseries\fontsize{35}{49}\selectfont,text=Ink]
+  at ([xshift=25mm,yshift=-48mm]current page.north west)
+  {分布式系统中的\\幂等性};
+\node[anchor=north west,inner sep=0pt,
+  font=\sffamily\fontsize{17}{25}\selectfont,text=Ink]
+  at ([xshift=25mm,yshift=-94mm]current page.north west)
+  {从一次重复扣款开始};
+\draw[Accent,line width=1pt]
+  ([xshift=25mm,yshift=-116mm]current page.north west) -- ++(21mm,0);
+\node[anchor=north west,inner sep=0pt,align=left,
+  font=\sffamily\fontsize{12}{19}\selectfont,text=Ink]
+  at ([xshift=25mm,yshift=-126mm]current page.north west)
+  {Allein\\{\fontsize{10}{16}\selectfont AlleinLin@outlook.com}};
+\end{tikzpicture}
+\null
+\end{titlepage}

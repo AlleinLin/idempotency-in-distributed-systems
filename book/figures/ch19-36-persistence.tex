@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[good,text width=3.2cm] (normal) at (0,1.3) {正常事务路径\\primary与备份\\非易失DRAM\\对象＋事务日志};
+\node[warn,text width=3.2cm] (power) at (4.6,1.3) {掉电事件\\电池继续供电\\保存程序转存内存\\SSD保留足够容量};
+\node[good,text width=3.2cm] (restore) at (9.2,1.3) {恢复供电\\SSD内容读回DRAM\\日志与对象恢复\\核验配置和事务};
+\draw[arr] (normal)--(power);\draw[arr] (power)--(restore);
+\node[box,text width=10.7cm] at (4.6,-1.7) {网卡写确认的耐久含义依赖该保存基础\\电池、保存路径、SSD和独立副本共同承担掉电恢复条件};
+\end{tikzpicture}

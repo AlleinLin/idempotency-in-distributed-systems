@@ -1,0 +1,22 @@
+\newcommand{\CEightFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Pale}{HTML}{F1F5F7}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=Pale,inner sep=7pt,text width=3.6cm,minimum height=1cm},
+    good/.style={box,fill=green!5!white,draw=green!35!black},
+    warn/.style={box,fill=orange!7,draw=Gold},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!35,densely dashed}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+购买服务已经提交 P1 与支付操作 C1，平台也可能收到了付款请求。工作者 W1 随后失联。页面持续显示等待付款，数据库里保留着这笔购买，继续处理它的进程却已经消失。若恢复完全依靠 Alice 再次打开页面，购买能否结束就取决于用户是否回来。
+
+增加工作者 W2，问题还会继续变化。W2 查询平台以后，W1 可能从一次长暂停中恢复，执行暂停前准备好的动作。数据库怎样保留未完成工作，W2 根据什么接管，W1 带回的结果又怎样进入系统，需要放在同一条历史中解释。平台已经完成的付款，也必须在这些变化中保持原来的身份。

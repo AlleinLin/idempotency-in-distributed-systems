@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[cell,text width=3cm] (a) at (0,1) {A：candidate-0000};
+\node[cell,text width=3cm] (b) at (4.7,1) {B：candidate-0001};
+\node[cell,text width=3cm] (c) at (9.4,1) {C：candidate-0002};
+\draw[ctl] (b.north) to[bend right=30] node[above,note]{watch 前驱 A} (a.north);
+\draw[ctl] (c.north) to[bend right=30] node[above,note]{watch 前驱 B} (b.north);
+\node[warn] (x) at (0,-1.5) {A 会话终结\\服务端删除0000};
+\node[box] (r) at (4.7,-1.5) {B 获得通知\\重新读候选集};
+\node[good] (l) at (9.4,-1.5) {B 确认排在最前\\进入角色流程};
+\draw[arr] (a)--(x);\draw[arr] (x)--(r);\draw[arr] (r)--(l);
+\node[note] at (4.7,-3.1) {设置 watch 时发现前驱已消失：立即重读列表，再选择前驱。};
+\end{tikzpicture}

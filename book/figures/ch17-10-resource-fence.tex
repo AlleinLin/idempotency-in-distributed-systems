@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/旧 A,4/控制面,8/新 B,12/独立资源}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.4)--(\x,-5.7);}
+\draw[arr] (0,-1)--node[above,note]{HTTP 携带17，途中暂停} (3,-1);
+\draw[arr] (4,-2)--node[above,note]{B 取得23} (8,-2);
+\draw[arr] (8,-2.8)--node[above,note]{安装23} (12,-2.8);
+\draw[arr] (8,-3.6)--node[above,note]{23／原 $S$，提交效果1} (12,-3.6);
+\draw[arr] (3,-4.5)--node[above,note]{旧 HTTP 继续到达：17} (12,-4.5);
+\node[warn,text width=3.3cm] at (12,-5.7) {同一事务比较17与23\\修改前返回 stale\_fence};
+\end{tikzpicture}

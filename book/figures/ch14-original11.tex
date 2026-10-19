@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=2.8cm] (a) at (0,1) {冻结 J 入口\\确定 $b_{\rm cut}$\\完整旧责任集合};
+\node[box,text width=2.8cm] (b) at (4,1) {撤销本地旧资格\\等待受保护事务结束\\资源水位推进};
+\node[box,text width=2.8cm] (c) at (8,1) {新地域 recovering\\完整 Γ 与 S/C/结果\\路由第 9 代新分配};
+\node[good,text width=2.8cm] (d) at (12,1) {restricted\\旧身份恢复/查询\\新意图按规则受理};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\node[warn,text width=11cm] (e) at (6,-1.6) {旧外部请求单独处置：进程结束以后仍可能到达平台\\原键保护、固定截止或同域关闭覆盖这些到达，未决 H 持续查询};
+\draw[arr] (a.south)--(e.north west);\draw[arr] (e.north east)--(d.south);
+
+\end{tikzpicture}

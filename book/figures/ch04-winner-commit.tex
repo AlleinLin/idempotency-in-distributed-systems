@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (2,0.5) {A：先插入 S};
+\node[booknote] at (8,0.5) {B：尝试同一 S};
+\node[booknode,text width=3.8cm] (a1) at (2,-.3) {S → P1\\尚未提交};
+\node[bookresult,text width=4.5cm] (b1) at (8,-.3) {唯一性检查发现竞争\\等待 A 的事务结局};
+\node[booknode,text width=3.8cm] (a2) at (2,-1.8) {扣款、订单、流水\\保存原结果并提交};
+\node[booknode,text width=4.5cm] (b2) at (8,-1.8) {A 提交后重新检查\\DO NOTHING，返回零行};
+\node[booknode,text width=4.5cm] (b3) at (8,-3.3) {下一条 SELECT 读取 P1\\同参，返回原成功};
+\draw[bookarrow] (a1)--(a2);
+\draw[bookarrow] (b1)--(b2);
+\draw[bookarrow] (a2.east)--node[above,font=\footnotesize]{提交后唤醒}(b2.west);
+\draw[bookarrow] (b2)--(b3);
+\node[booknote,text width=3.3cm] at (12.5,-1.8) {B 全程\\未进入扣款};
+\node[booknote,text width=13cm] at (7,-4.45) {最终：S → P1，只有 O1、D1，账户余额 7000};
+\end{tikzpicture}
+\caption{竞争者提交以后，等待者跳过插入，再以新语句读取原结果。}
+\label{fig:ch04-winner-commit}
+\end{figure}

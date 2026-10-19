@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\foreach \x in {0,6,11.5} {\draw[Ink!35,dashed] (\x,-.5)--(\x,-5.8);}
+\node[booknode,text width=2cm] at (0,0) {客户端 A};
+\node[booknode,text width=2cm] at (6,0) {锁服务};
+\node[booknode,text width=2cm] at (11.5,0) {锁状态};
+\draw[bookarrow] (0,-1)--node[above,font=\footnotesize]{获取锁}(6,-1);
+\draw[bookarrow] (6,-1.7)--(11.5,-1.7);
+\node[booknode,text width=2.3cm] at (11.5,-2.4) {已由 A 持有};
+\draw[bookalert,dashed] (6,-2.8)--node[above,font=\footnotesize]{成功确认丢失}(1,-2.8);
+\draw[bookarrow] (0,-3.5)--node[above,font=\footnotesize]{重试获取锁}(6,-3.5);
+\draw[bookalert] (6,-4.3)--node[above,font=\footnotesize]{重新执行：锁被占有，返回失败}(0,-4.3);
+\node[bookresult,text width=3.5cm] at (0,-5.4) {误以为未取得锁};
+\node[booknode,text width=2.3cm] at (11.5,-5.4) {仍由 A 持有};
+\end{tikzpicture}
+\caption{最终锁状态保持不变，重试结果却误导调用方。保存并返回原结果也是重复调用处理的一部分。}
+\label{fig:ch02-lock-result}
+\end{figure}

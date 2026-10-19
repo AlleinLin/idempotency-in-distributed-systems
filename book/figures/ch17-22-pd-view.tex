@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=3.25cm] (store) at (0,2) {TiKV Store\\容量／负载／位置标签\\持久保存各 Region 的 Peer};
+\node[box,text width=3.25cm] (leader) at (0,-.9) {Region leader\\区间／Peer／leader 状态\\执行可接受的调度动作};
+\node[good,text width=3.65cm] (pd) at (5.3,.6) {PD：Placement Driver\\复制保存集群元数据\\汇集区间分布与拓扑\\形成并跟踪调度计划};
+\node[box,text width=3cm] (client) at (10.7,2.3) {客户端定位\\键 $\to$ Region\\$\to$ leader 所在位置};
+\node[box,text width=3cm] (tx) at (10.7,-1.2) {事务层取得 TSO\\有序事务时间戳\\标记读取／提交版本};
+\draw[arr] (store.east)--node[above,sloped,note]{Store 心跳} (pd.north west);
+\draw[arr] (leader.east)--node[below,sloped,note]{Region 心跳} (pd.south west);
+\draw[ctl] (pd.south)--(5.3,-2.6)--node[above,note]{调度建议} (0,-2.6)--(leader.south);
+\draw[arr] (pd.north east)--(client.west);
+\draw[arr] (pd.south east)--(tx.west);
+\node[note,text width=12.3cm] at (5.3,-3.5) {元数据提供定位与调度依据，数据由 TiKV 复制保存；事务层另行连接跨 Region 修改。};
+\end{tikzpicture}

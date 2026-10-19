@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=4.3cm] (h0) at (0,1.6) {H0：请求从未到达\\平台未形成 X1\\恢复到 B0};
+\node[warn,text width=4.3cm] (h1) at (0,-1.6) {H1：平台已完成 X1\\本地与独立关联丢失\\恢复到同一 B0};
+\node[box,text width=4.5cm] (obs) at (6,0) {恢复者的相同观察\\同一 S／同一 B0\\普通查询暂时查空};
+\node[good,text width=3.8cm] (e) at (11.5,0) {保存未知与原输入\\取得账本／可靠回执\\或旧路径终结证据};
+\draw[arr] (h0)--(obs);\draw[arr] (h1)--(obs);\draw[arr] (obs)--(e);
+\node[note,text width=14cm] at (5.5,-3.2) {共同新建 C2 会让 H1 可能再次付款，共同返回成功会让 H0 缺少资金事实。先取证再区分继续路径。};
+\end{tikzpicture}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[good,text width=3.3cm] (s) at (0,1.5) {权威结构编码\\来源b1／代次／索引\\原图像摘要$H_a$};
+\node[box,text width=3.3cm] (t) at (4.7,1.5) {传输序列化\\显式格式名\\字节摘要$H_t$};
+\node[box,text width=3.3cm] (b) at (9.4,1.5) {有序块集合\\各块长度／摘要\\副本或对象版本};
+\draw[arr] (s)--(t);
+\node[note] at (2.35,2.85) {编码转换};
+\draw[arr] (t)--node[above,note]{分块} (b);
+\node[good,text width=8.4cm] (r) at (4.7,-1.5) {按清单重建传输字节并核对$H_t$\\解码后核对权威回执与完整业务关联\\保留$H_a$及原格式};
+\draw[arr] (b.south)--(9.4,-1.5)--(r.east);
+\draw[ctl] (s.south)--(0,-1.5)--(r.west);
+\node[note] at (4.7,-3) {$H_a$与$H_t$对应不同编码时，各自验证自己的字节域。};
+\end{tikzpicture}

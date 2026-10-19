@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (cfg) at (0,0) {配置交接\\成员达成共同配置\\等待旧租约边界};
+\node[box] (drain) at (4,0) {排空旧日志\\记录 LastDrained\\收集恢复事务};
+\node[good] (lock) at (8,0) {恢复写锁\\保护尚未决定对象\\重建必要记录};
+\node[box] (vote) at (8,-2.8) {按存活日志投票\\恢复共同决定\\维护已有提交结果};
+\node[box,text width=5.8cm] (bulk) at (2,-2.8) {受保护访问逐步恢复\\并行补回 region 数据副本\\恢复分配器与冗余};
+\draw[arr] (cfg)--(drain);\draw[arr] (drain)--(lock);\draw[arr] (lock)--(vote);\draw[arr] (vote)--(bulk);
+
+\end{tikzpicture}

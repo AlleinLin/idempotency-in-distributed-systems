@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\foreach \x/\lab in {0/购买库,5/发布器,10/消息代理}{
+\node[box,text width=2.5cm] at (\x,4.3) {\lab};\draw[lane] (\x,3.7)--(\x,-4.1);}
+\draw[arr] (0,3.2)--node[note,above]{EV1 与业务已共同提交}(5,3.2);
+\draw[arr] (5,2.3)--node[note,above]{PA1、领取提交；随后发送}(10,2.3);
+\node[warn,text width=2.4cm] at (10,1.2) {代理独立持久受理\\可能已有副本};
+\draw[arr] (10,.2)--node[note,above]{有效发布确认}(5,.2);
+\draw[arr] (5,-1)--node[note,above]{保存 PA1 证据与 EV1.accepted}(0,-1);
+\draw[arr] (0,-2.1)--node[note,above]{本地受理记录提交确认}(5,-2.1);
+\node[note,anchor=east] at (4.8,2.9) {(1) 发送前退出};
+\node[note,anchor=west] at (5.2,1.1) {(2) 受理后确认丢失};
+\node[note,anchor=west] at (5.2,-.5) {(3) 确认到内存，尚未提交};
+\node[note,anchor=west] at (5.2,-2.9) {(4) 已提交，重读恢复};
+\node[box,text width=10.9cm] at (5,-4.6) {(1) 重发可成为第一副本；(2)(3) 重发可增加副本；(4) 本地证据结束发布\\所有副本保持同一 EV1；socket 写完尚未取得受理依据};
+
+\end{tikzpicture}

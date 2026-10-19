@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\draw[arr] (0,0)--(12,0);
+\foreach \x/\lab in {.5/资源水位 7,3.7/先到旧 7,7.6/接受新 8,11/再到旧 7} {
+\draw[Blue] (\x,-.15)--(\x,.15);\node[note,below,text width=2.2cm] at (\x,-.3) {\lab};}
+\node[box,text width=3.4cm] at (1,2.6) {租约服务已授予第 8 代\\资源尚未观察到 8};
+\draw[arr] (1,1.9)--(1,.2);
+\node[warn,text width=2.4cm] at (3.7,1.1) {代次 $7\geq 7$\\可以接受};
+\node[good,text width=2.6cm] at (7.6,1.2) {提交新写\\水位推进为 8};
+\node[warn,text width=2.4cm] at (11,1.2) {7 ＜ 水位 8\\拒绝旧写};
+\draw[Gold,thick] (7.6,-1.4)--(12,-1.4);
+\node[note,text width=10cm] at (6,-2) {排除较小代次的保护从资源接受 8 开始\\接管完成即要求保护时，需要把资源安装纳入接管完成条件};
+
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box] (a) at (0,0) {G1 active\\b1／epoch1};
+\node[warn] (f) at (4.2,0) {G1 frozen\\M1／闭合前缀\\完整图像与摘要};
+\node[box] (i) at (8.4,0) {G2 inactive\\导入同一图像\\epoch2};
+\node[good] (c) at (8.4,-2.9) {目录条件发布\\G1/1 $\to$ G2/2\\M1／同一摘要};
+\node[good] (n) at (4.2,-2.9) {核读已提交目录\\激活 G2 的 b1};
+\node[box] (p) at (0,-2.9) {恢复原 $S$/C/T\\原 scope／pay-C};
+\draw[arr] (a)--(f);\draw[arr] (f)--(i);
+\draw[arr] (i)--(c);\draw[arr] (c)--(n);\draw[arr] (n)--(p);
+\node[note] at (4.2,-4.4) {各阶段记录 M1 与原内容。其他分区沿各自日志继续前进。};
+\end{tikzpicture}

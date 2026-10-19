@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.7cm] (db) at (0,0) {数据库保存\\P1、O1、D1};
+\node[booknode,text width=2.7cm] (svc) at (4.8,0) {服务收到\\提交成功确认};
+\node[bookresult,text width=2.7cm] (cli) at (9.6,0) {客户端等待\\完整业务结果};
+\draw[bookarrow] (db)--node[above,font=\scriptsize]{确认到达}(svc);
+\draw[bookalert,dashed] (svc)--node[above,font=\scriptsize]{响应丢失}(cli);
+\node[booknode,text width=2.7cm] (disk) at (0,-2) {重启后\\仍可读取记录};
+\node[booknode,text width=2.7cm] (recovery) at (4.8,-2) {恢复进程\\重新查询 P1};
+\node[bookresult,text width=2.7cm] (lost) at (9.6,-2) {客户端退出\\内存中的 P1\\可能丢失};
+\draw[bookarrow] (db)--(disk);
+\draw[bookarrow] (disk)--node[above,font=\scriptsize]{持久事实}(recovery);
+\draw[bookalert] (cli)--(lost);
+\node[booknote,text width=11.8cm] at (4.8,-3.3) {恢复要接通两端：数据库保留结果，调用方保留能定位原操作的信息};
+\end{tikzpicture}
+\caption{事实保存、服务获知、客户端获知分别发生。持久记录与客户端的恢复依据需要接续起来。}
+\label{fig:ch02-fact-propagation}
+\end{figure}

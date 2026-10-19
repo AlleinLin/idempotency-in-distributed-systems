@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.5cm] (q) at (1.8,0) {Alice 确认 Q7\\paper-001、3000 分};
+\node[booknode,text width=3.8cm] (p) at (6.6,0) {K1 在 Q7 有效期内成交\\P1 保存成交快照};
+\node[booknode,text width=3.7cm] (r) at (11.5,0) {目录变为 3500\\恢复 K1 仍返回 3000};
+\draw[bookarrow] (q)--(p);
+\draw[bookarrow] (p)--(r);
+\node[bookresult,text width=3.8cm] (late) at (6.6,-2)
+ {K1 首次到达\\Q7 已过期\\保存报价过期结果};
+\draw[bookalert] (q.south)--++(0,-2)--(late.west);
+\node[booknode,text width=3.7cm] (new) at (11.5,-2) {Alice 接受 Q8 的 3500\\新确认、新身份 K2};
+\draw[bookarrow] (late)--(new);
+\node[booknote,text width=12cm] at (6.7,-3.4)
+ {报价期限决定新操作能否成交；已完成操作按原成交结果恢复};
+\end{tikzpicture}
+\caption{原输入、首次受理条件和已提交结果分别对应不同判断时点。}
+\label{fig:ch03-quote}
+\end{figure}

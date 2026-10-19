@@ -1,0 +1,781 @@
+\begin{thebibliography}{999}
+\addcontentsline{toc}{chapter}{参考文献}
+\label{book:references}
+\raggedright
+
+\bibitem{rpc}
+Andrew D. Birrell and Bruce Jay Nelson.
+\textit{Implementing Remote Procedure Calls}.
+ACM Transactions on Computer Systems, 2(1):39--59, 1984.
+\href{https://doi.org/10.1145/2080.357392}{doi:10.1145/2080.357392}.
+
+\bibitem{rifl}
+Collin Lee, Seo Jin Park, Ankita Kejriwal, Satoshi Matsushita, and John Ousterhout.
+\textit{Implementing Linearizability at Large Scale and Low Latency}.
+Proceedings of SOSP 2015, pp.\ 71--86.
+\href{https://doi.org/10.1145/2815400.2815416}{doi:10.1145/2815400.2815416}.
+\href{https://web.stanford.edu/~ouster/cgi-bin/papers/rifl.pdf}{作者论文}.
+
+\bibitem{raft}
+Diego Ongaro and John Ousterhout.
+\textit{In Search of an Understandable Consensus Algorithm}.
+USENIX Annual Technical Conference, 2014, pp.\ 305--319.
+\href{https://raft.github.io/raft.pdf}{作者扩展版}.
+
+\bibitem{ongaro}
+Diego Ongaro.
+\textit{Consensus: Bridging Theory and Practice}.
+PhD dissertation, Stanford University, 2014.
+\href{https://github.com/ongardie/dissertation}{作者论文仓库}.
+
+\bibitem{http}
+Roy T. Fielding, Mark Nottingham, and Julian Reschke, eds.
+\textit{HTTP Semantics}. RFC 9110, 2022.
+\href{https://www.rfc-editor.org/rfc/rfc9110.html#section-9.2.2}{第 9.2.2 节 Idempotent Methods}.
+
+\bibitem{httpcache}
+Roy T. Fielding, Mark Nottingham, and Julian Reschke, eds.
+\textit{HTTP Caching}. RFC 9111, 2022.
+\href{https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.5}{第 5.2.2.5 节 no-store}.
+
+\bibitem{tcp}
+Wesley M. Eddy, ed.
+\textit{Transmission Control Protocol (TCP)}. RFC 9293, 2022.
+\href{https://www.rfc-editor.org/rfc/rfc9293.html}{规范正文}.
+
+\bibitem{pg}
+PostgreSQL Global Development Group.
+\textit{PostgreSQL 18 Documentation}.
+\href{https://www.postgresql.org/docs/18/transaction-iso.html#XACT-READ-COMMITTED}{Read Committed};
+\href{https://www.postgresql.org/docs/18/wal-async-commit.html}{Asynchronous Commit};
+\href{https://www.postgresql.org/docs/18/runtime-config-wal.html}{WAL};
+\href{https://www.postgresql.org/docs/18/protocol-flow.html}{Protocol Flow};
+\href{https://www.postgresql.org/docs/18/index-unique-checks.html}{Index Uniqueness Checks};
+\href{https://www.postgresql.org/docs/18/sql-insert.html}{INSERT};
+\href{https://www.postgresql.org/docs/18/ddl-constraints.html}{Constraints};
+\href{https://www.postgresql.org/docs/18/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT}{Current Date/Time};
+\href{https://www.postgresql.org/docs/18/explicit-locking.html#LOCKING-ROWS}{Row-Level Locks};
+\href{https://www.postgresql.org/docs/18/routine-vacuuming.html#VACUUM-BASICS}{Vacuuming Basics};
+\href{https://www.postgresql.org/docs/18/routine-vacuuming.html#VACUUM-FOR-SPACE-RECOVERY}{Recovering Disk Space};
+\href{https://www.postgresql.org/docs/18/warm-standby.html}{Log-Shipping Standby Servers}.
+访问日期：2026-10-18。
+
+\bibitem{flp}
+Michael J. Fischer, Nancy A. Lynch, and Michael S. Paterson.
+\textit{Impossibility of Distributed Consensus with One Faulty Process}.
+Journal of the ACM, 32(2):374--382, 1985.
+\href{https://doi.org/10.1145/3149.214121}{doi:10.1145/3149.214121}.
+\href{https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf}{作者机构存档}.
+
+\bibitem{aws-idempotent}
+Malcolm Featonby.
+\textit{Making retries safe with idempotent APIs}.
+AWS Builders' Library.
+\href{https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/}{官方文章}。
+
+\bibitem{stripe-v1-idempotency}
+Stripe.
+\textit{Idempotent requests}; \textit{Advanced error handling}.
+\href{https://docs.stripe.com/api/idempotent_requests}{幂等请求}；
+\href{https://docs.stripe.com/error-low-level}{底层错误处理}。
+访问日期：2026-10-17。
+
+\bibitem{stripe-payment-intents}
+Stripe.
+\textit{Retrieve a PaymentIntent}; \textit{Search PaymentIntents};
+\textit{PaymentIntents lifecycle}.
+\href{https://docs.stripe.com/api/payment_intents/retrieve}{编号读取}；
+\href{https://docs.stripe.com/api/payment_intents/search}{搜索}；
+\href{https://docs.stripe.com/payments/paymentintents/lifecycle}{状态生命周期}。
+访问日期：2026-10-17。
+
+\bibitem{stripe-webhooks}
+Stripe.
+\textit{Webhooks}.
+\href{https://docs.stripe.com/webhooks}{官方文档}。
+访问日期：2026-10-17。
+
+\bibitem{leases}
+Cary G. Gray and David R. Cheriton.
+\textit{Leases: An Efficient Fault-Tolerant Mechanism for Distributed File Cache Consistency}.
+Proceedings of SOSP 1989, pp.\ 202--210.
+\href{https://doi.org/10.1145/74850.74870}{doi:10.1145/74850.74870}.
+
+\bibitem{chubby}
+Mike Burrows.
+\textit{The Chubby lock service for loosely-coupled distributed systems}.
+Proceedings of OSDI 2006, pp.\ 335--350.
+\href{https://research.google/pubs/the-chubby-lock-service-for-loosely-coupled-distributed-systems/}{作者机构论文}。
+
+\bibitem{kleppmann-locking}
+Martin Kleppmann.
+\textit{How to do distributed locking}. 2016-02-08.
+\href{https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html}{作者原文}。
+
+\bibitem{antirez-redlock}
+antirez.
+\textit{Is Redlock safe?} 2016-02-09.
+\href{https://antirez.com/news/101}{作者原文}。
+
+\bibitem{redis-redlock}
+Redis.
+\textit{Distributed Locks with Redis}.
+\href{https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/}{官方文档}。
+访问日期：2026-10-16。
+
+\bibitem{outbox}
+Chris Richardson.
+\textit{Pattern: Transactional outbox}.
+Microservices.io.
+\href{https://microservices.io/patterns/data/transactional-outbox.html}{原文}。
+访问日期：2026-10-16。
+
+\bibitem{rabbitmq-reliability}
+RabbitMQ.
+\textit{Reliability Guide}.
+\href{https://www.rabbitmq.com/docs/reliability}{官方文档}。
+访问日期：2026-10-16。
+
+\bibitem{rabbitmq-confirms}
+RabbitMQ.
+\textit{Consumer Acknowledgements and Publisher Confirms}. Version 4.3.
+\href{https://www.rabbitmq.com/docs/confirms}{官方文档}。
+访问日期：2026-10-17。
+
+\bibitem{rabbitmq-quorum-queues}
+RabbitMQ.
+\textit{Quorum Queues}. Version 4.3.
+\href{https://www.rabbitmq.com/docs/quorum-queues}{官方文档}。
+访问日期：2026-10-17。
+
+\bibitem{rabbitmq-queues}
+RabbitMQ.
+\textit{Queues}. Version 4.3.
+\href{https://www.rabbitmq.com/docs/queues}{官方文档}。
+访问日期：2026-10-17。
+
+\bibitem{debezium-outbox}
+Debezium.
+\textit{Outbox Event Router}. Version 3.7.
+\href{https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html}{官方文档}。
+访问日期：2026-10-16。
+
+\bibitem{kafka-producer}
+Apache Kafka.
+\textit{Producer Configs}. Version 4.1.
+\href{https://kafka.apache.org/41/configuration/producer-configs/}{官方文档}。
+访问日期：2026-10-16。
+
+\bibitem{kafka-design}
+Apache Kafka.
+\textit{Design}. Version 4.1.
+\href{https://kafka.apache.org/41/design/design/}{官方文档}。
+访问日期：2026-10-16。
+
+\bibitem{rabbitmq-exchanges}
+RabbitMQ.
+\textit{Exchanges}. Version 4.3.
+\href{https://www.rabbitmq.com/docs/exchanges}{官方文档}。
+访问日期：2026-10-17。
+
+\bibitem{amqp091}
+AMQP Working Group.
+\textit{AMQP 0-9-1 XML Specification}.
+\href{https://www.rabbitmq.com/resources/specs/amqp0-9-1.xml}{RabbitMQ 规范存档}。
+访问日期：2026-10-17。
+
+\bibitem{idempotent-consumer}
+Chris Richardson.
+\textit{Pattern: Idempotent Consumer}.
+Microservices.io.
+\href{https://microservices.io/patterns/communication-style/idempotent-consumer.html}{原文}。
+访问日期：2026-10-16。
+
+\bibitem{handling-duplicate-messages}
+Chris Richardson.
+\textit{Handling duplicate messages using the Idempotent consumer pattern}.
+2020-10-16.
+\href{https://microservices.io/post/microservices/patterns/2020/10/16/idempotent-consumer.html}{原文}。
+
+\bibitem{kafka-consumer-api}
+Apache Kafka.
+\textit{KafkaConsumer Java API}. Version 4.1.
+\href{https://kafka.apache.org/41/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html}{官方文档}。
+访问日期：2026-10-17。
+
+\bibitem{paxos-made-simple}
+Leslie Lamport.
+\textit{Paxos Made Simple}. 2001-11-01.
+\href{https://lamport.azurewebsites.net/pubs/paxos-simple.pdf}{作者原文}。
+
+\bibitem{part-time-parliament}
+Leslie Lamport.
+\textit{The Part-Time Parliament}.
+ACM Transactions on Computer Systems, 16(2):133--169, 1998.
+\href{https://doi.org/10.1145/279227.279229}{doi:10.1145/279227.279229}。
+\href{https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf}{作者含 2000 年勘误版}。
+
+\bibitem{paxos-made-live}
+Tushar D. Chandra, Robert Griesemer, and Joshua Redstone.
+\textit{Paxos Made Live---An Engineering Perspective}.
+Proceedings of PODC 2007, pp.\ 398--407.
+\href{https://doi.org/10.1145/1281100.1281103}{doi:10.1145/1281100.1281103}。
+\href{https://static.googleusercontent.com/media/research.google.com/en//archive/paxos_made_live.pdf}{作者原文}。
+
+\bibitem{state-machine-approach}
+Fred B. Schneider.
+\textit{Implementing Fault-Tolerant Services Using the State Machine Approach: A Tutorial}.
+ACM Computing Surveys, 22(4):299--319, 1990.
+\href{https://www.cs.cornell.edu/fbs/publications/SMSurvey.pdf}{作者原文}。
+
+\bibitem{vertical-paxos}
+Leslie Lamport, Dahlia Malkhi, and Lidong Zhou.
+\textit{Vertical Paxos and Primary-Backup Replication}. 2009.
+\href{https://doi.org/10.1145/1582716.1582783}{doi:10.1145/1582716.1582783}。
+\href{https://lamport.azurewebsites.net/pubs/vertical-paxos.pdf}{作者含 2019-03-10 勘误版}。
+
+\bibitem{pacifica}
+Wei Lin, Mao Yang, Lintao Zhang, and Lidong Zhou.
+\textit{PacificA: Replication in Log-Based Distributed Storage Systems}.
+Microsoft Research Technical Report MSR-TR-2008-25, 2008.
+\href{https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf}{原始技术报告}。
+
+\bibitem{paxos-vs-raft}
+Heidi Howard and Richard Mortier.
+\textit{Paxos vs Raft: Have we reached consensus on distributed consensus?}
+arXiv:2004.05074v2, 2020.
+\href{https://doi.org/10.1145/3380787.3393681}{doi:10.1145/3380787.3393681}。
+\href{https://arxiv.org/pdf/2004.05074}{作者预印本}。
+
+\bibitem{paxos-raft-parallels}
+Zhaoguo Wang, Changgeng Zhao, Shuai Mu, Haibo Chen, and Jinyang Li.
+\textit{On the Parallels between Paxos and Raft, and how to Port Optimizations}.
+Proceedings of PODC 2019.
+\href{https://doi.org/10.1145/3293611.3331595}{doi:10.1145/3293611.3331595}。
+\href{https://ipads.se.sjtu.edu.cn/zh/publications/WangPODC19.pdf}{作者原文}。
+
+\bibitem{hashicorp-raft-173}
+HashiCorp.
+\textit{raft v1.7.3 source and API}; \textit{raft-boltdb/v2 v2.3.1}.
+\href{https://github.com/hashicorp/raft/tree/v1.7.3}{Raft 指定版本源码}；
+\href{https://github.com/hashicorp/raft-boltdb/tree/v2.3.1}{Bolt 存储指定版本源码}。
+
+\bibitem{bloom1970}
+Burton H. Bloom.
+\textit{Space/Time Trade-offs in Hash Coding with Allowable Errors}.
+Communications of the ACM, 13(7):422--426, 1970.
+\href{https://doi.org/10.1145/362686.362692}{doi:10.1145/362686.362692}。
+\href{https://www.cs.princeton.edu/courses/archive/spring05/cos598E/bib/p422-bloom.pdf}{原论文}。
+
+\bibitem{preguica2018crdt}
+Nuno Preguiça, Carlos Baquero, and Marc Shapiro.
+\textit{Conflict-free Replicated Data Types}.
+2018. \href{https://arxiv.org/abs/1805.06358}{arXiv:1805.06358v1}。
+
+\bibitem{bieniusa2012orset}
+Annette Bieniusa, Marek Zawirski, Nuno Preguiça, Marc Shapiro,
+Carlos Baquero, Valter Balegas, and Sérgio Duarte.
+\textit{An Optimized Conflict-free Replicated Set}.
+INRIA Research Report RR-8083, 2012.
+\href{https://arxiv.org/abs/1210.3368}{arXiv:1210.3368v1}。
+
+\bibitem{pg18-recovery}
+PostgreSQL Global Development Group.
+\textit{PostgreSQL 18 Documentation: 25.3. Continuous Archiving and Point-in-Time Recovery (PITR)}.
+\href{https://www.postgresql.org/docs/18/continuous-archiving.html}{官方文档}。
+
+\bibitem{pg18-failover}
+PostgreSQL Global Development Group.
+\textit{PostgreSQL 18 Documentation: 26.3. Failover}.
+\href{https://www.postgresql.org/docs/18/warm-standby-failover.html}{官方文档}。
+
+\bibitem{stripe-refunds-create}
+Stripe.
+\textit{API Reference: Create a refund}.
+\href{https://docs.stripe.com/api/refunds/create}{官方接口文档}。
+
+\bibitem{stripe-versioning}
+Stripe.
+\textit{API Reference: Versioning}.
+\href{https://docs.stripe.com/api/versioning}{官方版本文档}。
+
+\bibitem{stripe-connect-scope}
+Stripe.
+\textit{Making API calls for connected accounts}; \textit{API keys}.
+\href{https://docs.stripe.com/connect/authentication}{关联账户认证}；
+\href{https://docs.stripe.com/keys}{API 密钥与环境}。
+
+\bibitem{stripe-object-recovery}
+Stripe.
+\textit{Payment Intents}; \textit{Retrieve a PaymentIntent};
+\textit{Retrieve a Charge}; \textit{Retrieve an event}.
+\href{https://docs.stripe.com/payments/payment-intents}{支付意图}；
+\href{https://docs.stripe.com/api/payment_intents/retrieve}{PaymentIntent 查询}；
+\href{https://docs.stripe.com/api/charges/retrieve}{Charge 查询}；
+\href{https://docs.stripe.com/api/events/retrieve}{事件查询}。
+
+\bibitem{stripe-payout-reconciliation}
+Stripe.
+\textit{Payout reconciliation report}.
+\href{https://docs.stripe.com/reports/payout-reconciliation}{官方报表文档}。
+
+\bibitem{rabbitmq-consumer-flow}
+RabbitMQ.
+\textit{Consumer Prefetch}; \textit{Consumers}. Version 4.3.
+\href{https://www.rabbitmq.com/docs/consumer-prefetch}{消费信用}；
+\href{https://www.rabbitmq.com/docs/consumers}{消费者}。
+
+\bibitem{kafka44-design}
+Apache Kafka.
+\textit{Design}. Version 4.4.0.
+\href{https://kafka.apache.org/44/design/design/}{同版官方设计文档}。
+
+\bibitem{kafka44-replication}
+Apache Kafka.
+\textit{Kafka 4.4.0 release source}.
+\href{https://github.com/apache/kafka/tree/4.4.0}{指定版本源码}。
+
+\bibitem{kafka44-producer}
+Apache Kafka.
+\textit{KafkaProducer Java API}. Version 4.4.0.
+\href{https://kafka.apache.org/44/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html}{同版 API}。
+
+\bibitem{kafka44-consumer}
+Apache Kafka.
+\textit{KafkaConsumer Java API}. Version 4.4.0.
+\href{https://kafka.apache.org/44/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html}{同版 API}。
+
+\bibitem{chain-replication2004}
+Robbert van Renesse and Fred B. Schneider.
+\textit{Chain Replication for Supporting High Throughput and Availability}.
+Proceedings of OSDI 2004, pp.\ 91--104.
+\href{https://www.cs.cornell.edu/home/rvr/papers/OSDI04.pdf}{作者原文}。
+
+\bibitem{zk-396-programmer}
+Apache ZooKeeper.
+\textit{ZooKeeper Programmer's Guide}. Version 3.9.6.
+\href{https://zookeeper.apache.org/doc/r3.9.6/zookeeperProgrammers.html}{固定版本官方文档}。
+
+\bibitem{zk-396-recipes}
+Apache ZooKeeper.
+\textit{ZooKeeper Recipes and Solutions}. Version 3.9.6.
+\href{https://zookeeper.apache.org/doc/r3.9.6/recipes.html}{固定版本官方文档}。
+
+\bibitem{etcd-37-api}
+etcd Authors.
+\textit{etcd API}. Version 3.7.
+\href{https://etcd.io/docs/v3.7/learning/api/}{官方文档}。
+
+\bibitem{etcd-37-guarantees}
+etcd Authors.
+\textit{API guarantees}. Version 3.7.
+\href{https://etcd.io/docs/v3.7/learning/api_guarantees/}{官方文档}。
+
+\bibitem{etcd-37-reconfigure}
+etcd Authors.
+\textit{Runtime reconfiguration}. Version 3.7.
+\href{https://etcd.io/docs/v3.7/op-guide/runtime-configuration/}{官方文档}。
+
+\bibitem{consul-sessions}
+HashiCorp.
+\textit{Sessions}; \textit{Session HTTP API}.
+\href{https://developer.hashicorp.com/consul/docs/dynamic-app-config/sessions}{会话文档}；
+\href{https://developer.hashicorp.com/consul/api-docs/session}{接口文档}。
+访问日期：2026-10-18。
+
+\bibitem{consul-consistency}
+HashiCorp.
+\textit{Consistency Modes}.
+\href{https://developer.hashicorp.com/consul/api-docs/features/consistency}{官方文档}。
+访问日期：2026-10-18。
+
+\bibitem{tikv-75-storage}
+PingCAP.
+\textit{TiKV Architecture}. TiDB v7.5 Documentation.
+\href{https://docs.pingcap.com/tidb/v7.5/tidb-storage/}{固定版本官方文档}。
+
+\bibitem{tidb-75-pd}
+PingCAP.
+\textit{TiDB Architecture}; \textit{TimeStamp Oracle (TSO) in TiDB}.
+TiDB v7.5 Documentation.
+\href{https://docs.pingcap.com/tidb/v7.5/tidb-architecture/}{架构文档}；
+\href{https://docs.pingcap.com/tidb/v7.5/tso/}{TSO 文档}。
+
+\bibitem{tikv-75-scheduling}
+PingCAP.
+\textit{TiDB Scheduling}. TiDB v7.5 Documentation.
+\href{https://docs.pingcap.com/tidb/v7.5/tidb-scheduling/}{固定版本官方文档}。
+
+\bibitem{tikv-758-raftstore}
+TiKV Authors.
+\textit{TiKV v7.5.8 source}.
+\href{https://github.com/tikv/tikv/tree/v7.5.8/components/raftstore}{指定版本源码}。
+
+\bibitem{tikv-75-transactions}
+PingCAP.
+\textit{Transaction Isolation Levels}. TiDB v7.5 Documentation.
+\href{https://docs.pingcap.com/tidb/v7.5/transaction-isolation-levels/}{固定版本官方文档}。
+
+\bibitem{redis8102-source}
+Redis.
+\textit{Redis 8.10.2 release source}.
+\href{https://github.com/redis/redis/tree/8.10.2}{固定版本源码}。
+
+\bibitem{redis8102-commands}
+Redis.
+\textit{Redis command specifications}. Version 8.10.2.
+\href{https://github.com/redis/redis/tree/8.10.2/src/commands}{同版命令规格}。
+
+\bibitem{redis8102-transactions}
+Redis.
+\textit{Transactions}.
+\href{https://redis.io/docs/latest/develop/using-commands/transactions/}{官方事务说明}。
+
+\bibitem{redis8102-persistence}
+Redis.
+\textit{Redis persistence}.
+\href{https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/}{官方持久化文档}。
+
+\bibitem{redis8102-replication}
+Redis.
+\textit{Redis replication}.
+\href{https://redis.io/docs/latest/operate/oss_and_stack/management/replication/}{官方复制文档}。
+
+\bibitem{redis8102-wait}
+Redis.
+\textit{WAIT}; \textit{WAITAOF}.
+\href{https://redis.io/docs/latest/commands/wait/}{WAIT}；
+\href{https://redis.io/docs/latest/commands/waitaof/}{WAITAOF}。
+
+\bibitem{redis8102-sentinel}
+Redis.
+\textit{High availability with Redis Sentinel}.
+\href{https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/}{官方Sentinel文档}。
+
+\bibitem{redis-cluster-spec}
+Redis.
+\textit{Redis cluster specification}.
+\href{https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/}{官方Cluster规格}。
+
+\bibitem{redis8102-asm}
+Redis.
+\textit{Atomic slot migration implementation and command specification}.
+Version 8.10.2.
+\href{https://github.com/redis/redis/blob/8.10.2/src/cluster_asm.c}{ASM实现}；
+\href{https://github.com/redis/redis/blob/8.10.2/src/commands/cluster-migration.json}{命令规格}。
+
+\bibitem{memcached1645-protocol}
+Memcached.
+\textit{Memcached protocol}. Version 1.6.45.
+\href{https://github.com/memcached/memcached/blob/1.6.45/doc/protocol.txt}{固定版本协议}。
+
+\bibitem{memcache-facebook2013}
+Rajesh Nishtala, Hans Fugal, Steven Grimm, et al.
+\textit{Scaling Memcache at Facebook}.
+Proceedings of NSDI 2013, pp.\ 385--398.
+\href{https://www.usenix.org/system/files/conference/nsdi13/nsdi13-final170_update.pdf}{会议原文}。
+
+\bibitem{gfs2003}
+Sanjay Ghemawat, Howard Gobioff, and Shun-Tak Leung.
+\textit{The Google File System}.
+Proceedings of SOSP 2003, pp.\ 29--43.
+\href{https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf}{原论文}。
+
+\bibitem{hdfs342-storage}
+Apache Hadoop.
+\textit{HDFS Architecture}; \textit{HDFS User Guide}; \textit{HDFS High Availability Using the Quorum Journal Manager}.
+Version 3.4.2.
+\href{https://hadoop.apache.org/docs/r3.4.2/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html}{架构}；
+\href{https://hadoop.apache.org/docs/r3.4.2/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html}{使用语义}；
+\href{https://hadoop.apache.org/docs/r3.4.2/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html}{QJM高可用}。
+\href{https://github.com/apache/hadoop/tree/rel/release-3.4.2}{指定标签源码}.
+
+\bibitem{s3-object-api}
+Amazon Web Services.
+\textit{CompleteMultipartUpload}; \textit{Conditional writes}; \textit{Amazon S3 data consistency model}.
+\href{https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html}{完成分段上传}；
+\href{https://docs.aws.amazon.com/AmazonS3/latest/userguide/conditional-writes.html}{条件写入}；
+\href{https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#ConsistencyModel}{一致性模型}。
+
+\bibitem{spanner2012}
+James C. Corbett, Jeffrey Dean, Michael Epstein, et al.
+\textit{Spanner: Google's Globally-Distributed Database}.
+Proceedings of OSDI 2012, pp.\ 251--264.
+\href{https://www.usenix.org/system/files/conference/osdi12/osdi12-final-16.pdf}{会议原文}。
+
+\bibitem{crdb254-transactions}
+Cockroach Labs.
+\textit{Transaction Layer}; \textit{Parallel Commits}; \textit{Life of a Distributed Transaction}.
+CockroachDB v25.4 Documentation.
+\href{https://www.cockroachlabs.com/docs/v25.4/architecture/transaction-layer}{事务层}；
+\href{https://www.cockroachlabs.com/docs/v25.4/architecture/transaction-layer#parallel-commits}{并行提交}；
+\href{https://www.cockroachlabs.com/docs/v25.4/architecture/life-of-a-distributed-transaction}{分布式事务路径}。
+
+\bibitem{tidb75-commit}
+PingCAP.
+\textit{TiDB Optimistic Transaction Model}; \textit{Pessimistic Transactions};
+\textit{System Variables}. TiDB v7.5 Documentation.
+\href{https://docs.pingcap.com/tidb/v7.5/optimistic-transaction/}{基础两阶段提交}；
+\href{https://docs.pingcap.com/tidb/v7.5/pessimistic-transaction/}{悲观事务}；
+\href{https://docs.pingcap.com/tidb/v7.5/system-variables/}{路径配置}。
+
+\bibitem{farm2014}
+Aleksandar Dragojević, Dushyanth Narayanan, Orion Hodson, and Miguel Castro.
+\textit{FaRM: Fast Remote Memory}.
+Proceedings of NSDI 2014, pp.\ 401--414.
+\href{https://www.usenix.org/system/files/conference/nsdi14/nsdi14-paper-dragojevic.pdf}{会议原文}。
+
+\bibitem{farm2015}
+Aleksandar Dragojević, Dushyanth Narayanan, Edmund B. Nightingale, Matthew Renzelmann,
+Alex Shamis, Anirudh Badam, and Miguel Castro.
+\textit{No compromises: distributed transactions with consistency, availability, and performance}.
+Proceedings of SOSP 2015, pp.\ 54--70.
+\href{https://doi.org/10.1145/2815400.2815425}{doi:10.1145/2815400.2815425}。
+\href{https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/SOSP15-paper227-alternate-final-version.pdf}{作者alternate final version}。
+
+\bibitem{sagas}
+Hector Garcia-Molina and Kenneth Salem.
+\textit{Sagas}.
+Proceedings of SIGMOD 1987, pp.\ 249--259.
+\href{https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf}{原论文存档}。
+
+\bibitem{mapreduce-design}
+Jeffrey Dean and Sanjay Ghemawat.
+\textit{MapReduce: Simplified Data Processing on Large Clusters}.
+OSDI, 2004.
+\href{https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf}{原文}。
+
+\bibitem{hadoop342-mapreduce}
+Apache Hadoop.
+\textit{MapReduce Tutorial}. Version 3.4.2.
+\href{https://hadoop.apache.org/docs/r3.4.2/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html}{同版官方说明}。
+
+\bibitem{hadoop342-yarn}
+Apache Hadoop.
+\textit{Apache Hadoop YARN}. Version 3.4.2.
+\href{https://hadoop.apache.org/docs/r3.4.2/hadoop-yarn/hadoop-yarn-site/YARN.html}{同版架构说明}。
+
+\bibitem{hadoop342-committer}
+Apache Hadoop.
+\textit{FileOutputCommitter.java}. Version 3.4.2.
+\href{https://github.com/apache/hadoop/blob/rel/release-3.4.2/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapreduce/lib/output/FileOutputCommitter.java}{指定版本源码}。
+
+\bibitem{spark413-rdd}
+Apache Spark.
+\textit{RDD Programming Guide}; \textit{RDD.scala}. Version 4.1.3.
+\href{https://spark.apache.org/docs/4.1.3/rdd-programming-guide.html}{同版指南}；
+\href{https://github.com/apache/spark/blob/v4.1.3/core/src/main/scala/org/apache/spark/rdd/RDD.scala}{指定版本源码}。
+
+\bibitem{spark413-cluster}
+Apache Spark.
+\textit{Cluster Mode Overview}. Version 4.1.3.
+\href{https://spark.apache.org/docs/4.1.3/cluster-overview.html}{同版架构说明}。
+
+\bibitem{spark413-config}
+Apache Spark.
+\textit{Configuration}. Version 4.1.3.
+\href{https://spark.apache.org/docs/4.1.3/configuration.html}{同版配置说明}。
+
+\bibitem{spark413-commit}
+Apache Spark.
+\textit{OutputCommitCoordinator.scala}. Version 4.1.3.
+\href{https://github.com/apache/spark/blob/v4.1.3/core/src/main/scala/org/apache/spark/scheduler/OutputCommitCoordinator.scala}{指定版本源码}。
+
+\bibitem{ray-dynamic-design}
+Philipp Moritz, Robert Nishihara, Stephanie Wang, Alexey Tumanov,
+Richard Liaw, Eric Liang, Melih Elibol, Zongheng Yang, William Paul,
+Michael I. Jordan, and Ion Stoica.
+\textit{Ray: A Distributed Framework for Emerging AI Applications}.
+OSDI, 2018.
+\href{https://www.usenix.org/system/files/osdi18-moritz.pdf}{原文}。
+
+\bibitem{ray259-objects}
+Ray Project.
+\textit{Objects}; \textit{Object Fault Tolerance};
+\textit{Memory Management}; \textit{Object Spilling}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/tree/ray-2.59.0/doc/source/ray-core/objects}{对象文档源码}；
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/fault_tolerance/objects.rst}{对象恢复}。
+
+\bibitem{ray259-actors}
+Ray Project.
+\textit{Actors}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/actors.rst}{指定版本说明}。
+
+\bibitem{ray259-scheduling}
+Ray Project.
+\textit{Scheduling}; \textit{Resources}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/tree/ray-2.59.0/doc/source/ray-core/scheduling}{指定版本文档}。
+
+\bibitem{ray259-gcs}
+Ray Project.
+\textit{GCS Fault Tolerance}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/fault_tolerance/gcs.rst}{指定版本说明}。
+
+\bibitem{ray259-task-retry}
+Ray Project.
+\textit{Task Fault Tolerance}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/fault_tolerance/tasks.rst}{指定版本说明}。
+
+\bibitem{ray259-actor-fault}
+Ray Project.
+\textit{Actor Fault Tolerance}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/fault_tolerance/actors.rst}{指定版本说明}。
+
+\bibitem{ray259-actor-order}
+Ray Project.
+\textit{Actor Task Execution Order}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/actors/task-orders.rst}{指定版本说明}。
+
+\bibitem{ray259-actor-async}
+Ray Project.
+\textit{AsyncIO / Concurrency for Actors}. Version 2.59.0.
+\href{https://github.com/ray-project/ray/blob/ray-2.59.0/doc/source/ray-core/actors/async_api.rst}{指定版本说明}。
+
+\bibitem{lambda-event-overview}
+Amazon Web Services.
+\textit{What is AWS Lambda?}
+\href{https://docs.aws.amazon.com/lambda/latest/dg/welcome.html}{官方说明}。
+
+\bibitem{lambda-invocation}
+Amazon Web Services.
+\textit{Invoking Lambda functions synchronously};
+\textit{Handling errors and retries with asynchronous invocation}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html}{同步调用}；
+\href{https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-error-handling.html}{异步错误与重试}。
+
+\bibitem{lambda-event-source}
+Amazon Web Services.
+\textit{Lambda event source mappings}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html}{官方说明}。
+
+\bibitem{lambda-sqs-partial}
+Amazon Web Services.
+\textit{Handling errors for an SQS event source in Lambda}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/services-sqs-errorhandling.html}{官方说明}。
+
+\bibitem{lambda-container-images}
+Amazon Web Services.
+\textit{Create a Lambda Event Function using a container image}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/images-create.html}{官方说明}。
+
+\bibitem{lambda-concurrency}
+Amazon Web Services.
+\textit{Understanding Lambda Event Function scaling}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/lambda-concurrency.html}{官方说明}。
+
+\bibitem{lambda-lifecycle}
+Amazon Web Services.
+\textit{Lambda execution environment lifecycle}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html}{官方说明}。
+
+\bibitem{lambda-runtime-api}
+Amazon Web Services.
+\textit{Using the Lambda runtime API for custom runtimes}.
+\href{https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html}{官方接口说明}。
+
+\bibitem{lambda-ric-rie}
+Amazon Web Services.
+\textit{AWS Lambda Python Runtime Interface Client}, 4.2.2;
+\textit{AWS Lambda Runtime Interface Emulator}, 1.37.
+\href{https://github.com/aws/aws-lambda-python-runtime-interface-client/tree/4.2.2}{RIC}；
+\href{https://github.com/aws/aws-lambda-runtime-interface-emulator/tree/v1.37}{RIE}。
+
+\bibitem{firecracker-design}
+Alexandru Agache, Marc Brooker, Andreea Florescu, Alexandra Iordache,
+Anthony Liguori, Rolf Neugebauer, Phil Piwonka, and Diana-Maria Popa.
+\textit{Firecracker: Lightweight Virtualization for Serverless Applications}.
+NSDI, 2020.
+\href{https://www.usenix.org/system/files/nsdi20-paper-agache.pdf}{原文}。
+
+\bibitem{ch21-kafka-adoption}
+Apache Kafka. \textit{Powered By}.
+\href{https://kafka.apache.org/powered-by}{官方公开使用案例}。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-tidb-adoption}
+PingCAP. \textit{Customer Stories}.
+\href{https://www.pingcap.com/customers/}{官方客户案例}。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-licenses}
+Redis; Cockroach Labs; Apache Software Foundation.
+\textit{Redis 8.10.2 LICENSE}; \textit{CockroachDB v25.4.0 LICENSE};
+\textit{Apache License 2.0}.
+\href{https://github.com/redis/redis/blob/8.10.2/LICENSE.txt}{Redis 三种可选许可}；
+\href{https://github.com/cockroachdb/cockroach/blob/v25.4.0/LICENSE}{CockroachDB 软件许可}；
+\href{https://www.apache.org/licenses/LICENSE-2.0}{Apache 2.0}。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-dbos}
+DBOS. \textit{Python Workflows}; \textit{Steps}; \textit{Programming Guide}.
+\href{https://docs.dbos.dev/python/tutorials/workflow-tutorial}{工作流}；
+\href{https://docs.dbos.dev/python/tutorials/step-tutorial}{步骤}；
+\href{https://github.com/dbos-inc/dbos-transact-py/tree/3.3.0}{3.3.0 源码}。
+2026 年 10 月 15 日发布。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-restate}
+Restate. \textit{Architecture}; \textit{Durable Steps}; \textit{HTTP Invocation}.
+\href{https://docs.restate.dev/references/architecture}{Architecture}；
+\href{https://docs.restate.dev/develop/python/durable-steps}{持久步骤}；
+\href{https://github.com/restatedev/restate/tree/v1.8.0}{1.8.0 发行源码}。
+1.8.0 于 2026 年 10 月 14 日发布。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-libdse}
+Tianyu Li, Badrish Chandramouli, Philip A. Bernstein, Samuel Madden.
+\textit{Distributed Speculative Execution for Resilient Cloud Applications}.
+OSDI 2026, 2027--2045.
+\href{https://www.usenix.org/system/files/osdi26-li-tianyu.pdf}{正式会议论文}。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-jetpack}
+Ze Tang, Zihao Zhang, Weihai Shen, Jicheng Shi, Shuai Mu.
+\textit{Jetpack: Consensus Made Generally Fast}. OSDI 2026, 1299--1323.
+\href{https://www.usenix.org/system/files/osdi26-tang.pdf}{正式会议论文}；
+\href{https://github.com/stonysystems/jetpack/tree/jetpack}{研究实现}。访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-bodega}
+Guanzhou Hu, Andrea C. Arpaci-Dusseau, Remzi H. Arpaci-Dusseau.
+\textit{Bodega: Localized Linearizable Reads at Anywhere Anytime via Roster Leases}.
+OSDI 2026.
+\href{https://www.usenix.org/conference/osdi26/presentation/hu-guanzhou}{官方论文与资料}；
+\href{https://github.com/josehu07/summerset/tree/bodega-artifact}{Summerset 研究实现}。访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-slatedb}
+SlateDB. \textit{README}; \textit{Db API}; \textit{Manifest Store}.
+\href{https://github.com/slatedb/slatedb/tree/v0.17.0}{0.17.0 源码}。
+2026 年 9 月 29 日发布。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-s3-conditions}
+Amazon Web Services. \textit{How to prevent object overwrites with conditional writes}.
+\href{https://docs.aws.amazon.com/AmazonS3/latest/userguide/conditional-writes.html}{S3 官方文档}。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-iceberg}
+Apache Iceberg. \textit{Reliability}; \textit{Table Specification}.
+\href{https://iceberg.apache.org/docs/latest/reliability/}{1.12.0 Reliability}；
+\href{https://iceberg.apache.org/spec/}{表规范}；
+\href{https://github.com/apache/iceberg/tree/apache-iceberg-1.12.0}{1.12.0 源码}。
+2026 年 9 月 30 日发布。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-delta}
+Delta Lake. \textit{Concurrency Control}; \textit{Delta Transaction Log Protocol}.
+\href{https://docs.delta.io/concurrency-control/}{并发控制}；
+\href{https://github.com/delta-io/delta/blob/v4.4.1/PROTOCOL.md}{4.4.1 协议}。
+2026 年 10 月 5 日发布。
+访问日期：2026 年 10 月 18 日。
+
+\bibitem{ch21-langgraph}
+LangChain. \textit{Persistence}; \textit{Checkpointers}; \textit{Fault Tolerance};
+\textit{Interrupts}. LangGraph 1.2.16.
+\href{https://docs.langchain.com/oss/python/langgraph/persistence}{持久化}；
+\href{https://docs.langchain.com/oss/python/langgraph/checkpointers}{检查点}；
+\href{https://docs.langchain.com/oss/python/langgraph/fault-tolerance}{故障处理}；
+\href{https://docs.langchain.com/oss/python/langgraph/interrupts}{人工中断}。
+2026 年 10 月 16 日发布。
+访问日期：2026 年 10 月 18 日。
+
+\end{thebibliography}

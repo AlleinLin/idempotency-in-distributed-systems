@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5.2,4) {共同初态：位置 40，余额 10000，映射为空，E1 有效};
+\node[cell,minimum width=3.1cm] (a) at (0,2.8) {41 / 任期 7\\S1 首次};
+\node[cell,minimum width=3.1cm] (b) at (5.2,2.8) {42 / 任期 8\\空命令};
+\node[cell,minimum width=3.1cm] (c) at (10.4,2.8) {43 / 任期 8\\S1 同参重试};
+\draw[arr] (a)--node[above,note,text width=1.8cm,font=\scriptsize]{响应前\\原主退出}(b);\draw[arr] (b)--(c);
+\node[good,text width=4.2cm] (m) at (0,.5) {M(S1)=P1 / 原 R\\业务状态：余额 7000\\O1，D1};
+\node[good,text width=4.2cm] (r) at (10.4,.5) {读原 M(S1)\\返回 P1/O1/D1，原 7000\\当前余额保持 7000};
+\draw[arr] (a)--(m);\draw[arr] (c)--(r);
+\draw[arr] (m)--node[above,note]{跨位置恢复}(r);
+\node[note] at (5.2,-1.2) {日志位置计数：两项 S1；业务流水计数：一条 D1};
+
+\end{tikzpicture}

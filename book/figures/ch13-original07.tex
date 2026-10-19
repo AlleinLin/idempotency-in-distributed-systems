@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5,4) {共同初态：S1 未受理，计数 $(0,0)$，平台余额 10000};
+\node[warn] (a) at (0,2.5) {错误入口第一次\\计数 $(1,0)$\\C1 / pay-C1 $\to$ X1};
+\node[warn] (b) at (5,2.5) {S1 重试再建支付\\计数 $(2,0)$\\C2 / pay-C2 $\to$ X2};
+\node[warn] (c) at (10,2.5) {重复传播 $(2,0)$\\各副本稳定为 2\\两项付款已被产生};
+\draw[arr] (a)--node[above=8mm,note]{响应丢失}(b);\draw[arr] (b)--(c);
+\node[good,text width=12cm] at (5,.2) {正确入口：同 S1 恢复原 C1/pay-C1，首次分支才产生一项增量\\若仅统计重复、支付一直用 pay-C1，则分别核对统计错误与平台效果};
+
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (w) at (0,2.8) {W1：领取第 7 代旧请求\\W2：领取第 8 代接管\\都围绕原 C1/T1};
+\node[box,text width=6cm] (local) at (8,5) {购买库 C→T 事务\\按当前领取第 8 代核验进度写入};
+\node[good,text width=6cm] (report) at (8,2.8) {独立报告资源\\水位 8 与内容原子保存，拒绝代次 7};
+\node[warn,text width=6cm] (pay) at (8,.6) {支付平台\\按原范围、pay-C1、原输入合流\\两份到达恢复同一 X1};
+\draw[arr] (w.north east)--node[note,above,sloped]{领取资格}(local.west);
+\draw[arr] (w.east)--node[note,above]{资源代次}(report.west);
+\draw[arr] (w.south east)--node[note,below,sloped]{固定支付身份}(pay.west);
+\node[note,text width=13cm] at (4,-1.1) {E1 关闭后 C1/T1 继续恢复；任务换代保留原平台身份，并核对当次可能到达是否受保护};
+\end{tikzpicture}

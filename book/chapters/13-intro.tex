@@ -1,0 +1,30 @@
+\newcommand{\CThirteenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=3.4cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=Gold,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!30,densely dashed},
+    cell/.style={draw=Blue,minimum width=2.2cm,minimum height=.7cm,
+      fill=blue!3,inner sep=3pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+第十二章回收大响应以后，活动 E1 的任意键主路径还保留着 $M_{\min}$，其中保存原输入、真实购买关联及结果已退休的依据。选用外层序号适配时，双向 U 另外保护编码与完整 S 的唯一关系。只要入口继续接收任意 K，并且要准确区别哪些身份已经受理，这份区别就要有保存位置。现在换一个方向追问：如果业务只关心标签是否存在，重复写入同一标签都得到同样的集合，是否还要为每次写入永久保存一条去重记录？
+
+购买系统中有几种不同的变化。账户扣款是金额增量，订单备注是赋值，标签可以按集合合并，履约进度则取决于已经确认的业务事实。选择适合对象含义的表达，确实可能减少逐请求历史。标签可以只保留成员资格，计数器可以合并每个来源的累计值，履约查询也可以从一组已核验事实计算当前阶段。它们保存的数据不同，能够恢复的业务区别也各有来由。
+
+购买入口继续使用完整身份
+\[
+S=(account\_id,action,session\_id,idempotency\_key).
+\]
+E1 的固定截止、不可撤回关闭和缺失旧会话的拒绝规则沿用第十二章。外部购买一经受理，就由 P1/C1/T1 保存原关联，沿原平台范围与 \code{pay-C1} 核对 X1，再由 R 保存 O1、支付结果与 EV1。下面先从余额和标签的具体变化出发，逐步找出哪些重复能够由当前状态吸收，哪些区别还要交给原操作身份保存。

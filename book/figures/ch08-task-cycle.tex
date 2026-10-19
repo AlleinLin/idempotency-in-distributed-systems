@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[box,text width=2.8cm] (a) at (0,3) {A：T1 ready\\epoch 0，到期可领};
+\node[box,text width=3.2cm] (b) at (4.5,3) {领取后 leased\\本次运行身份，原 epoch 加一};
+\node[warn,text width=3.1cm] (c) at (9.2,3) {退出后保留 leased\\到期接管更换运行身份，代次再加一};
+\node[box,text width=3.2cm] (d) at (4.5,.2) {未决后重排 ready\\清 owner/until，保留代次，保存下次时刻};
+\node[good,text width=3.1cm] (e) at (9.2,.2) {可信终态 R\\C 终态与 T done 一起提交，代次加一};
+\draw[arr] (a)--(b);
+\node[note] at (2.25,4.5) {C→T 锁定};
+\draw[arr] (b)--(c);
+\node[note] at (6.9,4.5) {进程失联};
+\draw[arr] ([xshift=8mm]b.south)--([xshift=8mm]d.north);
+\node[note,text width=1.3cm] at (4.5,1.65) {核验当前\\资格};
+\draw[arr] ([xshift=-8mm]d.north)--([xshift=-8mm]b.south);
+\node[note,text width=1.5cm,anchor=east] at (3.6,1.65) {下次到期\\重新领取};
+\draw[arr] (c)--node[note,right]{结果核验}(e);
+\draw[arr] (b.south east)--(e.north west);
+\node[note,text width=11cm] at (4.6,-1.6) {租约到期触发接管条件；支付成功或固定身份最终拒绝才允许 done};
+\end{tikzpicture}

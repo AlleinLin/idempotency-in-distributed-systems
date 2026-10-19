@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {固定输入与 RDD 依赖\\丢分区可重算};
+\node[good] (b) at (4,0) {driver\\stage／partition\\提交许可};
+\node[box] (c) at (8,0) {输出后端\\提交器／文件系统\\实际保存字节};
+\node[warn,text width=8cm] (x) at (4,-2.8) {任务里的任意 HTTP／数据库副作用\\由对应业务接口及事务处理重复};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\draw[ctl] (a.south)--(0,-2.8)--(x.west);
+
+\end{tikzpicture}

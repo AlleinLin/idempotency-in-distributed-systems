@@ -1,0 +1,12 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=4.4cm] (before) at (2.5,1.5) {提交前\\\(b=7000,\ \sum a(d)=3000\)\\\(7000=10000-3000\)};
+\node[bookresult,text width=4.4cm] (after) at (8.7,1.5) {提交后\\\(b'=4000,\ \sum a(d')=6000\)\\\(4000=10000-6000\)};
+\draw[bookarrow] (before) -- (after);
+\node[booknote] at (5.6,2.7) {同一事务扣 3000};
+\node[booknote,text width=10.5cm] at (5.6,-.2) {余额减去 \(a\)，流水金额总和增加 \(a\)；\\旧余额至少为 \(a\)，所以新余额仍非负};
+\end{tikzpicture}
+\caption{成功提交同时改变余额与流水，保持同一守恒等式}
+\label{fig:ch06-conservation-step}
+\end{figure}

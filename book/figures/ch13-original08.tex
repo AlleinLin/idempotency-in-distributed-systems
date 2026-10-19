@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=10cm] (s) at (5,4) {共同初态：A、B 都有 gift};
+\node[warn] (a) at (0,2) {A 删除 gift\\本地为空\\缺失表达什么？};
+\node[box] (b) at (10,2) {B 离线\\保存旧 gift\\尚未看到删除};
+\draw[arr] (s.south)--++(0,-.3)-|(a.north);\draw[arr] (s.south)--++(0,-.3)-|(b.north);
+\node[warn,text width=10cm] (m) at (5,0) {裸并集：$\emptyset\cup\{\mathrm{gift}\}=\{\mathrm{gift}\}$\\缺少区分“未观察添加”与“已删除”的依据};
+\draw[arr] (a.south)--++(0,-.2)-|(m.north);\draw[arr] (b.south)--++(0,-.2)-|(m.north);
+
+\end{tikzpicture}

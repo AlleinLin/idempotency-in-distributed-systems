@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/旧正常视图 $v_n$,4.8/恢复协调者,9.6/新提议者／原路径}{
+\node at (\x,.35){\n};\draw[lane](\x,-.4)--(\x,-8.8);}
+\node[good,text width=2.8cm] at (0,-1){A 已快提交\\原日志尚未提交 A};
+\draw[arr](4.8,-2.4)--node[above,note]{1 BEGINRECOVERY：多数暂停}(0,-2.4);
+\draw[arr](4.8,-3.3)--node[above,note]{2 PREPARE：旧快日志／已接受集合}(0,-3.3);
+\draw[arr](0,-4.2)--node[above,note]{回复属于同一旧视图}(4.8,-4.2);
+\node[box,text width=3.2cm] at (4.8,-5.3){3 ACCEPT：多数保存\\相同恢复集合};
+\draw[arr](4.8,-6.7)--node[above,note]{4 先提交恢复集合／空 no-op}(9.6,-6.7);
+\node[good,text width=3.1cm] at (9.6,-7.8){稳定标记提交\\再接纳普通冲突命令};
+\node[note,text width=12cm] at (4.8,-9.4){连续故障视图继续恢复最后正常视图，已接受集合被后继恢复沿用。};
+\end{tikzpicture}

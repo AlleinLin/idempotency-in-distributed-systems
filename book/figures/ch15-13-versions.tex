@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[box,text width=5.4cm] (l) at (0,1.2) {旧动作 purchase.create.v1\\旧输入 local-v1\\P1／O1／D1／原 7000};
+\node[good,text width=5.4cm] (lr) at (0,-1.4) {恢复旧绑定\\本地当前余额 4000\\返回原 7000 与 O1/D1};
+\node[box,text width=5.4cm] (e) at (7,1.2) {新动作 purchase.create.external.v2\\external-v2 含 payment\_method\\新 P／C／T／固定平台键};
+\node[good,text width=5.4cm] (er) at (7,-1.4) {沿原 C 恢复外部付款\\平台余额独立初始化与核对\\该购买的支出位于平台账本};
+\draw[arr] (l)--(lr);\draw[arr] (e)--(er);
+\end{tikzpicture}

@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=2.6cm] (a1) at (0,1) {账本分区0\\读取／解析／过滤};
+\node[box,text width=2.6cm] (a2) at (0,-1) {账本分区1\\读取／解析／过滤};
+\node[good,text width=2.7cm] (s) at (4.2,0)
+ {shuffle\\按原平台身份分区\\交换并归并记录};
+\node[box,text width=2.7cm] (b1) at (8.6,1) {结果分区0\\同键比较／差异};
+\node[box,text width=2.7cm] (b2) at (8.6,-1) {结果分区1\\同键比较／差异};
+\draw[arr] (a1)--(s);\draw[arr] (a2)--(s);
+\draw[arr] (s)--(b1);\draw[arr] (s)--(b2);
+\draw[dashed,Blue] (2.1,2)--(2.1,-2);
+\draw[dashed,Blue] (6.4,2)--(6.4,-2);
+\node[note] at (0,2.5) {上游 stage};
+\node[note] at (8.6,2.5) {下游 stage};
+\node[good,text width=11cm] at (4.3,-3.1)
+ {driver：action 触发作业，按依赖组织 stage/task\\executor：计算分区并缓存；分区丢失沿依赖重算};
+\end{tikzpicture}

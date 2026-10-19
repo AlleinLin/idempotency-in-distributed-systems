@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box,minimum width=7.4cm,minimum height=4.6cm] (h) at (2,0) {};
+\node[note] at (2,1.9) {宿主 Linux：KVM／资源控制};
+\node[good,minimum width=6.4cm,minimum height=3.2cm] (v) at (2,-.2) {};
+\node[note] at (2,1) {Firecracker VMM／jailer};
+\node[box,text width=4.7cm] (g) at (2,-.4) {MicroVM 客体内核\\运行时／handler\\virtio 网络与块设备};
+\node[good] (d) at (8,-.4) {独立业务权威\\S／C／T／原结果};
+\draw[arr] (g.east)--(d.west);
+\node[note,text width=10.5cm] at (4,-3.5) {隔离边界限制执行域；业务提交、原身份和外部效果在对应保存域关联。};
+
+\end{tikzpicture}

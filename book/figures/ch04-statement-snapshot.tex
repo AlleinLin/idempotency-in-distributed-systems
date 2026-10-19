@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4.7cm] (snap) at (3,0) {B 的语句开始\\快照中没有未提交的 P1};
+\node[booknode,text width=4.7cm] (ins) at (11,0) {WITH 内插入同一 S\\唯一性检查等待 A};
+\draw[bookarrow] (snap)--(ins);
+\node[bookresult,text width=4.7cm] (commit) at (3,-1.7) {A 在等待期间提交 P1\\唯一检查据此判断冲突};
+\node[booknode,text width=4.7cm] (skip) at (11,-1.7) {插入被跳过\\inserted 为空};
+\draw[bookarrow] (ins.south)--(skip.north);
+\draw[bookalert] (commit)--(skip);
+\node[booknode,text width=4.7cm] (select) at (3,-3.4) {同语句 SELECT 沿用旧快照\\已有行查询也为空};
+\node[booknode,text width=4.7cm] (next) at (11,-3.4) {B 发出下一条 SELECT\\新快照读到 P1};
+\draw[bookarrow] (skip.south)--++(0,-.4)-|(select.north);
+\draw[bookarrow] (select)--node[above,font=\footnotesize]{新语句}(next);
+\node[booknote,text width=13cm] at (7,-4.8) {唯一检查可以等待事务结局；本条普通 SELECT 的快照在等待后保持不变};
+\end{tikzpicture}
+\caption{同一语句可能因刚提交的行放弃插入，却读不到那条行。}
+\label{fig:ch04-statement-snapshot}
+\end{figure}

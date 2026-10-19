@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=4.7cm] (src) at (0,5.2) {补发的源端先决条件（第九章）\\停旧 R、排空并登记旧成功 cohort\\补齐原事实事件，再开放新 R};
+\node[box,text width=4.7cm] (dst) at (6.5,5.2) {消费端屏障（本章）\\停旧消费者，排空／约束旧在途效果\\登记 O 对应的原履约事实};
+\node[good,text width=3.7cm] (known) at (-.5,1.2) {旧 F 已知\\导入原 F 及效果输入\\保存原迁移依据};
+\node[warn,text width=3.7cm] (unknown) at (4.3,1.2) {旧执行不明\\授权行置 hold＋持久核查\\阻止自动新建 F};
+\node[good,text width=3.7cm] (none) at (9.1,1.2) {确证尚无旧效果\\旧在途已关闭／受同身份保护\\允许沿原 B 建 F};
+\draw[arr] (dst.south)--(6.5,3.3)--(-.5,3.3)--(known.north);
+\draw[arr] (dst.south)--(6.5,3.3)--(4.3,3.3)--(unknown.north);
+\draw[arr] (dst.south)--(6.5,3.3)--(9.1,3.3)--(none.north);
+\node[box,text width=12.5cm] at (4.3,-1.6) {屏障完成后：旧通知无 event\_id 与补建 EV1 都映射同一 B=(O1,initial,initial:O1)\\接收记录可以有两份；原 F 只有一份。未知项须有据恢复原 F 或关闭旧资格后续做};
+
+\end{tikzpicture}
+

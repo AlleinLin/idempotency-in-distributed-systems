@@ -1,0 +1,33 @@
+\begin{tikzpicture}[
+  box/.style={draw=Ink!50,fill=Paper,rounded corners=2pt,
+    text width=3.5cm,minimum height=1.12cm,align=center,inner sep=5pt,
+    font=\sffamily\fontsize{9}{12}\selectfont},
+  authority/.style={box,draw=Accent!75,fill=Accent!7},
+  support/.style={box,fill=Ink!4,minimum height=1.05cm},
+  arr/.style={-{Stealth[length=1.8mm]},draw=Ink,line width=.7pt},
+  evidence/.style={arr,dashed,draw=Muted},
+  tag/.style={font=\sffamily\fontsize{8}{10}\selectfont,
+    text=Muted,fill=white,inner sep=2pt,align=center}
+]
+\node[box] (entry) at (0,0) {购买与查询入口\\用户意图、身份与授权};
+\node[authority] (purchase) at (5.0,0) {购买权威\\受理、原结果与未决责任};
+\node[authority] (platform) at (10.0,0) {支付平台\\收款、退款与外部账本};
+\node[box] (query) at (5.0,2.45) {查询投影与缓存\\原结果与当前进度的观察};
+\node[support] (control) at (10.0,2.45) {控制面\\归属、成员与执行资格};
+\node[authority] (inventory) at (0,-2.65) {库存分区\\资源占用与联合决定};
+\node[box] (message) at (5.0,-2.65) {消息域\\事件保存、传输与位置};
+\node[authority] (fulfill) at (10.0,-2.65) {履约与发运\\本地接受、外部发货};
+\draw[arr] (entry)--node[tag,above=8mm]{受理与恢复}(purchase);
+\draw[arr] (purchase)--node[tag,above=8mm]{原付款／退款身份}(platform);
+\draw[arr] (purchase.south west)--node[tag,sloped,above]{资源资格}(inventory.north east);
+\draw[arr] (purchase)--node[tag,right]{已保存事件}(message);
+\draw[arr] (message)--node[tag,above=8mm]{交付与接受}(fulfill);
+\draw[evidence] (purchase)--node[tag,right]{派生观察}(query);
+\draw[evidence] (entry.north) |- node[tag,pos=.75,above]{读取观察} (query.west);
+\draw[evidence] (control.south west)--node[tag,sloped,above]{位置与资格}(purchase.north east);
+\draw[evidence] (fulfill.south) -- ++(0,-.8) -|
+  node[tag,pos=.25,below]{持久交接回执} (purchase.south east);
+\node[support] at (0,-5.15) {完整图像与归档\\保存恢复材料和来源};
+\node[support] at (5.0,-5.15) {任务与持久执行\\调度工作者、保存执行位置};
+\node[support] at (10.0,-5.15) {部署、容量与运维\\故障隔离和恢复预算};
+\end{tikzpicture}

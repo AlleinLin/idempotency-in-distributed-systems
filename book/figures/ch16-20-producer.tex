@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.8cm] (p) at (0,1.2) {生产者 A 原批次\\PID=41／epoch=0／seq=0\\载荷 EV:b1:1};
+\node[good,text width=4cm] (l) at (5.4,1.2) {broker 已追加 offset 0\\保存生产批次元数据\\响应在网络丢失};
+\node[box,text width=3.8cm] (retry) at (0,-1.4) {A 协议重试同批次\\仍为 41／0／0};
+\node[good,text width=4cm] (dup) at (5.4,-1.4) {识别原批次\\返回原 offset 0};
+\node[box,text width=3.8cm] (new) at (0,-4) {普通新进程 B\\新 PID=52／seq=0\\再次发送同 EV:b1:1};
+\node[warn,text width=4cm] (other) at (5.4,-4) {新的协议发送\\可追加至 offset 1\\消费库按 EV／I-B 恢复原 F};
+\draw[arr] (p)--(l);\draw[arr] (retry)--(dup);\draw[arr] (new)--(other);
+\draw[ctl] (l)--(dup);
+\end{tikzpicture}

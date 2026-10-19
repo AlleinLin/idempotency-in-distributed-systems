@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/入口 A,3.3/G1 主 A,6.6/G2 主 B,9.9/G3 主 C,13.2/支付平台}{
+  \node[font=\small\bfseries] at (\x,0){\n};\draw[lane](\x,-.4)--(\x,-9.5);}
+\draw[arr](0,-.9)--node[above,note]{1 保存 S 和原输入}(3.3,-.9);
+\node[good,text width=2.6cm] at (3.3,-1.8){$A_J$：P/C/T\\付款 blocked};
+\draw[arr](3.3,-2.95)--node[above,note]{2 原 TX：prepare}(6.6,-2.95);
+\draw[arr](3.3,-3.65)--node[above,note]{并行预留另一 SKU}(9.9,-3.65);
+\draw[arr](6.6,-4.2)--(3.3,-4.2);
+\draw[arr](9.9,-4.7)--node[below,note]{持久 yes}(3.3,-4.7);
+\node[good,text width=2.6cm] at (3.3,-5.5){3 持久 commit};
+\draw[arr](3.3,-6.25)--node[above,note]{4 finish 原决定}(9.9,-6.25);
+\draw[arr](6.6,-6.95)--(3.3,-6.95);
+\draw[arr](9.9,-7.5)--node[below,note]{全部完成；G1 保存 ready}(3.3,-7.5);
+\draw[arr](3.3,-8.35)--node[above,note]{5 原 scope／pay-C：3000 分}(13.2,-8.35);
+\draw[arr](13.2,-9.1)--node[above,note]{6 原 X1；G1 保存 $R_J$/O/EV}(3.3,-9.1);
+\node[note,text width=13cm] at (6.6,-10.2){每个业务组先满足自己的多数；消息、消费与实际履约沿 EV 接续。};
+\end{tikzpicture}

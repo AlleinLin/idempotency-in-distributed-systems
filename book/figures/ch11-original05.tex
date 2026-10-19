@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5.3,4.5) {共同已应用前缀到 39；N1/N2 在 40 保存同一任期 6 项\\N3 的位置 40 为任期 5 的未提交冲突项};
+\foreach \x/\n in {3/39,5.3/40,7.6/41}{\node[note] at (\x,3.6) {位置 \n};}
+\node at (0,2.7) {领导者 N1};
+\node[cell] at (3,2.7) {任期 5};
+\node[cell,fill=green!6] at (5.3,2.7) {任期 6};
+\node[cell,fill=green!6] at (7.6,2.7) {任期 7：S1};
+\node at (0,1.5) {跟随者 N3};
+\node[cell] at (3,1.5) {任期 5};
+\node[cell,fill=orange!12] at (5.3,1.5) {任期 5：冲突};
+\node[cell] at (7.6,1.5) {空};
+\node[warn,text width=4.1cm] at (11,2.1) {prev=(40,6) 不匹配\\拒绝直接接入 41};
+\node at (0,-.1) {修复后 N3};
+\node[cell] at (3,-.1) {任期 5};
+\node[cell,fill=green!6] at (5.3,-.1) {任期 6};
+\node[cell,fill=green!6] at (7.6,-.1) {任期 7：S1};
+\draw[arr] (3,.95)--(3,.3);
+\draw[arr] (5.3,.95)--(5.3,.3);
+\draw[arr] (7.6,.95)--(7.6,.3);
+\node[note,text width=13cm] at (5.3,-1.4) {先找到共同位置 39，再替换未提交的冲突后缀；前驱检查同时比较位置与任期};
+
+\end{tikzpicture}

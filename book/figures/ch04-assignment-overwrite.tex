@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.7cm] (a) at (2,0) {S1 写固定值 7000\\10000 → 7000};
+\node[booknode,text width=3.7cm] (g) at (7,0) {S2 合法扣 1000\\7000 → 6000};
+\node[bookresult,text width=3.7cm] (aa) at (12,0) {S1 重试再写 7000\\6000 → 7000};
+\draw[bookarrow] (a)--(g);\draw[bookalert] (g)--(aa);
+\node[booknode,text width=3.7cm] (d1) at (2,-1.9) {D1：扣 3000};
+\node[booknode,text width=3.7cm] (d2) at (7,-1.9) {D2：扣 1000};
+\node[bookresult,text width=3.7cm] (bad) at (12,-1.9) {D2 仍在\\余额中的变化被覆盖};
+\draw[bookarrow] (a)--(d1);\draw[bookarrow] (g)--(d2);\draw[bookalert] (aa)--(bad);
+\node[booknote,text width=13cm] at (7,-3.2) {流水核对要求 $10000-3000-1000=6000$；实际余额 7000，相差 1000};
+\end{tikzpicture}
+\caption{连续重复的固定赋值，在另一项交易插入后会覆盖已提交的资金变化。}
+\label{fig:ch04-assignment-overwrite}
+\end{figure}

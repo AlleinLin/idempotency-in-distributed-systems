@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=11.5cm] (zero) at (7,0) {初始余额 2000；A 申请扣 3000\\WHERE 已经不满足，UPDATE 返回零行，可能未锁账户};
+\node[booknode,text width=4.8cm] (down) at (3,-1.9) {其他资金动作只有购买扣款\\余额只会不变或降低};
+\node[bookresult,text width=4.8cm] (up) at (11,-1.9) {若增加并发充值\\2000 可在 A 提交前升至 6000};
+\draw[bookarrow] (zero.south west)--(down.north);
+\draw[bookalert] (zero.south east)--(up.north);
+\node[booknode,text width=4.8cm] (keep) at (3,-3.8) {原余额不足判断\\在稍后提交时仍然成立};
+\node[bookresult,text width=4.8cm] (order) at (11,-3.8) {若要求统一以提交排序\\需补充锁定或其他排序依据};
+\draw[bookarrow] (down)--(keep);\draw[bookalert] (up)--(order);
+\end{tikzpicture}
+\caption{零行结果的后续有效性，取决于允许哪些并发资金动作。}
+\label{fig:ch04-zero-row-boundary}
+\end{figure}

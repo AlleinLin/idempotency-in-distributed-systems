@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=5.1cm] at (0,4.2) {单节点：条件释放保护当前键};
+\node[box,text width=5.1cm] at (7,4.2) {异步复制：提升时可能缺少旧键};
+\node[box,text width=5.1cm] (a1) at (0,2.5) {初态无键，W1 写入 $r_1$\\SET NX PX 成功};
+\node[box,text width=5.1cm] (a2) at (0,.8) {到期后 W2 写入 $r_2$\\W1 从长暂停恢复};
+\node[good,text width=5.1cm] (a3) at (0,-1) {W1 条件删除：$r_1\ne r_2$\\保留 W2 的键};
+\node[box,text width=5.1cm] (b1) at (7,2.5) {主 M 确认 W1 的 $r_1$\\副本 N 尚未收到};
+\node[warn,text width=5.1cm] (b2) at (7,.8) {M 退出，N 提升\\N 本地没有该键};
+\node[warn,text width=5.1cm] (b3) at (7,-1) {N 接受 W2 的 $r_2$\\两位客户端各有成功确认};
+\foreach \a/\b in {a1/a2,a2/a3,b1/b2,b2/b3} \draw[arr] (\a)--(\b);
+\draw[lane] (3.5,4.9)--(3.5,-2);
+\end{tikzpicture}

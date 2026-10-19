@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box](i) at (0,0){业务入口\\完整 S 与原输入};
+\node[good,text width=4.3cm](db) at (5,0){分布式 SQL 权威\\S 唯一约束／C/T／$R_J$／O/EV};
+\node[box](cache) at (10,0){Redis 查询投影\\带版本的派生观察};
+\draw[arr](i)--node[above,note]{受理}(db);\draw[ctl](db)--(cache);
+\node[box](w) at (0,-2.5){付款工作者\\短事务领取代次};
+\node[warn](p) at (5,-2.5){独立平台\\原 scope／pay-C};
+\node[box](relay) at (10,-2.5){Outbox 发布器\\按原 EV 恢复};
+\draw[arr](db)--(w);\draw[arr](w)--(p);\draw[arr](p)--node[right,note]{可信回填}(db);
+\draw[arr](db)--(relay);
+\node[box](mq) at (10,-5){Kafka 或 RabbitMQ\\独立交付责任};
+\node[good,text width=4cm](cons) at (5,-5){消费数据库事务\\I／B／F／dispatch 意图};
+\node[warn](ext) at (0,-5){外部发运平台\\原 dispatch 身份};
+\draw[arr](relay)--(mq);\draw[arr](mq)--(cons);\draw[arr](cons)--(ext);
+\node[note,text width=11cm] at (5,-6.6){数据库内部复制与事务承接表约束；HTTP、消息与发运跨越独立保存域。};
+\end{tikzpicture}

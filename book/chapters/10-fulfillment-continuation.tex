@@ -1,0 +1,15 @@
+\subsection*{履约回报与实际发货怎样继续}
+
+先把 RabbitMQ 主线继续到购买库：Q 中的回报待办使另一发布器持续发送 \code{fulfillment.\allowbreak accepted}。购买服务收到回报，按报告身份、O1 与 F1 核对原归属。随后它在购买库自己的事务中保存接收记录，并共同更新 \code{orders} 表中的履约进度字段 \code{fulfillment\_state}。回报确认丢失，重复接收恢复同一迁移。此时两库最终可以达成相应进度。购买库状态变化发生在它自己的消费事务中，履约库 Q 先保存回报待办，为这次迁移提供持续输入。
+
+第 7.4 节的订单结构只允许 \code{unfulfilled}。启用本节回报入口以前，先显式扩展检查约束，增加“履约库已受理”的阶段。受控入口验证回报后，才把该订单推进为 \code{fulfillment\_accepted}，重复回报读取原接收结果。这个阶段证明 F 已建立，发货事实由后面的独立步骤确定。
+
+\begin{BookCode}
+ALTER TABLE orders DROP CONSTRAINT orders_fulfillment_state_check;
+ALTER TABLE orders ADD CONSTRAINT orders_fulfillment_state_check
+  CHECK (fulfillment_state IN ('unfulfilled','fulfillment_accepted'));
+\end{BookCode}
+
+实际发货再跨到仓储或承运商。如果先保存 I.done，再去调用发货，调用以前退出就会留下建单成功、尚未发货。如果先发货，返回结果丢失以后重试，也可能重复外部动作。F 的存在为调度提供持久起点，发货操作保存自己的 dispatch 身份、原输入、固定下游身份、尝试和结果证据。
+
+下游支持稳定操作身份及结果查询时，调度者按原 dispatch 身份恢复，沿第七、八章的规则处理未知结局与接管。消费重投或租约换代以后，调度者从原映射取得同一发货键。下游只有可能重复生效的调用、又没有足够排他和查询证据时，未知结果进入持久核查。初次建单的不变量在 Q 内成立，外部包裹次数则依据仓储或承运商实际执行的规则判断。

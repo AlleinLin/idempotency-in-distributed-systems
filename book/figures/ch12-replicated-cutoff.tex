@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node[box,text width=4.3cm] (o) at (1,4.5) {有权排序者\\可信上界早于 $t_{\rm deadline}$\\记录资格依据};
+\node[cell,text width=2.8cm] (a) at (6,4.5) {位置 51：ACCEPT\\原 S、原输入、时间};
+\node[cell,text width=2.8cm] (c) at (10.2,4.5) {位置 52：CLOSE E1\\关闭决定不可撤回};
+\draw[arr] (o)--(a);\draw[arr] (a)--(c);
+\foreach \y/\name in {2.8/N1,1.6/N2,.4/N3}{
+ \node[note,anchor=east] at (1,\y) {\name};
+ \node[cell,text width=3.2cm] (n\name) at (5,\y) {51：原依据决定受理};
+ \node[cell,text width=3.2cm] (c\name) at (10,\y) {52：关闭旧入口};
+ \draw[arr] (n\name)--(c\name);
+}
+\draw[arr] (a.south)--(6,3.35);
+\draw[arr] (c.south)--(10.2,3.35);
+\node[note,text width=13cm] at (6,-.8) {新来件已过 $t_{\rm deadline}$ → 排序入口拒绝；新领导者先恢复共同前缀与判期进度，再取得可信时间};
+\end{tikzpicture}

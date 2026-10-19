@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[font=\bfseries] at (0,1){闭包完成：可以越过 Barrier};
+\node[font=\bfseries] at (8,1){库存丢失：沿依赖回滚};
+\node[good,text width=2.5cm](i) at (0,-.5){$I^7_4$ 已持久\\预留 SKU-A};
+\node[good,text width=2.5cm](o) at (0,-2.5){$O^7_4$ 已持久\\付款控制分支};
+\draw[arr](o)--node[right,note]{依赖}(i);
+\draw[green!40!black,dashed,rounded corners](-1.8,.3)rectangle(1.8,-3.3);
+\node[good,text width=3cm](bar) at (0,-4.7){Barrier 通过\\原 C 发送付款};
+\draw[arr](o)--(bar);
+\node[warn,text width=2.5cm](lost) at (8,-.5){$I^7_4$ 易失并丢失\\I 恢复到计数 3};
+\node[warn,text width=2.5cm](bad) at (8,-2.5){$O^7_4$ 指向丢失状态\\回滚控制分支};
+\draw[arr,red!65!black](bad)--(lost);
+\node[box,text width=3.4cm](rec) at (8,-4.7){持久故障序号 8 与动作\\重建闭包后继续};
+\draw[arr](bad)--(rec);
+\node[note,text width=12cm] at (4,-6.2){边表示恢复依赖；本对象落盘以后，也要等待全部传递依赖可恢复。\\同一故障序号内接收消息，旧序号消息丢弃，较新消息延后。};
+\end{tikzpicture}

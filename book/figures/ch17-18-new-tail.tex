@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/旧尾 T,5/新尾 N,10/配置管理者}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.4)--(\x,-5.3);}
+\draw[arr] (0,-1)--node[above,note]{复制状态图像至 $k$} (5,-1);
+\node[box,text width=2.9cm] at (0,-2.1) {继续服务\\记录图像后增量};
+\draw[arr] (0,-3.2)--node[above,note]{停止尾服务，补齐最后后缀} (5,-3.2);
+\draw[arr] (5,-4.05)--node[above,note]{已接齐} (10,-4.05);
+\draw[ctl] (10,-4.85)--node[above,note]{发布 N 为新尾；查询与完成响应转向 N} (5,-4.85);
+\end{tikzpicture}

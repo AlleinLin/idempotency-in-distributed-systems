@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote,text width=13cm] at (7,.45) {只看整数余额：$a(b)=7000$，$d(b)=b-3000$，$g(b)=b-1000$};
+\node[booknode,text width=4.8cm] (ag) at (3,-.7) {先 $g$ 后 $a$\\$a(g(10000))=7000$};
+\node[bookresult,text width=4.8cm] (ga) at (11,-.7) {先 $a$ 后 $g$\\$g(a(10000))=6000$};
+\draw[bookalert] (ag)--node[above,font=\footnotesize]{不同}(ga);
+\node[booknode,text width=4.8cm] (dg) at (3,-2.5) {先 $d$ 后 $g$\\$g(d(10000))=6000$};
+\node[booknode,text width=4.8cm] (gd) at (11,-2.5) {先 $g$ 后 $d$\\$d(g(10000))=6000$};
+\draw[bookarrow] (dg)--node[above,font=\footnotesize]{相同}(gd);
+\node[booknote,text width=13cm] at (7,-4) {加入余额条件、订单和当次余额后，需要在扩展后的状态范围重新比较};
+\end{tikzpicture}
+\caption{固定赋值可以幂等而不与扣款交换，纯减法可以交换而不幂等。}
+\label{fig:ch04-commutativity}
+\end{figure}

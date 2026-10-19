@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[note,text width=12cm] at (5,4.4) {仅画来源 A 的累计分量 $(p_A,n_A)$；其余来源分量均为 0};
+\node[box,text width=3cm] (a) at (0,2.6) {尚无收款、退款\\$(0,0)$\\净收款 0};
+\node[box,text width=3cm] (b) at (5,2.6) {确认收款 3000\\$(3000,0)$\\净收款 3000};
+\node[good,text width=3cm] (c) at (10,2.6) {确认退款 1000\\$(3000,1000)$\\净收款 2000};
+\draw[arr] (a)--node[note,above]{增加 $p_A$}(b);
+\draw[arr] (b)--node[note,above]{增加 $n_A$}(c);
+\node[good,text width=11cm] at (5,.4) {信息顺序：$(0,0)\preceq(3000,0)\preceq(3000,1000)$\\显示值：$0\to3000\to2000$，由两个分量相减得到};
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=10cm] (s) at (5,4) {共同初态：余额 3000，尚无支出；网络分区};
+\node[warn] (a) at (0,2) {A 看到余额 3000\\接受购买 2000\\本地余 1000};
+\node[warn] (b) at (10,2) {B 看到余额 3000\\接受另一购买 2000\\本地余 1000};
+\draw[arr] (s.south)--++(0,-.3)-|(a.north);
+\draw[arr] (s.south)--++(0,-.3)-|(b.north);
+\node[warn,text width=10cm] (m) at (5,0) {完整汇总两项支出：$3000-2000-2000=-1000$\\不同副本可以收敛到同一负数};
+\draw[arr] (a.south)--++(0,-.3)-|(m.north);\draw[arr] (b.south)--++(0,-.3)-|(m.north);
+
+\end{tikzpicture}

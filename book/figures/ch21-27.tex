@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+\node[font=\bfseries] at (0,1){Iceberg};
+\node[good](cat) at (0,0){Catalog 原子指针\\M7→M8→M9};
+\node[box](snap) at (0,-1.8){表元数据／快照\\manifest list};
+\node[cell](m1) at (-1.8,-3.4){manifest};
+\node[cell](m2) at (1.8,-3.4){manifest};
+\node[cell](d) at (-1.8,-4.8){D：整理结果};
+\node[cell](c) at (1.8,-4.8){C：新追加};
+\draw[arr](cat)--(snap);\draw[arr](snap)--(m1);\draw[arr](snap)--(m2);
+\draw[arr](m1)--(d);\draw[arr](m2)--(c);
+\node[font=\bfseries] at (8,1){Delta Lake};
+\node[good,text width=4.3cm](log) at (8,0){事务日志版本 7→8→9\\按协议提交新版本};
+\node[box,text width=4.3cm](act) at (8,-2.1){v8：remove A、B＋add D\\v9：add C};
+\node[box,text width=4.3cm](files) at (8,-4.2){快照引用的有效文件\\对象存储中的 C、D};
+\draw[arr](log)--(act);\draw[arr](act)--(files);
+\node[warn,text width=11cm] at (4,-6.2){作业 J1：来源 b1／截止 L9000／批次 ID／数据摘要／目标提交关联\\表级提交组织可见性，来源身份组织业务重跑。};
+\end{tikzpicture}

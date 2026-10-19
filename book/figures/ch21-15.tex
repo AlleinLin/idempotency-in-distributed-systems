@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (c) at (0,0) {客户端命令 A};
+\node[good] (f) at (4,1.4) {快路径\\同视图／无冲突\\快确认集合＋提议者};
+\node[box] (o) at (4,-1.4) {原共识路径\\持续提交／处理冲突};
+\node[good] (v) at (8,0) {正常有效完成\\原协议落实顺序\\按确定顺序应用};
+\node[warn,text width=8cm] (r) at (4,-4) {视图变化：暂停旧快路径／仲裁恢复集合\\原路径提交恢复集合与标记后恢复提议，见图~\ref{fig:ch21-jetpack-recovery}};
+\draw[arr] (c)--(f);\draw[arr] (c)--(o);\draw[arr] (f)--(v);\draw[arr] (o)--(v);
+\draw[ctl] (o.south)--node[right,note]{换主或视图变化}(r.north);
+\node[note,text width=11cm] at (4,-5.7) {三副本快路径需3个确认；普通多数需2个。客户端只计同一视图的快确认。};
+
+\end{tikzpicture}

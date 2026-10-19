@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[warn,text width=4cm] (a) at (0,1) {地域 A：只有一个副本\\旧缓存：路由第 8 代／open\\无法提交新 $A_J$};
+\node[good,text width=4cm] (bc) at (7,1) {地域 B/C：两个投票副本\\恢复已提交前缀\\冻结后授予路由第 9 代};
+\draw[lane,very thick] (3.4,-1.1)--(3.4,1.9);
+\node[note] at (3.4,2.2) {网络分区};
+\node[box,text width=4cm] (b) at (7,-1.1) {B 本地投影可能落后\\J 已有 S1→C1\\先补原投影再解释空查询};
+\draw[arr] (bc)--(b);
+\node[note,text width=4cm] at (0,-1.1) {已提交的原 C 可按有效的\\外部规则恢复\\未提交候选不触发付款};
+
+\end{tikzpicture}

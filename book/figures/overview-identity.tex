@@ -1,0 +1,27 @@
+\begin{tikzpicture}[
+  box/.style={draw=Ink!45,fill=Paper,rounded corners=2pt,
+    text width=3.3cm,minimum height=1.05cm,align=center,inner sep=5pt,
+    font=\sffamily\fontsize{9}{12}\selectfont},
+  original/.style={box,draw=Accent!75,fill=Accent!7},
+  arr/.style={-{Stealth[length=1.8mm]},draw=Ink,line width=.7pt},
+  note/.style={font=\sffamily\fontsize{8}{11}\selectfont,
+    text=Muted,align=center,text width=3.4cm}
+]
+\node[box] (a1) at (0,0) {尝试一\\提交以后响应丢失};
+\node[box] (a2) at (0,-1.65) {尝试二\\携带原身份与原输入};
+\node[box] (a3) at (0,-3.3) {后续恢复\\更换进程或连接};
+\node[original,text width=3.8cm,minimum height=3.0cm] (decision) at (5,-1.65)
+  {同一购买的仲裁位置\\[3pt]原身份绑定原输入\\共同保存业务效果\\保存实际编号与原结果};
+\node[original] (result) at (10,0) {原购买结果\\扣款后余额 7000 分};
+\node[box] (current) at (10,-3.3) {当前账户查询\\另支出后余额 6000 分};
+\draw[arr] (a1.east)--(decision.north west);
+\draw[arr] (a2)--(decision);
+\draw[arr] (a3.east)--(decision.south west);
+\draw[arr] (decision.north east)--(result.west);
+\draw[arr] (decision.south east)--(current.west);
+\node[note] at (0,1.35) {用户只确认一次购买\\多次通信尝试继续引用它};
+\node[note] at (5,-4.25) {独立初态 10000 分\\本次购买扣款 3000 分};
+\node[box,minimum height=.75cm] (later) at (10,-1.65)
+  {另一合法支出 1000 分};
+\draw[arr,draw=Muted] (later.south)--(current.north);
+\end{tikzpicture}

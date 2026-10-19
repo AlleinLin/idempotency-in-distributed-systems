@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (a) at (0,1.5) {节点A\\墙钟125\\发送HLC＝(125,2)};
+\node[box,text width=3.4cm] (b) at (5,1.5) {节点B\\墙钟120\\本地HLC＝(120,1)};
+\draw[arr] (a)--node[above,note]{消息} (b);
+\node[good,text width=4.9cm] (advance) at (5,-1.2) {B接收后推进为(125,3)\\后续事件排在已观察事件之后};
+\draw[arr] (b)--(advance);
+\node[note,text width=3.7cm] at (0,-1.2) {数值为示意\\$(p,l)$分别为\\物理和逻辑分量};
+\node[warn,text width=10cm] at (2.5,-3.4) {HLC提供传播和版本排序；墙钟偏差由同步、最大偏移与自检约束。\\它没有向调用方返回保证包含真实时间的区间。};
+\end{tikzpicture}

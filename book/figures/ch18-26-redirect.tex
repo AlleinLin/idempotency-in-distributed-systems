@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=4cm] (state) at (0,0)
+  {同槽迁移中\\A有pending，B有accepted\\正式归属暂为A};
+\node[box,text width=3.7cm] (one) at (5,1.8)
+  {请求只读accepted\\A缺该键};
+\node[warn,text width=3.7cm] (two) at (5,-1.8)
+  {请求同时访问两键\\A仅有其中一个};
+\node[good,text width=4cm] (ask) at (10,1.8)
+  {ASK到B\\同一连接：\\\mbox{ASKING} → 原命令};
+\node[warn,text width=4cm] (retry) at (10,-1.8)
+  {TRYAGAIN\\保留原输入并退避重试};
+\draw[arr] (state)--(one);\draw[arr] (state)--(two);
+\draw[arr] (one)--(ask);\draw[arr] (two)--(retry);
+\node[note,text width=12cm] at (5,-3.8)
+  {迁槽完成、正式归属变为B以后，旧路由得到MOVED并更新长期槽表。};
+\end{tikzpicture}

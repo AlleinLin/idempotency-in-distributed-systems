@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\foreach \y/\l/\a/\p/\c in {0/初始/4/0/0,-1.3/prepare/3/1/0,-2.6/commit/3/0/1}{
+ \node[note] at (-1.8,\y) {\l};
+ \node[cell] at (0,\y) {可用 A＝\a};
+ \node[cell] at (3,\y) {准备 $P_{\rm inv}$＝\p};
+ \node[cell] at (6,\y) {提交 $C_{\rm inv}$＝\c};
+ \node[note] at (8.3,\y) {合计4};}
+\draw[arr] (1.1,-.35)--(2,-.95);
+\draw[arr] (4.1,-1.65)--(5,-2.25);
+\node[warn,text width=9cm] at (3,-4.3) {若prepare后决定abort：$A=4$，$P_{\rm inv}=0$，$C_{\rm inv}=0$\\重复abort返回原终态，只释放原占用一次};
+
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (parts) at (0,0) {同一 upload\_id\\part 1／2／3\\各自上传};
+\node[box] (complete) at (4,0) {Complete\\有序部分列表\\解析完整响应};
+\node[good] (object) at (8,0) {完整对象\\长度／摘要核对};
+\node[good,text width=7.3cm] (pointer) at (4,-2.7) {manifest 引用确切对象版本\\发布入口按 If-Match 等条件更新};
+\draw[arr] (parts)--(complete);\draw[arr] (complete)--(object);
+\draw[arr] (object.south)--(8,-2.7)--(pointer.east);
+
+\end{tikzpicture}

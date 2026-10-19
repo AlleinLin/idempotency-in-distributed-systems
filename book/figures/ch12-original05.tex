@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=12cm] (p) at (5,4.1) {按完整 S 找到 P：已受理事实与原输入};
+\node[good] (a) at (0,1.9) {本地或外部成功\\有 O1 和原结果\\外部 C1 有成功证据};
+\node[box] (b) at (5,1.9) {稳定业务拒绝\\有原拒绝及输入绑定\\没有 O1};
+\node[warn] (c) at (10,1.9) {外部未决\\已有 C1/T1\\尚未有 O1};
+\draw[arr] (p.south)--++(0,-.35)-|(a.north);
+\draw[arr] (p)--(b);
+\draw[arr] (p.south)--++(0,-.35)-|(c.north);
+\node[note,text width=14cm] at (5,.1) {只搜索订单会漏掉拒绝与未决身份；移除 M 以前，接替依据覆盖全部已受理结局};
+\end{tikzpicture}

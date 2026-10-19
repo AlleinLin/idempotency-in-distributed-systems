@@ -1,0 +1,12 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[bookresult,text width=4.5cm] (first) at (2.6,2.1) {1、2、3 S1 取得、准备、提交\\商品 paper-001，Q7，3000\\原购买 P1 属于 S1};
+\node[booknode,text width=4.5cm] (second) at (8.6,2.1) {4. S2 使用相同输入进入\\错误按输入查找，返回 P1\\第二项确认被误合并};
+\draw[bookalert] (first) -- (second);
+\node[booknote] at (5.6,3.4) {错误按输入归组};
+\node[booknote,text width=10.5cm] at (5.6,-.1) {正确恢复以完整 S 定位；输入比较用于核对该 S 的旧绑定\\新的 S2 应独立进入账户条件判断};
+\end{tikzpicture}
+\caption{按输入去重的四步反例吞掉不同身份的第二项购买}
+\label{fig:ch06-input-dedupe}
+\end{figure}

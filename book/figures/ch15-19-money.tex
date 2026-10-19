@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[note,font=\bfseries\small\sffamily] at (2.8,2) {平台实际余额};
+\node[note,font=\bfseries\small\sffamily] at (9.5,2) {J 中的额度占用};
+\node[good,text width=5cm] (l) at (2.8,.65) {初始 10000－收款 3000\\＋RF1 实际退款 1000\\余额 8000};
+\node[warn,text width=5cm] (j) at (9.5,.65) {RF1 的成功响应丢失\\本地 $R_{\rm succ}=0$，$R_{\rm pend}=1000$\\可新增额度 2000};
+\draw[arr] (l)--node[note,text width=1.2cm,above]{尚未\\获知}(j);
+\node[good,text width=5cm] (l2) at (2.8,-1.5) {平台账本保持\\RF1 只有一笔入账\\余额 8000};
+\node[box,text width=5cm] (j2) at (9.5,-1.5) {核验原退款结果\\$R_{\rm succ}=1000$，$R_{\rm pend}=0$\\可新增额度保持 2000};
+\draw[arr] (j)--(j2);\draw[arr] (l)--(l2);
+\draw[arr] (l2)--node[note,text width=1.2cm,above]{查询\\原结果}(j2);
+\node[note,text width=12cm] at (6,-3.0) {同一 RF1 从未决转成功只改变本地知识，平台资金与本地总占用分别保持。};
+\end{tikzpicture}

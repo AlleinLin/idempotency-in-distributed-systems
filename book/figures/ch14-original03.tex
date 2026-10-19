@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5,3.1) {三条独立历史的共同成功初态：C1/X1/O1/EV1，余额 7000，F=501};
+\node[box] (a) at (0,1) {进程崩溃\\本地磁盘与日志保留\\恢复原已确认提交};
+\node[box] (b) at (5,1) {无损接班\\后继保存完整前缀\\恢复后读到原关系};
+\node[warn] (c) at (10,1) {旧历史回退\\选择更早的本地状态\\S/C/Γ/计数可能消失};
+\node[good,text width=12cm] (e) at (5,-1.3) {独立保存域继续保留：平台 X1 / 余额 7000；履约 I/B / F501\\本地查询反映所选历史，跨域事实按各自证据恢复};
+\draw[arr] (a)--(e);\draw[arr] (b)--(e);\draw[arr] (c)--(e);
+
+\end{tikzpicture}

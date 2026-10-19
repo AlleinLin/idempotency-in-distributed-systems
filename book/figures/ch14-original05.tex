@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=4cm] (old) at (0,1.5) {旧 S1 → C1/pay-C1\\平台保存原输入与 X1\\余额 7000};
+\node[warn,text width=4cm] (new) at (0,-1.5) {旧备份：next C=1\\新 S2 又分到 C1\\平台键又是 pay-C1};
+\node[warn,text width=4cm] (same) at (6,1.5) {同账户、同 C1、同 3000\\平台恢复 X1\\S2 被误并到旧收款};
+\node[warn,text width=4cm] (diff) at (6,-1.5) {新金额 3500\\平台发现同键异参\\合法 S2 遇到冲突};
+\draw[arr] (old)--(same);\draw[arr] (new)--(same);
+\draw[arr] (new)--(diff);
+\node[note,text width=13cm] at (3,-3.1) {新代次编号 C9:1 为独立新意图避开碰撞；旧 S1 继续恢复 C1/pay-C1。};
+
+\end{tikzpicture}

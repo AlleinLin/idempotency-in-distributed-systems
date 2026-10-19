@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+
+\node[anchor=east,font=\small\bfseries] at (-.3,1.8) {本地 P1};
+\node[anchor=east,font=\small\bfseries] at (-.3,.1) {平台键};
+\draw[arr] (0,1.8)--(11.2,1.8);\draw[arr] (0,.1)--(11.2,.1);
+\draw[line width=2.3pt,Blue] (0,1.8)--(10.2,1.8);
+\draw[line width=2.3pt,Gold] (1,.1)--(6.7,.1);
+\draw[lane] (6.7,-.5)--(6.7,2.4);
+\node[note] at (2.8,2.3) {受理与恢复记录继续保留};
+\node[note] at (3.6,.65) {下游身份仍有去重保护};
+\node[note,text width=3.4cm] at (8.8,.65) {过窗口：停止新发送\\继续查询、回调与对账};
+\draw[arr,draw=Gold] (5.9,-1.2) to[bend right=15] node[note,below]{旧请求可跨过清理时刻才到达}(8.2,-1.2);
+\node[note] at (6.7,2.75) {平台保护窗口结束};
+\node[note,text width=11.8cm] at (5.6,-2.3) {发送前本地检查约束新发送；旧在途由执行端拒绝过期身份\\或由已知到达延迟上限与平台保护窗口共同约束};
+
+\end{tikzpicture}

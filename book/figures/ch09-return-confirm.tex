@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=4cm] (map) at (5,4.8) {发送前保存 PA1\\EV1，CH1／序号 2\\消息属性携 PA1};
+\node[box,text width=4cm] (ret) at (0,2.3) {basic.return\\原消息属性给出 PA1\\核对 CH1 与原报文};
+\node[box,text width=4cm] (ack) at (10,2.3) {basic.ack\\CH1＋序号 2\\查到同一 PA1};
+\draw[arr] (map.south)--++(0,-.4)-|(ret.north);
+\draw[arr] (map.south)--++(0,-.4)-|(ack.north);
+\node[warn,text width=5cm] (judge) at (5,0) {同一事件循环先登记 return\\再裁定 PA1 的 ack\\PA1 保存 returned，EV1 重试／核查};
+\draw[arr] (ret)--(judge);\draw[arr] (ack)--(judge);
+\node[note,text width=12.8cm] at (5,-1.7) {PA2 即使也发送 EV1，也有自己的属性与通道序号映射\\无 return 的有效 ack 还要核对原定目标与持久条件，才合流为 accepted};
+\end{tikzpicture}

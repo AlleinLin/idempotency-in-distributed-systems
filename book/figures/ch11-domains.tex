@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=3.7cm] (p) at (0,2.8) {购买复制域\\A：S/P/C/T 与 pay-C1\\R：C 结果、O1、EV1};
+\node[box,text width=3.7cm] (e) at (5.1,2.8) {平台提交域\\原平台范围 / pay-C1\\E：X1，平台余额 7000};
+\node[box,text width=3.7cm] (f) at (10.2,2.8) {履约复制域\\接收身份 I / 效果身份 B\\Q：原结果与真实 F1=501};
+\draw[arr] (p)--node[above,note]{原 C1}(e);
+\draw[arr] (p.north)--++(0,1.1)-|node[above,note,pos=.25]{EV1 可靠发布}(f.north);
+\draw[arr] (e.south)--++(0,-1.1)-|node[below,note,pos=.25]{查询 / 回调 / 对账：X1 证据回到 R}(p.south);
+\node[note,text width=13cm] at (5.1,.1) {各复制域共同延续自己的身份、业务状态与后续责任};
+\end{tikzpicture}

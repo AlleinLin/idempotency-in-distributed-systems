@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[good,text width=12.7cm] (j) at (4,4.5) {同一已应用边界 j：$\Sigma_j=(W_j,M_j,\Gamma_j,j)$};
+\node[box,text width=5.4cm,minimum height=1.4cm] (w) at (0,2.4) {W：业务状态\\余额、P/O/D、编号计数器\\成功时保存成交归属与快照};
+\node[box,text width=5.4cm,minimum height=1.4cm] (m) at (8,2.4) {M：操作绑定\\完整 S $\mapsto$ V、原输入 X、真实 P\\以及完整原结果 R(S)};
+\node[box,text width=5.4cm,minimum height=1.4cm] (g) at (0,-.1) {$\Gamma$：登记与准入\\会话归属、有效或关闭等状态\\决定旧身份能否经购买入口进入};
+\node[box,text width=5.4cm,minimum height=1.4cm] (u) at (8,-.1) {可选扩展另存 U\\(client\_id,seq) $\leftrightarrow$ 完整 S\\两方向唯一，重试沿原编码};
+\draw[arr] (j.south)--++(0,-.35)-|(w.north);
+\draw[arr] (j.south)--++(0,-.35)-|(m.north);
+\draw[arr] (w)--(g);\draw[arr] (m)--(u);
+\node[note,text width=13cm] at (4,-1.8) {主状态直接按 S 仲裁；选用扩展时同边界保存 U；同参恢复只推进 j，原业务与结果保持};
+\end{tikzpicture}

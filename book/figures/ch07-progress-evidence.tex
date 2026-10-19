@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+\node[box,text width=12.2cm] at (4.4,6)
+  {共同初态：A 已保存 P1/C1 与原输入，平台余额 10000，尚无 X1\\每段继续都沿原 C1 定位，已经提交的事实由所属系统保留};
+\node[good,text width=3.5cm] (e) at (0,3.6)
+  {E：平台完成付款\\X1 收款 3000\\余额 10000→7000};
+\node[good,text width=3.5cm] (r) at (4.4,3.6)
+  {R：本地保存结论\\C1 原结果、唯一 O1\\P1 进入 paid};
+\node[good,text width=3.5cm] (c) at (8.8,3.6)
+  {客户端获知\\完整响应到达\\并保存付款结论};
+\draw[arr] (e)--(r);
+\draw[arr] (r)--(c);
+\node[note] at (2.2,4.9) {可信结果};
+\node[note] at (6.6,4.9) {响应或查询};
+\node[box,text width=3.5cm] (ec) at (0,.7)
+  {E 尚未发生时\\恢复者能运行\\保护窗口内可受理\\业务条件允许结束};
+\node[box,text width=3.5cm] (rc) at (4.4,.7)
+  {E 已发生、R 未提交\\原身份可定位 X1\\证据保留且通道可用\\本地数据库可提交};
+\node[box,text width=3.5cm] (cc) at (8.8,.7)
+  {R 已提交、响应丢失\\客户端继续查询\\服务读取已存结果\\一次完整结果送达};
+\draw[arr] (ec.north)--(e.south);
+\draw[arr] (rc.north)--(r.south);
+\draw[arr] (cc.north)--(c.south);
+\node[note,text width=12.2cm] at (4.4,-1.5)
+  {停在第一段，平台可能从未付款；停在第二段，本地可以继续等待\\停在第三段，服务已保存成功而客户端尚未获知，查询继续恢复原结果};
+\end{tikzpicture}

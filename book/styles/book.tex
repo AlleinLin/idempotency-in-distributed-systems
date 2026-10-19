@@ -1,0 +1,95 @@
+\usepackage[a4paper,left=25mm,right=25mm,top=23mm,bottom=22mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\IfFontExistsTF{Microsoft YaHei}{\setCJKsansfont{Microsoft YaHei}}{\IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{\setCJKsansfont{FandolHei-Regular}}}
+\IfFontExistsTF{SimSun}{\setCJKmainfont{SimSun}[BoldFont=Microsoft YaHei]}{\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{\setCJKmainfont{FandolSong-Regular}[BoldFont=FandolHei-Regular]}}
+\IfFileExists{texgyrepagella-regular.otf}{\setmainfont{TeX Gyre Pagella}}{\setmainfont{Latin Modern Roman}}
+\IfFileExists{texgyreheros-regular.otf}{\setsansfont{TeX Gyre Heros}}{\setsansfont{Latin Modern Sans}}
+\usepackage{xcolor}
+\definecolor{Ink}{HTML}{19333C}
+\definecolor{Accent}{HTML}{BA643F}
+\definecolor{Muted}{HTML}{63747A}
+\definecolor{Paper}{HTML}{F5F2EA}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=Ink,urlcolor=Accent,citecolor=Ink,pdftitle={分布式系统中的幂等性：从一次重复扣款开始},pdfsubject={幂等、事务与故障恢复}}
+\hypersetup{pdfauthor={Allein},pdfsubject={分布式系统中的幂等性}}
+\setlength{\parindent}{0pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\small\color{Muted}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\setcounter{tocdepth}{1}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\captionsetup{font=small,labelfont={color=Accent},textfont={color=Ink},skip=7pt}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{.35em}
+\linespread{1.25}
+\ctexset{chapter={format=\sffamily\bfseries\color{Ink}\LARGE,beforeskip=4pt,afterskip=20pt},section={format=\sffamily\bfseries\color{Ink}\large,beforeskip=14pt,afterskip=8pt}}
+\tikzset{every picture/.style={font=\small\sffamily,text=Ink},flow/.style={-{Stealth[length=2mm]},draw=Ink,line width=.7pt},event/.style={fill=Ink,circle,inner sep=2pt}}
+
+\clubpenalty=10000\widowpenalty=10000
+\interfootnotelinepenalty=10000
+
+% 正文中的代码用于解释机制，控制流程采用语言无关的伪代码。
+\usepackage{fvextra}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{placeins}
+\IfFontExistsTF{Consolas}{\setmonofont{Consolas}}{\setmonofont{Latin Modern Mono}}
+\IfFontExistsTF{SimSun}{\setCJKmonofont{SimSun}}{\IfFontExistsTF{Noto Serif CJK SC}{\setCJKmonofont{Noto Serif CJK SC}}{\setCJKmonofont{FandolSong-Regular}}}
+\DefineVerbatimEnvironment{BookCode}{Verbatim}{fontsize=\footnotesize,
+  baselinestretch=1.04,breaklines=true,breakanywhere=true,samepage=true,
+  xleftmargin=1em,xrightmargin=.5em,tabsize=4}
+% 本章报文与伪代码均为短段，整段排入同一页，避免首行或请求头落单。
+\BeforeBeginEnvironment{BookCode}{\par\addvspace{\medskipamount}\noindent\begin{minipage}{\linewidth}}
+\AfterEndEnvironment{BookCode}{\end{minipage}\par\addvspace{\medskipamount}}
+% 代码前可断行；末尾不强加断点，让 xeCJK 保持随后中文标点的禁则。
+\newcommand{\code}[1]{\allowbreak{\ttfamily\def\_{\textunderscore\allowbreak}#1}}
+\setcounter{secnumdepth}{1}
+\ctexset{subsection={format=\sffamily\bfseries\color{Ink}\normalsize,beforeskip=13pt,afterskip=6pt}}
+\tikzset{
+  booknode/.style={draw=Ink!45,fill=Paper,rounded corners=2pt,
+    align=flush center,inner sep=6pt,font=\small\sffamily},
+  bookresult/.style={booknode,draw=Accent!65,fill=Accent!7},
+  booknote/.style={font=\footnotesize\sffamily,text=Muted,align=flush center},
+  bookarrow/.style={-{Stealth[length=2mm]},draw=Ink,line width=.7pt},
+  bookalert/.style={-{Stealth[length=2mm]},draw=Accent,line width=.8pt}
+}
+\usetikzlibrary{fit,backgrounds,shapes.geometric}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{18pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
+
+% 中文引文使用明确的倾斜字形，西文沿用正文字族的斜体。
+\IfFontExistsTF{SimSun}{%
+  \newCJKfontfamily\BookQuoteCJK[ItalicFont=SimSun,ItalicFeatures={FakeSlant=.18}]{SimSun}%
+}{\IfFontExistsTF{Noto Serif CJK SC}{%
+  \newCJKfontfamily\BookQuoteCJK[ItalicFont={Noto Serif CJK SC},ItalicFeatures={FakeSlant=.18}]{Noto Serif CJK SC}%
+}{%
+  \newCJKfontfamily\BookQuoteCJK[ItalicFont=FandolSong-Regular,ItalicFeatures={FakeSlant=.18}]{FandolSong-Regular}%
+}}
+\newcommand{\DeclareBookEpigraph}[4]{%
+  \expandafter\gdef\csname BookEpigraphText@#1\endcsname{#2}%
+  \expandafter\gdef\csname BookEpigraphAuthor@#1\endcsname{#3}%
+  \expandafter\gdef\csname BookEpigraphURL@#1\endcsname{#4}%
+}
+\newcommand{\BookEpigraph}[1]{%
+  \par\vspace{5pt}
+  \noindent\begin{minipage}{.90\linewidth}
+    \setlength{\parindent}{0pt}\setlength{\parskip}{0pt}
+    {\BookQuoteCJK\itshape\fontsize{10}{15}\selectfont\color{Ink}%
+      \csname BookEpigraphText@#1\endcsname\par}
+    \vspace{3pt}
+    {\raggedleft\normalfont\fontsize{8.5}{12}\selectfont\color{Muted}%
+      ——\href{\csname BookEpigraphURL@#1\endcsname}%
+      {\csname BookEpigraphAuthor@#1\endcsname}\par}
+  \end{minipage}\par\vspace{7pt}
+}
+\input{data/chapter-epigraphs.tex}

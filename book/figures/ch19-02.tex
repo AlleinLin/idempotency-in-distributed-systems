@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/客户端,4.3/primary,8.6/其他副本}{
+ \node[font=\bfseries] at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-6);}
+\node[note] at (4.3,.9) {客户端先向 master 取得租约持有者与副本位置};
+\draw[arr] (0,-1)--node[above,note]{1. 数据推送到所有副本} (8.6,-1);
+\draw[arr] (0,-2)--node[above,note]{2. 引用已推送数据的修改请求} (4.3,-2);
+\node[good,text width=2.9cm] at (4.3,-3) {3. 选修改序号\\本地按序应用};
+\draw[arr] (4.3,-4.3)--node[above,note]{4. 同序号应用} (8.6,-4.3);
+\draw[arr] (8.6,-5.1)--node[below,note]{5. 完成确认} (4.3,-5.1);
+\draw[arr] (4.3,-5.8)--node[below,note]{6. 回复结果} (0,-5.8);
+
+\end{tikzpicture}

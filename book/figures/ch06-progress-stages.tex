@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=3.1cm] (make) at (1.7,2.2) {形成完整终态\\成功或业务拒绝};
+\node[booknode,text width=3.1cm] (read) at (5.7,2.2) {读取原结果\\按完整 S 与原版本};
+\node[bookresult,text width=3.1cm] (save) at (9.7,2.2) {客户端获知并保存\\完整交付\\本地持久化};
+\draw[bookarrow] (make) -- (read);
+\draw[bookarrow] (read) -- (save);
+\node[booknote,text width=3.1cm] at (1.7,.4) {数据库可写\\旧事务终结释放锁\\恢复获得调度};
+\node[booknote,text width=3.1cm] at (5.7,.4) {权威数据可读\\资格与记录仍有效\\解释版本可用};
+\node[booknote,text width=3.1cm] at (9.7,.4) {响应完整到达\\客户端继续运行\\至少一次保存成功};
+\end{tikzpicture}
+\caption{完成终态、读取和客户端保存分别依赖后续机会}
+\label{fig:ch06-progress-stages}
+\end{figure}

@@ -1,0 +1,22 @@
+\begin{tikzpicture}
+\node[good,text width=4.3cm] (rm) at (2.3,1.8)
+ {ResourceManager\\应用之间的资源分配};
+\node[good,text width=4.3cm] (am) at (8.5,1.8)
+ {MRAppMaster\\本作业任务／尝试与进度};
+\node[box,text width=4.3cm] (n1) at (2.3,-.5)
+ {节点 A：NodeManager\\资源 container → map 进程};
+\node[box,text width=4.3cm] (n2) at (8.5,-.5)
+ {节点 B：NodeManager\\资源 container → reduce 进程};
+\node[box,text width=4.3cm] (d1) at (2.3,-2.8)
+ {HDFS DataNode\\输入块副本／本地性};
+\node[box,text width=4.3cm] (d2) at (8.5,-2.8)
+ {HDFS DataNode\\最终输出块副本};
+\draw[ctl,<->] (am.north)--(8.5,3.1)--node[above,note]{申请与分配} (2.3,3.1)--(rm.north);
+\draw[ctl] (am)--(n1);
+\draw[ctl] (am)--(n2);
+\draw[arr] (d1)--(n1);
+\draw[arr] (n1)--node[above,note,text width=1.4cm]{shuffle\\字节} (n2);
+\draw[arr] (n2)--(d2);
+\node[note,text width=11.6cm] at (5.4,-4.1)
+ {HDFS 保存文件，NameNode 提供块位置；YARN 分配资源，作业管理者组织计算。};
+\end{tikzpicture}

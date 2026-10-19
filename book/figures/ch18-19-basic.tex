@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=3.6cm] (req) at (0,0) {客户端命令\\GET projection:P1};
+\node[box,text width=3.6cm] (key) at (5,0) {键空间\\projection:P1 → 字符串对象};
+\node[good,text width=3.6cm] (hit) at (10,1.9) {键存在且类型匹配\\返回当前JSON字符串};
+\node[box,text width=3.6cm] (miss) at (10,0) {键不存在\\返回空值};
+\node[warn,text width=3.6cm] (wrong) at (10,-1.9) {键保存其他类型\\返回\mbox{WRONGTYPE}错误};
+\draw[arr] (req)--(key);
+\draw[arr] (key.east)--++(.4,0)|-(hit.west);
+\draw[arr] (key)--(miss);
+\draw[arr] (key.east)--++(.4,0)|-(wrong.west);
+\node[note,text width=12cm] at (5,-3.4)
+  {命令名确定操作，键定位对象，类型决定操作是否合法。\\回复类型与内容一起进入客户端的处理分支。};
+\end{tikzpicture}

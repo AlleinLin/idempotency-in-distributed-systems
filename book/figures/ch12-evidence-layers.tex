@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\foreach \y/\w/\label in {0/5/{S：识别已见身份},1.1/7/{+ P：定位原购买},2.2/9/{+ V/X：精确判断异参},3.3/11/{+ R(S) 或档案：完整回放}}{
+  \draw[draw=Blue,fill=blue!5,rounded corners=2pt] (0,\y) rectangle (\w,\y+.8);
+  \node[anchor=west] at (.25,\y+.4) {\label};
+}
+\draw[arr] (12,0)--(12,4.2);
+\node[note,rotate=90] at (12.5,2.1) {可提供的恢复能力增加};
+\node[note,text width=12cm] at (5.5,-.65) {退休后按公布能力保留相应字段；任意键主路径保留 S/V/X/P；适配分支另存 U};
+\end{tikzpicture}

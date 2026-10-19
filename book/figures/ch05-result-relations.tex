@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.6cm] (p) at (0,0) {P1\\S / Q7 / CNY 3000};
+\node[booknode,text width=2.6cm] (o) at (4,0) {O1\\购买编号 P1};
+\node[booknode,text width=2.8cm] (d) at (8,0) {D1\\P1 + O1 / 扣 3000};
+\draw[bookarrow] (p)--(o);
+\draw[bookarrow] (o)--(d);
+\node[bookresult,text width=10cm] (r) at (4,-2) {完成结果：P1 / O1 / D1 / Q7 / CNY 3000 / 当次余额 7000};
+\draw[bookarrow] (p)--(r);
+\draw[bookarrow] (d)--(r);
+\end{tikzpicture}
+\caption{结果从实际形成的购买、订单和扣款关系中构造。}
+\label{fig:ch05-result-relations}
+\end{figure}

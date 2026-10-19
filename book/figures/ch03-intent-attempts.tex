@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4cm] (u1) at (3,0) {Alice 确认买一份\\本地操作 K1};
+\node[booknode,text width=3cm] (r1) at (1,-1.6) {R1 携带 K1\\首次发送};
+\node[booknode,text width=3cm] (r2) at (5,-1.6) {R2 携带 K1\\超时后恢复};
+\node[booknode,text width=4cm] (p1) at (3,-3.2) {共同指向 P1\\一次购买的原结果};
+\draw[bookarrow] (u1)--(r1);
+\draw[bookarrow] (u1)--(r2);
+\draw[bookarrow] (r1)--(p1);
+\draw[bookarrow] (r2)--(p1);
+\node[booknode,text width=3.7cm] (u2) at (10,0) {Alice 明确再买一份\\新本地操作 K2};
+\node[booknode,text width=3.7cm] (r3) at (10,-1.6) {R3 携带 K2\\另一项购买};
+\node[bookresult,text width=3.7cm] (p2) at (10,-3.2) {指向 P2\\允许再产生一次效果};
+\draw[bookarrow] (u2)--(r3);
+\draw[bookalert] (r3)--(p2);
+\end{tikzpicture}
+\caption{请求按业务操作归组。重试沿用 K1，第二次明确购买使用 K2。}
+\label{fig:ch03-intent-attempts}
+\end{figure}

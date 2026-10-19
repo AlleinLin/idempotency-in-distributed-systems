@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[warn,text width=3.1cm] (w) at (0,0) {W1 已失去第 7 代\\当前 W2 持有第 8 代};
+\node[box,text width=4cm] (s) at (5,1.7) {调度入口\\核 T、owner、epoch、期限};
+\node[box,text width=4cm] (r) at (5,-1.7) {证据入口\\核平台来源、C1、原输入与 X1};
+\node[warn,text width=3cm] (x) at (10,1.7) {旧代次被拒绝\\保留 W2 的安排};
+\node[good,text width=3cm] (y) at (10,-1.7) {可信成功进入 R\\共同发布终态与 done};
+\draw[arr] (w.north east)--node[note,above left]{重排到明天}(s.west);
+\draw[arr] (w.south east)--node[note,below left]{带回平台成功}(r.west);
+\draw[arr] (s)--(x);
+\draw[arr] (r)--(y);
+\node[note,text width=11cm] at (5,-3.2) {工作者领取决定调度权；可验证的平台事实决定支付结论};
+\end{tikzpicture}

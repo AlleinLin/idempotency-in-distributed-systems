@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm] (collect) at (4.1,1.5)
+ {原TX：collecting\\原清单／原输入／固定$d$\\投票逐项持久保存};
+\node[good,text width=3.2cm] (commit) at (0,-.7)
+ {decide先入序\\全部yes $\rightarrow$ commit\\迟timeout返回commit};
+\node[warn,text width=3.2cm] (abort) at (8.2,-.7)
+ {timeout先入序\\截止已到 $\rightarrow$ abort\\迟yes、decide返回abort};
+\draw[arr] (collect.south west)--node[note,above left]{同一日志仲裁}(commit.north);
+\draw[arr] (collect.south east)--(abort.north);
+\node[note,text width=3.3cm] at (0,-2.4)
+ {已投yes、尚无决定\\仍属于collecting};
+\node[note,text width=3.3cm] at (8.2,-2.4)
+ {先保存aborted子操作\\再接收迟prepare};
+\node[box,text width=9.8cm] (notify) at (4.1,-4)
+ {终态取得协调组复制提交确认后，才按原清单通知\\
+  重启读回原TX；参与者重复finish；完整完成回执再推进原付款资格};
+\draw[arr] (commit.south)--(0,-2.9)--(notify.north west);
+\draw[arr] (abort.south)--(8.2,-2.9)--(notify.north east);
+\end{tikzpicture}

@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4cm] (a) at (1.9,0) {请求 A\\paper-001、Q7\\省略数量与币种};
+\node[booknode,text width=4cm] (b) at (1.9,-2.3) {请求 B\\paper-001、Q7\\数量 1、CNY};
+\node[booknode,text width=4.2cm] (v) at (7,-1.15) {按同一版本规范化\\商品、整数 1、CNY、Q7\\得到相同字段组 X1};
+\node[booknode,text width=2.9cm] (h) at (11.8,-1.15) {固定编码\\计算指纹 H(X1)};
+\draw[bookarrow] (a)--(v);
+\draw[bookarrow] (b)--(v);
+\draw[bookarrow] (v)--(h);
+\node[bookresult,text width=4cm] (c) at (1.9,-4.4) {请求 C 改为 Q8\\会改变报价依据};
+\node[bookresult,text width=4.2cm] (cx) at (7,-4.4) {得到不同字段组 X2\\同身份应报告冲突};
+\draw[bookalert] (c)--(cx);
+\node[booknote,text width=12cm] at (6.6,-5.6)
+ {解析时拒绝重复成员名；输入核对和实际执行共用同一份已校验数据};
+\end{tikzpicture}
+\caption{先确定哪些写法表达同一输入，再计算摘要；固定长度指纹保留算法与规则版本。}
+\label{fig:ch03-normalization}
+\end{figure}

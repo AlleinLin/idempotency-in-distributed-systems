@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\foreach \x/\id/\title/\detail in {
+  0/r/接收/收到 WAL 字节,
+  3.7/w/写入/写入备库文件系统,
+  7.4/f/持久刷新/恢复所需日志已刷盘,
+  11.1/a/重放应用/事务对备库查询可见}{
+  \node[box,text width=2.9cm,minimum height=1.4cm] (\id) at (\x,2.3) {\title\\[4pt]\detail};}
+\draw[arr] (r)--(w);\draw[arr] (w)--(f);\draw[arr] (f)--(a);
+\node[note,text width=3.2cm] at (3.7,.5) {\ttfamily remote\_write\\[-1pt]\normalfont 等待到写入阶段};
+\node[note,text width=3.2cm] at (7.4,.5) {\ttfamily on\\[-1pt]\normalfont 等待所选同步备库刷新};
+\node[note,text width=3.2cm] at (11.1,.5) {\ttfamily remote\_apply\\[-1pt]\normalfont 进一步等待应用};
+\node[note,text width=14cm] at (5.55,-.8) {以 PostgreSQL 18 配置了相应同步备库为前提\\故障提升再核对：选中的接班者是否拥有已确认提交，旧主是否已隔离};
+\end{tikzpicture}

@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[bookresult,text width=3.1cm] (one) at (1.7,2.3) {1、2、3 S1 提交\\原结果当次 7000};
+\node[bookresult,text width=3.1cm] (two) at (5.7,2.3) {4、5、6 S2 提交\\当前余额 4000};
+\node[booknode,text width=3.1cm] (replay) at (9.7,2.3) {7. S1 同参恢复\\错误重算为 4000};
+\draw[bookarrow] (one) -- (two);
+\draw[bookalert] (two) -- (replay);
+\node[booknode,text width=10.5cm] at (5.7,.1) {正确输出：从 S1 保存结果或 D1 取当次 7000\\当前账户 4000 另行查询\\历史结果与当前状态分别取值};
+\end{tikzpicture}
+\caption{写入全部正确，恢复时重算余额仍会破坏原结果投影}
+\label{fig:ch06-rewrite-result}
+\end{figure}

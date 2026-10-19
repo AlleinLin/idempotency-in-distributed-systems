@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\draw[Blue,thick,fill=blue!3] (2.5,2) ellipse (3.6 and 1.55);
+\draw[green!35!black,thick,fill=green!3,fill opacity=.45] (7.5,2) ellipse (3.6 and 1.55);
+\node at (1.4,2.1) {旧提交多数\\包含 e};
+\node[good,text width=1.6cm] (v) at (5,2) {共同成员 V\\保存 e 后投票};
+\node at (8.6,2.1) {后继选举多数\\核对候选日志};
+\node[box,text width=11.8cm] (p) at (5,-.5) {假定 U 是第一位缺少 e 的领导者\\相同末项任期：足够长的匹配前缀包含 e\\更高末项任期：来自更早且包含 e 的领导者};
+\draw[arr] (v)--(p);
+\node[note,text width=12cm] at (5,-2.1) {同任期最多一票保证领导者唯一；日志资格与交集继续保住先前提交};
+
+\end{tikzpicture}

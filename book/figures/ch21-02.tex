@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+
+\node[warn] (a) at (0,0) {A：旧主\\复制成为少数};
+\node[good] (b) at (4,0) {B：幸存副本};
+\node[good] (c) at (8,0) {C：幸存副本};
+\draw[arr,<->] (b)--(c);
+\node[note] at (6,.85) {多数复制};
+\draw[red!70!black,thick] (a.east)--(b.west);
+\node[fill=white,text=red!70!black] at (2,0) {$\times$};
+\node[box] (i) at (0,-2.6) {入口 HTTP\\发现当前主};
+\node[box] (d) at (4,-2.6) {控制面\\新归属资格};
+\node[box] (p) at (8,-2.6) {平台 HTTP\\旧请求可能在途};
+\draw[ctl] (i)--(b);\draw[ctl] (d)--(b);\draw[ctl] (p)--(c);
+\node[note,text width=11cm] at (4,-4.5) {诊断 HTTP 可达与复制 TCP 可达是两个条件；控制失联时区分有效缓存与新配置。};
+
+\end{tikzpicture}

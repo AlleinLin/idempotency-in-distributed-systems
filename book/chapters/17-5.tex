@@ -1,0 +1,53 @@
+\label{sec:ch17-tikv-regions}
+\subsection*{有序键空间与每个 Region 的复制}
+
+上一节交接的逻辑分区以业务责任为边界，包含一项购买恢复所依赖的闭合状态。TiKV 从底层有序 KV 空间出发，把整个键空间切成连续的半开区间，每段称为 Region。Region 记录起始键和结束键，一个键按二进制顺序落入其中一个区间。区间可以继续分裂或合并，存储容量由许多 Region 共同承担~\cite{tikv-75-storage}。
+
+一个 Region 在多个 TiKV Store 上保存副本，每个副本由对应 Peer 参与该 Region 的 Raft 组。Store 是运行 TiKV 并管理本地存储的节点，一个 Store 可以承载许多 Region 的 Peer。某个 Region 的 leader 只负责该 Region 的日志和读写路径，大量 Region 可以分别拥有不同 leader。
+
+\CSeventeenFigure{ch17-11-region-peer}{每列属于一个 Region 的 Raft 组，每行属于一个承载多个 Peer 的 Store}{fig:ch17-region-peer}
+
+RocksDB 承担单机 KV 保存，Region 的 Raft 把已排序修改复制到多个 Store。一条 Region 内写入经该组提交与应用，形成区间内的复制事实。某个 Store 故障时，其他 Store 上该 Region 的 Peer 按 Raft 继续服务，前提是所需多数和持久状态可用。
+
+一份购买记录却可能拆成多个键：$S$ 绑定、C 映射、订单、退款占额和索引。相邻键名前缀有利于局部访问，随着增长，Region 边界仍可能穿过这个范围。业务逻辑分区、SQL 表与底层 Region 因而没有天然的一一对应。业务事务跨越多个 Region 时，事务协议负责连接这些区间中的修改。
+
+\subsection*{PD 如何保存集群视图并调度 Peer}
+
+Region leader 处理所属区间的请求，却只掌握局部复制状态。集群还需要保存整个键空间的分布：某个键属于哪个 Region，Region 的 leader 和各 Peer 位于哪些 Store，每个 Store 有多少容量，副本是否已经分散到指定机架或地域。客户端刚接入或原区间缓存失效时，要先从这份元数据找到访问位置；增加节点以后，管理者也要根据全局分布选择搬走哪些副本。
+
+TiDB/TiKV 将这些职责集中到 Placement Driver，简称 PD。它是集群的元数据管理和调度组件，以复制部署保存集群配置、拓扑与区间分布等控制状态。TiKV 的 Store 和 Region leader 持续上报自己的观察，PD 将局部报告整理成集群视图，再形成调度计划。这里的定位回答从哪里访问某段键空间，调度回答接下来怎样调整布局，业务键值本身由 TiKV Store 保存~\cite{tidb-75-pd}。
+
+PD 还提供事务时间戳服务。TSO 是 Timestamp Oracle 的简称，其作用是给事务层取得有序时间戳，事务用这些时间戳标记读取和提交版本。时间戳服务、Region 位置和 Peer 调度共同属于 PD 的职责范围，事务层据此组织跨 Region 访问。每个 Region 的日志复制决定本区间保存了哪些底层记录，跨 Region 的统一提交则由事务层连接，第19.4节沿这些区间展开锁、版本与恢复决定~\cite{tidb-75-pd,tikv-75-transactions}。
+
+\CSeventeenFigure{ch17-22-pd-view}{PD 汇集集群元数据，分别提供定位、调度和事务时间戳}{fig:ch17-pd-view}
+
+PD 收集 Store 与 Region 的心跳、容量和负载信息，决定副本布局与调度。Store 报告容量、Region 数量、读写负载、快照传输与位置标签，Region leader 报告本 Region 的 leader、Peer 和复制状态。PD 据此建议增加副本、移除副本或转移 leader，再通过后续心跳观察执行进度。Region leader 收到调度动作后，按本 Region 的实际状态判断是否执行。PD 的期望布局与已经提交的成员状态之间，因而存在逐步推进的过程~\cite{tikv-75-scheduling}。
+
+将 Region R 的副本从 Store A 移到 Store D，通常先在 D 建立新 Peer，传输快照及后续日志，使其追上，再按成员变更协议完成角色变化和旧 Peer 移除。单纯把 PD 中的位置记为 D，既不能让 D 取得完整数据，也不能直接撤销 A 的旧 Peer 状态。元数据报告、数据追赶和成员资格沿各自步骤连接起来。
+
+\CSeventeenFigure{ch17-23-peer-move}{Peer 搬迁先复制数据并追赶，再完成成员资格变化}{fig:ch17-peer-move}
+
+转移 leader 可以在现有 Peer 之间改变主要读写入口，无须每次搬运完整 Region。调度器用它分散 leader 负载，再通过 Peer 调整改变容量布局。前者主要改变服务角色，新建 Peer 还要传输持久数据和增量日志，消耗对应的网络、磁盘与快照处理预算。
+
+副本布局对应真实故障域。R 的三个 Peer 若位于同一机架上的三个 Store，机架断电会同时失去三份副本。PD 的位置标签表达地域、机架等拓扑，放置规则据此分散相关故障。运维把物理布局与标签逐项核对，调度器才能按照实际故障域安排副本~\cite{tikv-75-scheduling}。
+
+\subsection*{split 与 merge 改变哪些事实}
+
+Region $[a,z)$ 变大后，可以在 $m$ 处分裂为 $[a,m)$ 和 $[m,z)$。分裂决定通过相关 Raft 管理命令进入原复制历史。应用时生成或更新 Region 元数据，为新 Region 和 Peer 分配相应身份，改变区间及 Region epoch，随后各范围沿自己的复制组继续前进。客户端旧范围缓存由此失效，收到对应错误后刷新区间信息并重试。
+
+\CSeventeenFigure{ch17-12-split-merge}{split 改变范围边界，merge 接入源端后缀后扩大目标范围}{fig:ch17-split-merge}
+
+分裂先改变保存和服务的区间边界，新区间随后可以调度到不同 Store。底层数据在相同本地引擎中的组织，无须先复制完整 SQL 表才能改变范围。客户端业务 $S$ 保持原值，存储层根据键所属的新区间找到相应 Peer。
+
+merge 合并相邻区间，也要连接两段历史。TiKV v7.5.8 的相关路径在源 Region 保存 prepare-merge 状态及需要追赶的日志位置，目标处理 commit-merge 时协调源端追赶并停止相应应用，再更新目标区间和源端退出状态。源区间最后一段修改进入合并后的可恢复状态后，目标才代表扩大的范围继续服务~\cite{tikv-758-raftstore}。
+
+Region epoch 包含区间版本与配置版本等不同进度。split 改变范围，Peer 变化影响配置；具体命令还可能为阻止并发变更而调整多个分量。请求与管理命令按语义核验所依赖的版本。这些字段分别指出范围或成员的变化，应用进度则由相应的复制状态另行确定。
+
+\subsection*{Region 复制之上的事务}
+
+设一次退款把退款身份绑定写在 Region R1，将原收款的退款占额写在 R2。R1 多数提交只确定 R1 的修改，R2 同时可能不可用。若只完成绑定就回复成功，后继退款可能继续占用本应留给这一项的额度。上层事务在两边保存相应锁、版本或提交信息，并通过可恢复决定共同提交绑定和占额。第19.4节在这一结构上展开 TiDB/TiKV 的跨 Region 提交及锁恢复，判断的是这两项关联修改能否共同成立。
+
+MVCC 让键按事务时间戳保存多个版本，读者按读取时间取得相应版本。可见性与冲突规则由事务层定义，Region 的 Raft 复制相应底层记录。TiDB 文档所述 Snapshot Isolation 及其读选项，也按具体隔离级别分析。跨 Region 原子提交连接一项事务的修改，写偏斜等并发历史则由隔离规则判断~\cite{tikv-75-transactions}\footnote{本节依据 TiDB v7.5 存储、调度和事务隔离文档及 TiKV v7.5.8 源码。TiDB 为 MySQL 兼容而使用的 REPEATABLE-READ 名称对应其文档所述 Snapshot Isolation，不能直接套用其他数据库同名级别的全部保证。}。
+
+业务分区是一组共同承担恢复责任的事实，Region 是底层存储与复制的区间。应用可以借助事务数据库保存业务分区，也可以直接实现业务状态机。前者由数据库协议处理底层分裂、Peer 变化和多键事务，后者按第~\ref{sec:ch17-business-migration}~节交接完整业务状态。下一章把读取进一步下沉到 Redis 查询缓存，沿命令执行、落盘、副本接收和槽归属说明一份投影能够恢复到哪里。
+\FloatBarrier

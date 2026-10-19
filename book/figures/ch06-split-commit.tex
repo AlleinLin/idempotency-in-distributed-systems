@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=3cm] (a) at (1.6,2) {1. 取得 S1};
+\node[booknode,text width=3cm] (b) at (5.6,2) {2. 准备扣款};
+\node[bookresult,text width=3cm] (c) at (9.6,2) {3. 先提交效果\\随后退出};
+\draw[bookarrow] (a) -- (b);
+\draw[bookalert] (b) -- (c);
+\node[booknode,text width=10.5cm] at (5.6,-.1) {已提交余额 7000；效果集合有一笔 3000；终态集合为空\\扣款已经生效，原身份的完成记录尚未发布};
+\end{tikzpicture}
+\caption{拆开效果与终态提交，三步留下孤立扣款}
+\label{fig:ch06-split-commit}
+\end{figure}

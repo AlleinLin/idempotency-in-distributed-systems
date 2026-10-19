@@ -1,0 +1,299 @@
+\subsection*{身份关系在第一次发送以前提交}
+
+能够重发原 C1，依赖 A 已经保存了映射。若服务只保存 P1，工作进程每次启动临时生成下游键，第一次以 \code{pay-a} 成功后退出，恢复时改用 \code{pay-b}，平台就会合法处理两项身份。内存、请求日志或临时任务变量中的键，不能给后来的恢复者提供可靠的同一查找依据。
+
+本章把映射放在 \code{external\_payments} 中。C1 是主键，\code{purchase\_id=P1} 唯一引用购买，\code{provider\_scope} 与 \code{provider\_key} 共同唯一，限制本地两项支付误用同一下游身份。受理事务同时写 P1、C1，提交以后才允许发送。先发送后保存，便会重现平台成功、本地映射缺失的历史。
+
+\CSevenFigure{ch07-original07}{完整购买身份到平台收款的固定映射}{fig:ch07-mapping}
+
+映射从两端检查。同一 C1 在恢复、回调和对账中指向同一平台范围与键；独立的 C1、C2 则取得不同下游身份。Alice 明确确认两次相同商品购买，\(S_1\)、\(S_2\) 各建 P1、P2，再建 C1、C2，平台各收 3000，初始 10000 最后成为 4000。若拿金额和商品拼成支付键，第二次合法购买反而会合并到第一次收款。每次确认各有身份，才保住两笔购买的独立性~\cite{aws-idempotent}。
+
+\subsection*{受理竞争先决定恢复哪笔购买}
+
+再看一个比超时更早的间隔。W1 接到携带 \(S\)、Q7 的请求，在事务内插入候选购买，却在提交以前退出。W2 接到误用同一 \(S\)、改带 Q8 的请求，随后率先受理。W1 恢复时，第四章的首次提交绑定规则继续适用：W1 的未提交修改已经撤销，W2 先建立持久绑定，W1 随后得到异参冲突。日志里出现过候选 P1，不说明它已经受理。
+
+调用方保存同一确认的原输入，重试保持 Q7。即使调用方违反这项要求，服务也要限制同一 \(S\) 至多提交一笔购买，保持已提交绑定不可覆盖。W2 先提交以后，服务既不能为 W1 再建一笔 P，也不能把 W2 的 Q8 改回 Q7。如果要求从客户端确认时就固定 Q7，就要另外持久保存确认及授权，并为该记录安排失败恢复。绑定时点提前，也增加了一项要维护的记录。
+
+这里采用 PostgreSQL 18 的 Read Committed，唯一约束竞争沿用第四章。先完成认证和输入语法检查，再在第三章的会话准入保护内读取已有 \(S\)。命中就按该 P 保存的输入版本解释请求，比较并恢复。部署的新默认版本不改变旧绑定含义。暂不支持旧解释规则时，明确报告恢复接口不兼容，业务事实查询继续可用，避免把规则升级误报为用户异参。
+
+未找到 \(S\) 时，才按新购买规则准备候选。当前模型要求不可变报价在准备受理期间可读。过期报价仍可读出原金额，能否首次受理稍后判断。报价已归档而不可读时，不能捏造金额填入候选行。改用新语句再查 \(S\)：已经可见就恢复其快照，仍未找到则报告本次未能受理，保留原身份。这个空查没有排除另一事务还在提交，因此响应只说明本次处理的结果。
+
+\begin{BookCode}
+开始本地事务，保持会话准入保护
+先读 S；命中则按其保存版本比较，恢复原 P/C
+未命中才准备真实可读的报价快照与候选输入
+插入候选购买、完整 S、原购买输入和报价快照
+    business_state = awaiting_payment
+    ON CONFLICT (account_id, action, session_id, idempotency_key)
+    DO NOTHING RETURNING purchase_id
+若返回零行：
+    用新语句读取 S 对应的已提交 P 与 C
+    若暂不可读，回滚，按原 S 重试或核查
+    按该 P 保存的版本重新解释请求并比较
+    输入不同：回滚，返回输入冲突
+    输入相同：读取原受理、当前进度和保存的支付结果
+    结束只读恢复，返回完整响应
+若返回一行：
+    只把 RETURNING 的真实 purchase_id 传给后续
+    继续首次购买校验与支付映射建立
+\end{BookCode}
+
+首次购买才核验报价当前是否可用、是否适用于账户和商品，以及付款关联是否获准。已有身份恢复原快照，Q7 后来过期或商品涨价都不改变原购买。临时候选行尚未发布，校验失败就回滚整笔事务，返回 \code{accepted=false} 和原因。本事务不留下 P、C、O，也没有发送资格；其他同 \(S\) 的在途处理以后仍可能提交。
+
+这个动作以 A 为持久受理起点。A 以前的语法或首次购买校验拒绝，与受理后付款拒绝分别表示。若产品要求报价拒绝也绑定 \(S\) 并稳定重放，就要增加拒绝受理记录，以及相应查询和回收规则。本章保持三种购买状态，只有已经建立 C1 的付款结局才使用 \code{payment\_rejected}。
+
+\CSevenFigure{ch07-admission}{原身份恢复和首次购买校验在受理事务中分路}{fig:ch07-admission}
+
+校验通过后，以实际 P 构造固定支付输入。付款人引用 \code{alice-pay-1} 来自已经验证的关联，金额来自报价快照，不采用调用方声称的扣款额。C、平台键和截止在这次事务中分配并保存：
+
+\begin{BookCode}
+以真实 P 建立 C，保存唯一 purchase_id
+保存 provider_scope、provider_key、payment_input_version
+保存固定 payment_input、provider_retry_before
+    evidence_state = unconfirmed
+    provider_charge_id = null
+    provider_result = null，payment_result = null
+要求支付插入恰好返回一行 charge_id
+把真实 P 与返回的 C 关联为固定受理内容
+提交本地事务 A
+确认提交后，才允许读取 C 并向平台发送
+返回固定受理内容、当前进度和 payment_result
+\end{BookCode}
+
+平台键唯一冲突、支付插入零行或其他约束异常，都回滚尚未提交的 A。服务重新核对 \(S\) 和冲突对象归属，查明后恢复或报告内部数据冲突，失败事务不能继续发送。A 的提交确认丢失时，按原 \(S\) 重读；能够恢复完整 P/C，才说明受理已经存在。并发处理者各自生成过候选编号，实际插入且共同提交的那一组才进入后续关联。
+
+\input{chapters/07-core-schema.tex}
+
+\subsection*{当前数据怎样支持这些路径}
+
+前面的字段分别解决了身份恢复、输入比较和证据定位问题。表~\ref{tab:ch07-schema-p} 与表~\ref{tab:ch07-schema-r} 给出当前核心列及约束。\(S\) 在购买表中展开为四列，没有另设一个名为 \(S\) 的列。受理凭据从不可变购买和支付映射重建，支付终态保存在 \code{payment\_result}。
+
+\begin{table}[htbp]
+\centering\small
+\caption{受理记录与固定支付映射}\label{tab:ch07-schema-p}
+\begin{tabularx}{\linewidth}{@{}p{2.4cm}p{6.3cm}X@{}}
+\toprule
+位置 & 核心字段 & 关系与使用时点\\
+\midrule
+\code{purchases} & \code{purchase\_id}；\code{account\_id}、\code{action}、\code{session\_id}、\code{idempotency\_key} & P 主键；后四列非空且共同唯一，仲裁 \(S\)\\
+ & \code{normalization\_version}、\code{canonical\_input}、\code{quote\_id}、\code{amount\_minor}、\code{currency} & A 固定原购买输入与报价；恢复按保存版本比较\\
+ & \code{business\_state} & A 写等待；R 推进可信终态，不表达执行者资格\\
+\code{external\_payments} & \code{charge\_id}、\code{purchase\_id}、\code{provider\_scope}、\code{provider\_key} & C 主键；P 唯一外键；范围与键共同唯一\\
+ & \code{payment\_input\_version}、\code{payment\_input}、\code{provider\_retry\_before} & A 固定；发送和证据核对读取\\
+ & \code{evidence\_state}、\code{provider\_charge\_id}、\code{provider\_result}、\code{payment\_result} & R 保存证据与原结果；另有 C/P 联合唯一键\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering\small
+\caption{订单、回调收件与证据记录}\label{tab:ch07-schema-r}
+\begin{tabularx}{\linewidth}{@{}p{2.4cm}p{6.3cm}X@{}}
+\toprule
+位置 & 核心字段 & 关系与使用时点\\
+\midrule
+\code{orders} & \code{order\_id}、\code{purchase\_id}、\code{charge\_id} & O 主键；P、C 分别唯一；C/P 联合外键核对归属\\
+ & \code{provider\_scope}、\code{provider\_charge\_id}、\code{amount\_minor}、\code{currency}、\code{fulfillment\_state} & 成功 R 保存；范围与 X 共同唯一；初始未履约\\
+\code{callback\_receipts} & \code{provider\_scope}、\code{event\_id}、\code{payload} & 前两列联合主键；保存已处理事件原内容\\
+\code{observations} & \code{observation\_id}、\code{charge\_id}、\code{source}、\code{observed\_payload}、\code{decision} & 自增观察号；引用 C；保存证据及核对决定\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\code{evidence\_state} 表示本地已经保存的证据类别。初始 \code{unconfirmed} 表示本地还没有这次付款的确定结论，即使平台已成功，本地也可能保留它。\code{succeeded} 表示本地已核对成功。\code{rejected\_final} 要求证据同时确认两项事实：这个固定身份此前没有成功收款，所有已受理、在途及未来尝试也都不可能再成功。平台自己的对象状态由平台维护。
+
+例如 E 已建立 X1，余额从 10000 变为 7000，R 尚未提交，C1 和 P1 在本地保持未决。随后平台关闭这个身份的未来执行资格，恢复者却只取得关闭观察，尚未找到旧 X1。此时未来已经不能再付款，过去的成功却尚未查明。本地保存这份关闭观察，保留 \code{unconfirmed} 与等待状态，继续按原身份查询或对账，找到 X1 后再提交成功 R。第 7.3 节的原子关闭在同一次仲裁中检查历史：已经成功便返回原 X1，只有确认未成功且关闭所有执行路径，才提供最终拒绝依据。
+
+\code{unconfirmed} 也没有说明请求是否发出。即使调用前写发送准备、调用后写已发送，进程仍可能在网络动作和本地标记之间退出。第一次发送以前保存身份，随后都沿原身份恢复，就可以直接核查平台事实。执行者归属与接管另在下一章建立。
+
+\subsection*{三种入口汇合到同一份支付记录}
+
+回调是平台主动发送的结果通知，主动查询由商户去平台读取，对账则逐项比较本地记录与平台交易明细或账单，找出本地未保存、金额不符或归属不明的条目。三种入口取得证据的时机不同，最后都定位 C1，核对同一组业务字段，再进入同一条本地迁移路径。
+
+若平台返回 X1，本地保存为 \code{provider\_charge\_id}，它标识平台实际建立的收款对象，供直接查询和账单核对。发送时携带 C1 作为商户关联字段，平台在回调或明细中返回它，创建响应丢失后也能定位。C1 本身只是关联资料，平台是否据此保证唯一执行，取决于该接口的规则。
+
+通知进入业务处理以前，先验证来源和访问范围，再核对商户、环境、C1、已知 X1、付款关联、金额与币种。Stripe 用签名验证回调来源，并要求按原始报文校验~\cite{stripe-webhooks}。签名证明来源，字段核对确定这份证据是否解释当前 P1。来自真实平台的另一商户通知，或金额 3500 的收款，都不能推进当前 C1。
+
+\CSevenFigure{ch07-original08}{回调、主动查询与对账共享核对和本地提交路径}{fig:ch07-merge}
+
+取得足够成功证据以后，本地事务锁定 C1，核对已有结论，保存 X1 和平台结果，建立 O1，保存包含 O1 的支付结果，同时把 P1 改为 \code{paid}，共同提交为 R。订单表对 P1、C1 分别唯一，C/P 联合外键核对二者归属，平台范围与 X1 也共同唯一。其他入口携同一 X1 到达时，等待这个事务，随后恢复同一 O1。这里共同发布的是本地证据、订单和状态，平台资金已经在 E 中提交。
+
+若 R 提交以前退出，O1、结果与状态共同回滚。平台已有一笔收款，余额 7000，本地却还没有订单。恢复者按原 C1 查询，再做 R，建立唯一 O1，履约状态仍从 \code{unfulfilled} 开始。后来的重复回调和查询都恢复该订单。
+
+合流路径还要说明拒绝、重复和异常的出口。事务外先验证来源，把平台报文转换为可比较证据，包含平台范围、本地 C、付款关联、币种、金额、证据类别和存在时的 X。转换保留平台原语义，处理中或单次尝试过期继续作为相应观察，不能转换成整个身份的最终拒绝。以下过程从已经验证的观察 \code{e} 开始：
+
+\begin{BookCode}
+开始本地事务，按 e.local_charge_id 锁住 C，读取其 P
+找不到 C：回滚，转入未关联证据核查
+若是回调：
+    读取同平台范围、event_id 的已处理收件
+    原内容不同：保存内容冲突，提交，保留业务状态
+    原内容相同：结束事务，返回当前完整业务响应
+    尚无收件：插入原 payload
+核对 e 与固定支付输入及已知 X
+不匹配：保存不匹配观察，提交，保留原业务状态
+只拒绝单次尝试：保存尝试观察，提交，保留原结论
+只证明未来已关闭，既往或已受理结局未明：
+    保存关闭观察，提交，保留原结论并继续核查
+较早的处理中：保存旧观察，提交，返回原结论
+与已有终态相同：保存同一事实观察，提交，返回原结果
+与已有终态矛盾：保存冲突观察，提交，进入核查
+尚不足以确定结局：保存未决观察，提交，保持等待
+其余分支：分别发布成功或身份最终拒绝
+\end{BookCode}
+
+这里的返回内容，都从同一 P/C 读取受理内容、当前阶段和已保存的 \code{payment\_result}。迟到尝试过期可以与早先成功同时成立，因而只增加尝试观察。同一成功事实匹配固定输入和原 X，同一最终拒绝匹配原身份终结依据及原因。每次变化的诊断编号不改变这些业务字段。
+
+观察与处理决定一起提交，核查者才能知道证据如何处置。来源未验证的报文不进入业务迁移。可信孤立证据若没有关联 C，由独立收集通道保存，不能硬插入带 C 外键的观察表。
+
+首次成功分支从真实 C 的 \code{purchase\_id} 取得 P，核对 X、币种和金额，再建立订单。结果采用实际插入返回的订单编号：
+
+\begin{BookCode}
+要求 C.evidence_state = unconfirmed，且 P 等待付款
+插入订单(P, C, e.provider_scope, e.provider_charge_id,
+         原金额, 原币种, unfulfilled)
+    RETURNING order_id
+要求恰好返回一行，记为 O
+构造完整 payment_result：
+    purchase_id=P，charge_id=C，order_id=O，status=succeeded
+    provider_scope=e.provider_scope
+    provider_charge_id=e.provider_charge_id
+    currency=原币种，amount_minor=原金额
+条件更新 C WHERE charge_id=C AND evidence_state=unconfirmed
+    保存 succeeded、X、原平台结果及完整 payment_result
+条件更新 P WHERE purchase_id=P AND business_state=awaiting_payment
+    保存 business_state=paid
+要求两次更新各影响一行，保存成功观察，提交 R
+读取并返回该 P/C 的完整业务响应
+\end{BookCode}
+
+首次身份最终拒绝使用另一份完整结果，保留固定支付身份和原因，没有 O 和成功 X。尚无本地订单只用于检查本地关系，平台此前没有成功由覆盖原身份的证据确认：
+
+\begin{BookCode}
+要求 C.evidence_state = unconfirmed，P 等待付款，且无订单
+要求 e 确认该固定身份此前没有成功收款
+要求 e 排除所有已受理、在途及未来尝试成功的可能
+构造完整 payment_result：
+    purchase_id=P，charge_id=C，status=rejected_final
+    currency=原币种，amount_minor=原金额，reason=e.reason
+条件更新 C WHERE charge_id=C AND evidence_state=unconfirmed
+    保存 rejected_final、原平台结果及完整 payment_result
+条件更新 P WHERE purchase_id=P AND business_state=awaiting_payment
+    保存 business_state=payment_rejected
+要求两次更新各影响一行，保存拒绝观察，提交 R
+读取并返回该 P/C 的完整业务响应
+\end{BookCode}
+
+\subsection*{受控本地事务怎样处理异常与提交未知}
+
+所有分支共享同一 C 行锁，购买状态也只由这条路径修改。条件更新零行，说明前提或数据关系不符合预期，整笔 R 回滚，再按原 C 重读。唯一约束异常同样撤销收件、订单、观察、结果和状态。若 X 已归属另一 C，回滚后另开事务保存可关联冲突，再核查归属。R 的确认丢失也先查原 C：已提交就恢复，未提交才重做。收件与业务迁移共同回滚，重复投递才可以再次进入尚未完成的处理。
+
+后续本地事务沿用这条恢复次序：预期写入失败先整笔回滚，事务结束后按原业务身份核对已提交关联，再选择恢复、重试或登记冲突。每章会指出新增加的预期行数和关联对象。平台 E 已经提交的扣款位于另一提交域，本地回滚结束以后，恢复者继续以原 C 查明并合流它。
+
+这些规则说明每次取得处理机会以后怎样迁移。回调在应答前如何持久接收，断网后如何重投，谁扫描未处理证据，则由相应的接收和恢复机制提供机会。
+
+\subsection*{重复和乱序怎样保住已确定事实}
+
+平台通知可能重投多次。\code{callback\_receipts} 按平台范围和事件编号唯一保存原内容。同一事件同内容再次到达，恢复当前业务响应；相同事件编号带不同内容，保存冲突并核查，保留原收件和业务事实。不同 C 的并发收件也经过收件表唯一键仲裁，冲突后回滚重读内容。插入失败本身不足以证明内容相同。事件编号标识平台通知事件，X1 标识资金对象。
+
+只按事件编号去重还不完整。把平台通知事件记为 PEV1、PEV2，它们可以报告同一 X1，主动查询和账单也不共用 PEV1。Stripe 官方文档同时提醒同一事件可能重复，以及不同事件对象可能关联同一对象和事件类型~\cite{stripe-webhooks}。对应到这里，PEV1 的收件记录只能识别它自己的重投；C1 已成功且仍是同一 X1，才让其他事件和查询也恢复原 O1。
+
+平台先产生处理中 PEV0，再产生成功 PEV1，而 PEV1 先到，本地便已提交 \code{succeeded}。PEV0 晚到，表达的是更早阶段；直接用每份报文覆盖 C1，会把本地退回未决。正确处理保留成功，把 PEV0 记为旧观察。通知到达次序说明传输先后，业务先后取决于平台明确的对象版本或状态规则。
+
+\CSevenFigure{ch07-evidence}{新证据按业务含义归并，已确认的终态保持稳定}{fig:ch07-evidence}
+
+\code{succeeded} 与 \code{rejected\_final} 是不同终态，不能只给它们排一个大小顺序。收到矛盾终态时，保留证据并核查范围、对象和平台语义。平台要求更换付款方式，也可能只结束本次尝试；同一对象以后还能确认，就不足以终结整个 C1。适配层核对拒绝所覆盖的既往结果与后续执行路径，区分单次尝试拒绝、仅未来关闭和固定身份最终拒绝。
+
+让主动查询、PEV1 重投和 PEV2 并发处理同一 X1，它们在 C1 行锁前后依次检查，只有第一个事务首次发布成功、建立 O1，其余恢复已有事实。旧处理中通知随后到达，P1 保持 \code{paid}；金额 3500 的通知进入不匹配核查，成功后的矛盾拒绝进入冲突核查。平台账本仍只有一条 3000 分流水。
+
+对账可以补回丢失的成功，但逐笔定位依赖明细范围。只有汇总金额，无法区分恰好同为 3000 分的两次购买。逐笔账单应有商户范围、X1、C1 或可确定还原的关联、币种和金额。查询时段、分页、状态过滤和账单关闭规则，也决定查空的含义。找到并核对 X1 可以确认收款；没有找到时，就按该明细是否完整、是否覆盖最终截止来判断。
+
+\subsection*{受理内容、支付结果与当前进度}
+
+v1 的终态形成于一次完整本地提交。v2 允许先返回受理凭据，再查询付款进度。凭据中的 P1、C1、\(S\) 和成交依据固定，\code{awaiting\_payment} 则是当次进度，之后可以推进为 \code{paid}。响应把这些内容分字段表示。
+
+A 已提交、尚未确认平台结局时，首次 POST 返回：
+
+\begin{BookCode}
+HTTP/1.1 202 Accepted
+{
+  "result_version": "purchase-result-external-v2",
+  "acceptance": {
+    "purchase_id": "P1", "charge_id": "C1",
+    "operation": {
+      "account_id": 1,
+      "action": "purchase.create.external.v2",
+      "session_id": "E1", "idempotency_key": "K1"
+    },
+    "product_id": "paper-001", "quantity": 1,
+    "quote_id": "Q7", "currency": "CNY",
+    "amount_minor": 3000
+  },
+  "progress": {"business_state": "awaiting_payment"},
+  "payment_result": null
+}
+\end{BookCode}
+
+\code{acceptance} 给出固定受理内容。查询入口用已认证账户、动作、E1、K1 定位同一 \(S\)，也可按 P1、C1 做经授权的业务查询。\code{progress} 表示本次读取的阶段。读取者沿原 P1/C1 映射，在同一数据库读取快照内取得固定受理、当前阶段与 C1 保存的支付结果，图~\ref{fig:ch07-response-read} 标出三个响应字段各自的来源。
+
+\CSevenFigure{ch07-response-read}{固定受理、当前进度和支付原结果从同一 P1/C1 读取快照组成完整响应}{fig:ch07-response-read}
+
+成功 R 提交以后，同参 POST 恢复或 \code{GET /v2/purchase-operations/K1} 查询返回：
+
+\begin{BookCode}
+HTTP/1.1 200 OK
+{
+  "result_version": "purchase-result-external-v2",
+  "acceptance": {
+    "purchase_id": "P1", "charge_id": "C1",
+    "operation": {
+      "account_id": 1,
+      "action": "purchase.create.external.v2",
+      "session_id": "E1", "idempotency_key": "K1"
+    },
+    "product_id": "paper-001", "quantity": 1,
+    "quote_id": "Q7", "currency": "CNY",
+    "amount_minor": 3000
+  },
+  "progress": {"business_state": "paid"},
+  "payment_result": {
+    "purchase_id": "P1", "charge_id": "C1", "order_id": "O1",
+    "status": "succeeded",
+    "provider_scope": "simulator:merchant-7:test:charge.v1",
+    "provider_charge_id": "X1",
+    "currency": "CNY", "amount_minor": 3000
+  }
+}
+\end{BookCode}
+
+另一条独立历史中，同样受理 P1、C1，平台给出 \code{policy\_declined}。这里的证据确认该身份此前没有收款，并排除所有已受理、在途及未来尝试成功，满足最终拒绝条件。本地保存拒绝 R 后，完整查询响应为：
+
+\begin{BookCode}
+HTTP/1.1 200 OK
+{
+  "result_version": "purchase-result-external-v2",
+  "acceptance": {
+    "purchase_id": "P1", "charge_id": "C1",
+    "operation": {
+      "account_id": 1,
+      "action": "purchase.create.external.v2",
+      "session_id": "E1", "idempotency_key": "K1"
+    },
+    "product_id": "paper-001", "quantity": 1,
+    "quote_id": "Q7", "currency": "CNY",
+    "amount_minor": 3000
+  },
+  "progress": {"business_state": "payment_rejected"},
+  "payment_result": {
+    "purchase_id": "P1", "charge_id": "C1",
+    "status": "rejected_final", "reason": "policy_declined",
+    "currency": "CNY", "amount_minor": 3000
+  }
+}
+\end{BookCode}
+
+三份对象采用相同的字段含义。\code{acceptance} 中的 \(S\)、P/C、商品和报价快照固定，\code{progress} 来自当前购买状态，\code{payment\_result} 来自保存的支付结论。成功与拒绝属于独立历史，成功有 O1、X1，拒绝没有它们。响应从同一数据库读取快照取得 P/C，避免两次独立读取拼出 \code{paid} 配空结果。通信尝试号可另放响应头，随尝试变化。
+
+v2 的进度可以推进，确定后的 \code{payment\_result} 稳定保存。客户端按结果版本分别保存受理凭据、当前进度和最终付款结论。订单以后履约，也不改写当初的支付结果。平台没有提供付款人当次余额时，本地不编造 \code{balance\_after\_minor}；前面演算的 7000 来自独立初态 10000 和已提交的 3000。
+
+同 \(S\) 异参继续报告冲突，保留原 P1、C1 及支付事实。同参找到 \code{awaiting\_payment}，返回原受理和当前进度，不再新建 C；找到保存的支付结论，恢复该结论。工作进程多次调用平台时，同样从原 C1 读取固定映射。

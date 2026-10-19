@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (intent) at (0,0) {多个 Range\\暂定值／write intent\\指向原事务记录};
+\node[box] (stage) at (4,0) {事务记录 STAGING\\检查登记的在途写\\是否成功复制};
+\node[good] (commit) at (8,0) {条件满足后\\隐式提交／成功回复};
+\node[box,text width=7.2cm] (clean) at (4,-2.6) {异步推进 COMMITTED 并解析意图\\后来读取者也可按事务记录解析};
+\draw[arr] (intent)--(stage);\draw[arr] (stage)--(commit);
+\draw[arr] (commit.south)--(8,-2.6)--(clean.east);
+
+\end{tikzpicture}

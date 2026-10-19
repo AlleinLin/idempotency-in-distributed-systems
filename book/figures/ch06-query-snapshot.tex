@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\draw[bookarrow] (0,0) -- (11.6,0);
+\node[booknode,text width=2.8cm] (query) at (1.7,1.3) {Q1 开始 SELECT\\快照中无 P1};
+\node[bookresult,text width=2.8cm] (commit) at (5.5,1.3) {R1 完整提交\\P1 已成立};
+\node[booknode,text width=2.8cm] (reply) at (9.3,1.3) {Q1 的 404 到达\\报告原读取时点};
+\draw[bookarrow] (query) -- (commit);
+\draw[bookarrow] (commit) -- (reply);
+\foreach \x in {1.7,5.5,9.3}{\draw[dashed,draw=Muted] (\x,.7) -- (\x,0);}
+\node[booknote,text width=10.5cm] at (5.5,-.9) {404 到达时 P1 可以已经提交；后续查询仍按完整 S 读取\\若明确成功返回后才开始查询，应在保留的权威记录中读到终态};
+\end{tikzpicture}
+\caption{查询与购买重叠时，查空快照可以早于购买提交}
+\label{fig:ch06-query-snapshot}
+\end{figure}

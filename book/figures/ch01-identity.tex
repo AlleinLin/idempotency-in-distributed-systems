@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (1.9,.8) {HTTP 请求};
+\node[booknote] at (7,.8) {购买身份};
+\node[booknote] at (11.7,.8) {已经保存的业务效果};
+\node[booknode,text width=3.6cm] (r1) at (1.9,0) {R1：POST 相纸};
+\node[booknode,text width=2.6cm] (p1) at (7,0) {购买 P1};
+\node[bookresult,text width=3.4cm] (d1) at (11.7,0) {订单 O1，流水 D1\\扣除 3000 分};
+\node[booknode,text width=3.6cm] (r2) at (1.9,-1.8) {R2：GET 购买 P1};
+\node[booknode,text width=3.6cm] (r3) at (1.9,-3.7) {R3：再次 POST 相纸\\请求体与 R1 相同};
+\node[booknode,text width=2.6cm] (p3) at (7,-3.7) {新的购买编号};
+\node[bookresult,text width=3.4cm] (d3) at (11.7,-3.7) {新的订单、流水\\再扣除 3000 分};
+\draw[bookarrow] (r1)--(p1);
+\draw[bookarrow] (p1)--(d1);
+\draw[bookarrow,dashed] (r2.east)-|node[below,pos=.25,font=\footnotesize]{查询同一购买}(p1.south);
+\draw[bookarrow] (r3)--(p3);
+\draw[bookarrow] (p3)--(d3);
+\end{tikzpicture}
+\caption{查询请求有自己的请求编号，仍指向原购买。当前接口的另一次 POST 则受理一笔新购买。}
+\label{fig:ch01-identity}
+\end{figure}

@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[bookarrow] (0,0)--(13,0);
+\foreach \x/\t in {1/生成 K1,4/持久保存操作记录,7.5/发送 R1,11/接收业务结果}{
+ \fill[Ink] (\x,0) circle (2pt);
+ \node[booknote,text width=3cm,anchor=south] at (\x,.22) {\t};
+}
+\node[bookresult,text width=3.2cm] (c1) at (5,-1.4) {此处崩溃\\可能尚未发送};
+\node[bookresult,text width=3.2cm] (c2) at (9.1,-1.4) {此处崩溃\\远端结果可能未知};
+\draw[bookalert] (5,0)--(c1);
+\draw[bookalert] (9.1,0)--(c2);
+\node[booknode,text width=8.2cm] (r) at (7,-3) {重启后读取原账户、动作、K1 与已确认输入\\用 K1 继续，服务查询或完成同一操作};
+\draw[bookarrow] (c1)--(r);
+\draw[bookarrow] (c2)--(r);
+\end{tikzpicture}
+\caption{先保存身份再发送，两处客户端崩溃都能恢复到 K1。}
+\label{fig:ch03-client-save}
+\end{figure}

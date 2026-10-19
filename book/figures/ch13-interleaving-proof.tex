@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[note,text width=12cm] at (5,4.8) {共同前提：f 幂等，f 与 g 在允许状态上交换};
+\node[box,text width=3cm] (a) at (0,3) {执行历史\\$f\to g\to f$\\最终 $f(g(f(s)))$};
+\node[box,text width=3cm] (b) at (5,3) {交换后两步\\$f\to f\to g$\\最终 $g(f(f(s)))$};
+\node[good,text width=3cm] (c) at (10,3) {合并相邻重复\\$f\to g$\\最终 $g(f(s))$};
+\draw[arr] (a)--node[note,above]{交换律}(b);
+\draw[arr] (b)--node[note,above]{幂等性}(c);
+\node[note,text width=12cm] at (5,1.1) {标签：加入 gift $\to$ 加入 priority $\to$ 再加入 gift\\两条路径都得到 $\{\mathrm{gift},\mathrm{priority}\}$};
+\end{tikzpicture}

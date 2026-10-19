@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\foreach \x/\n [count=\i] in {0/Init,2.3/Invoke,4.6/冻结,6.9/Invoke,9.2/Shutdown}{
+\node[box,text width=1.45cm] (n\i) at (\x,0) {\n};}
+\foreach \a/\b in {1/2,2/3,3/4,4/5}{\draw[arr] (n\a)--(n\b);}
+\node[warn,text width=9.8cm] (r) at (4.6,-2.1) {失败可以重置运行时，再执行初始化\\全局内存与临时文件具有执行环境局部性};
+\node[good,text width=9.8cm] at (4.6,-4) {持久权威：原 S／P-C-T／未决责任／原结果\\外部平台：原 scope／pay-C／X1};
+\draw[ctl] (n2.south)--(2.3,-1)--(r.north);
+
+\end{tikzpicture}

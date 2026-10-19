@@ -1,0 +1,12 @@
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[anchor=east] at (0,1) {过去甲};
+\node[anchor=east] at (0,-.5) {过去乙};
+\draw[flow] (.2,1)--(4,1);\draw[flow] (.2,-.5)--(4,-.5);
+\node[event] at (1,1) {};\node[above] at (1,1.1) {已加入试剂};
+\node[above] at (1,-.4) {尚未加入试剂};
+\node[align=center,anchor=west] at (4.5,.25) {交接时都看到\\同一步骤栏空白};
+\draw[flow,draw=Accent] (4,1)--(4.5,.4);\draw[flow,draw=Accent] (4,-.5)--(4.5,.1);
+\end{tikzpicture}
+\caption{相同的空白记录，可以来自两段不同的过去。}\label{fig:lab-fork}
+\end{figure}

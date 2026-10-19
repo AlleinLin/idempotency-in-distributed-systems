@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=9.5cm] (base) at (5.5,4.2) {基础：余额等于初始值，购买、订单、流水为空；不变量成立};
+\node[booknode,text width=9.5cm] (current) at (5.5,2.9) {归纳假设：某个当前已提交状态满足全部不变量};
+\draw[bookarrow] (base) -- (current);
+\node[booknode,text width=3cm] (internal) at (1.6,1.2) {内部步骤或回滚\\外部状态保持};
+\node[bookresult,text width=3cm] (success) at (5.5,1.2) {成功或拒绝提交\\逐项核对新增关系};
+\node[booknode,text width=3cm] (read) at (9.4,1.2) {重放、冲突、查询\\保留原业务状态};
+\draw[bookarrow] (current) -- (internal);
+\draw[bookarrow] (current) -- (success);
+\draw[bookarrow] (current) -- (read);
+\node[booknode,text width=9.5cm] (next) at (5.5,-.6) {各类允许迁移后的下一状态仍满足不变量；继续应用归纳步骤};
+\draw[bookarrow] (internal) -- (next);
+\draw[bookarrow] (success) -- (next);
+\draw[bookarrow] (read) -- (next);
+\end{tikzpicture}
+\caption{从基础建立归纳，再对任意当前状态逐类检查下一步}
+\label{fig:ch06-induction}
+\end{figure}

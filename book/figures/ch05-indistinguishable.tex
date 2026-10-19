@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (0,.6) {同一初始余额 10000};
+\node[booknode,text width=4.2cm] (a) at (0,-.4) {H1：S1 扣 3000 得 7000\\随后 S2 扣 1000 得 6000};
+\node[booknode,text width=4.2cm] (b) at (0,-2.3) {H2：S2 扣 1000 得 9000\\随后 S1 扣 3000 得 6000};
+\node[booknode,text width=3cm] (o) at (5,-1.3) {共同可读资料\\S1 已处理、原输入\\当前余额 6000};
+\node[bookresult] (r1) at (9,-.4) {S1 应返回 7000};
+\node[bookresult] (r2) at (9,-2.3) {S1 应返回 6000};
+\draw[bookarrow] (a)--(o);
+\draw[bookarrow] (b)--(o);
+\draw[bookalert] (o)--(r1);
+\draw[bookalert] (o)--(r2);
+\end{tikzpicture}
+\caption{只保存处理标记与当前余额，会把需要不同原结果的两条历史混为一谈。}
+\label{fig:ch05-indistinguishable}
+\end{figure}

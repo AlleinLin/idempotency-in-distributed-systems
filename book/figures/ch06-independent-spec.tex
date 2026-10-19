@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=3.1cm] (input) at (1.7,2.1) {独立输入规则\\Q7、数量 1、CNY\\应付金额 3000};
+\node[booknode,text width=3.1cm] (state) at (6,2.1) {顺序对象\\余额 b 与终态映射 M\\按完整 S 处理};
+\node[bookresult,text width=3.1cm] (expected) at (10.3,2.1) {独立预期\\新 S 判断资金\\旧 S 返回原结果};
+\draw[bookarrow] (input)--(state);
+\draw[bookarrow] (state)--(expected);
+\node[booknode,text width=4.6cm] (impl) at (3.5,-.25) {被检查的实现迁移\\身份、余额、效果、原结果};
+\node[booknode,text width=4.6cm] (compare) at (9,-.25) {逐项比较投影和输出\\核对金额、身份、输入、结论};
+\draw[bookarrow] (impl)--(compare);
+\draw[bookalert] (expected.south)--(compare.north);
+\node[booknote,text width=11cm] at (6,-1.65) {首次提交按原尝试的输入求预期；查询在快照点读取\\预期不取自被检查代码的成功判断，也不从实际流水反推金额};
+\end{tikzpicture}
+\caption{独立顺序规格先给出合法业务决定，再核对每个实现迁移与返回内容}
+\label{fig:ch06-independent-spec}
+\end{figure}

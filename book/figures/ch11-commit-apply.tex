@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\foreach \x/\n/\v in {0/41/已有状态,2.5/42/已有状态,5/43/已有状态,7.5/44/S1,10/45/另一命令,12.5/46/候选}{
+  \node[note] at (\x,3.2) {位置 \n};
+  \node[cell,minimum width=2.25cm,minimum height=.9cm] at (\x,2.3) {\v};}
+\draw[green!40!black,line width=2pt] (-1.1,1.5)--(6.1,1.5);
+\draw[Blue,line width=2pt] (-1.1,.8)--(11.1,.8);
+\node[note,anchor=west] at (-1.1,.1) {应用边界 43：查询 M 尚无 S1};
+\node[note,anchor=west] at (-1.1,-.7) {提交边界 45：44 中的 S1 已进入提交前缀，等待应用};
+\draw[arr] (7.5,1.5)--(7.5,-1.5);
+\node[good,text width=5.6cm] at (7.5,-2.3) {依次应用 44、45 后读取\\M(S1) 出现，取得真实 P 与原结果};
+\end{tikzpicture}

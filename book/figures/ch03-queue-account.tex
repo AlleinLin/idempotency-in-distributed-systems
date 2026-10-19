@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4cm] (q) at (2,0) {待确认操作\\账户 1、K1、Q7\\原输入保持不变};
+\node[booknode,text width=3.5cm] (auth) at (7,0) {恢复时重新认证\\核对记录所属账户};
+\node[booknode,text width=3.4cm] (same) at (11.8,1) {仍为账户 1\\继续 K1};
+\node[bookresult,text width=3.4cm] (other) at (11.8,-1) {当前是账户 2\\暂停账户 1 的队列};
+\draw[bookarrow] (q)--(auth);
+\draw[bookarrow] (auth)--(same);
+\draw[bookalert] (auth)--(other);
+\node[booknote,text width=12cm] at (6.7,-2.2)
+ {可更新访问凭据和本次请求 ID\\账户、身份和已确认输入继续取自原操作};
+\end{tikzpicture}
+\caption{账户切换需要拦住后台队列，防止把旧购买带入另一账户。}
+\label{fig:ch03-queue-account}
+\end{figure}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.2cm] (a) at (0,3) {标签对象\\加入 gift / priority\\重复加入同一成员};
+\node[good,text width=4.2cm] (b) at (6,3) {集合并\\保留两个标签\\重复传播保持成员资格};
+\draw[arr] (a)--(b);
+\node[box,text width=4.2cm] (c) at (0,1) {进度投影\\已核验阶段 2\\迟到阶段 1};
+\node[good,text width=4.2cm] (d) at (6,1) {取较大阶段\\显示继续为 2\\同对象、完整前驱依据};
+\draw[arr] (c)--(d);
+\node[warn,text width=10cm] at (3,-1) {付款受理产生原 C；实际发货沿原 dispatch 身份执行\\集合和进度传播已有事实，业务入口形成效果};
+
+\end{tikzpicture}

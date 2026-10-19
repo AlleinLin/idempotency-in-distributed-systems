@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\draw[arr] (0,0)--(13.8,0);
+\foreach \x/\title/\desc in {1/{平台已提交}/{X1 已存在},6/{服务端已保存}/{J/W 有原结果},12/{客户端获知}/{Alice 取得原响应}}{
+  \fill[Blue] (\x,0) circle (3pt);
+  \node[note,text width=3.5cm] at (\x,1) {\title\\\desc};
+}
+\node[warn,text width=4.3cm] at (3.5,-1.2) {等待扫描器被调度\\查询原身份／数据库可提交};
+\node[warn,text width=4.3cm] at (9,-1.2) {等待通道恢复与客户端查询\\Alice 保存原 S 与输入};
+\node[note,text width=13cm] at (6.5,-2.6) {每段进展分别写出执行机会与可用性条件，前一位置已保存的成功事实继续存在。};
+\end{tikzpicture}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\foreach \x/\t in {0/消费事务,4.2/独立扫描器,8.4/发货平台,12.6/意图保存域}
+  {\node[font=\bfseries\sffamily] at (\x,0) {\t};\draw[lane] (\x,-.4)--(\x,-7);}
+\node[good,text width=2.8cm] at (0,-1.1) {I/B/F 与意图提交\\随后 ACK 原消息};
+\draw[ctl] (0,-2)--node[above,note]{提交通知} (4.2,-2);
+\draw[arr] (4.2,-2.7)--node[above,note]{扫描待办／领取} (12.6,-2.7);
+\draw[arr] (4.2,-3.5)--node[above,note]{原 dispatch 键／body} (8.4,-3.5);
+\node[good,text width=2.8cm] at (8.4,-4.3) {原返回与效果提交};
+\draw[arr] (8.4,-5)--(4.2,-5);
+\node[warn,text width=2.6cm] at (4.2,-5.6) {退出：尚未标完成};
+\draw[arr] (4.2,-6.6)--node[below,note]{后继周期扫描：重用原键找回，再标完成} (12.6,-6.6);
+\end{tikzpicture}

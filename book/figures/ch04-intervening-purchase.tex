@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.7cm] (p1) at (2,0) {S1 首次购买\\10000 扣 3000 → 7000};
+\node[booknode,text width=3.7cm] (p2) at (7,0) {S2 独立购买\\7000 扣 1000 → 6000};
+\node[bookresult,text width=3.7cm] (retry) at (12,0) {S1 迟到重试\\只读取 P1 原结果};
+\draw[bookarrow] (p1)--(p2);\draw[bookarrow] (p2)--(retry);
+\node[booknode,text width=3.7cm] (d1) at (2,-1.8) {P1、O1、D1\\当次余额 7000};
+\node[booknode,text width=3.7cm] (d2) at (7,-1.8) {P2、O2、D2\\当前余额 6000};
+\node[booknode,text width=3.7cm] (rr) at (12,-1.8) {返回 P1、O1、D1\\保留当次 7000};
+\draw[bookarrow] (p1)--(d1);\draw[bookarrow] (p2)--(d2);\draw[bookarrow] (retry)--(rr);
+\node[booknote,text width=13cm] at (7,-3.1) {原操作快照与当前账户分别保留时点；重试不覆盖 S2 的已提交变化};
+\end{tikzpicture}
+\caption{另一笔合法扣款插入以后，迟到重试回到原购买而不再更新余额。}
+\label{fig:ch04-intervening-purchase}
+\end{figure}

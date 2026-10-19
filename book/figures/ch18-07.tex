@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (s) at (0,1.2) {旧快照\\C1／T1＝未知\\原 scope／pay-C1};
+\node[good] (x) at (4,1.2) {独立平台\\按 pay-C1\\成功 X1};
+\node[box] (r) at (8,1.2) {较新本地状态\\原结果／O1／EV1};
+\node[warn] (restore) at (0,-1.7) {灾难恢复旧快照\\读出原 C1／T1};
+\node[good] (query) at (4,-1.7) {查询原操作\\取得同一 X1};
+\node[good] (done) at (8,-1.7) {汇合原结果\\重建本地后续};
+\draw[arr] (s)--(x);\draw[arr] (x)--(r);\draw[arr] (s)--(restore);\draw[arr] (restore)--(query);\draw[arr] (query)--(done);\draw[ctl] (x)--(query);
+
+\end{tikzpicture}

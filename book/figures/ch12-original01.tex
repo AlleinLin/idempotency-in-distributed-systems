@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[note,text width=14cm] at (5.5,3.4) {共同初态：余额 10000，E1 截止 10:00；S1/K1 购买金额 3000};
+\node[good] (a) at (0,1.8) {09:00 已完成\\P1/O1/D1，余额 7000\\原响应丢失};
+\node[warn] (b) at (5.5,1.8) {09:10 清理 M(S1)\\E1 继续有效\\逐笔 TTL 已到};
+\node[warn] (c) at (11,1.8) {09:20 旧 K1 重试\\M 读空就再次首次执行\\P2/O2/D2，余额 4000};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[note,text width=14cm] at (5.5,.1) {信息被删掉，原效果仍存在；入口还允许旧身份参加首次受理};
+\end{tikzpicture}

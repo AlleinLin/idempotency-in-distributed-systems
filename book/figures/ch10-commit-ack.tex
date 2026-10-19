@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\foreach \x/\lab in {0/RabbitMQ,4.4/消费者 W1,8.8/履约数据库}{
+ \node[box,text width=2.6cm] at (\x,5.3) {\lab};
+ \draw[lane] (\x,4.7)--(\x,-4.8);
+}
+\draw[arr] (0,4.1)--node[note,above]{交付 M1：EV1，tag 7}(4.4,4.1);
+\draw[arr] (4.4,3.1)--node[note,above]{Q：绑定 I1，按 B1 建 F1、回报}(8.8,3.1);
+\node[good,text width=3.5cm] at (8.8,1.9) {共同提交 Q\\I1.done＋F1(501)＋回报};
+\draw[arr] (8.8,.4)--node[note,above]{提交确认}(4.4,.4);
+\node[warn,text width=2.7cm] at (4.4,-.65) {W1 在 ACK 前退出};
+\draw[arr] (0,-2)--node[note,above]{连接失效后重新交付同 EV1}(4.4,-2);
+\draw[arr] (4.4,-3)--node[note,above]{W2 按 I1 读取终态与真实 F1}(8.8,-3);
+\draw[arr] (4.4,-4.2)--node[note,above]{W2 用当前 channel/tag 确认}(0,-4.2);
+\node[note,text width=12cm] at (4.4,-5.55) {Q 提交以前退出：整笔回滚后沿 I1/B1 重试\\Q 已提交、ACK 以前退出：保存的完整结果给后来者提供确认依据};
+\end{tikzpicture}

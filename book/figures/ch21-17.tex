@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[box] (m) at (0,0) {模型提出动作\\商品／金额／数量};
+\node[good] (d) at (4,0) {持久决定／授权\\完整输入＋稳定 S};
+\node[good] (t) at (8,0) {工具网关\\绑定核验／原 C/T};
+\node[box] (c) at (0,-2.6) {图检查点／thread ID\\恢复控制流程};
+\node[warn] (u) at (4,-2.6) {节点超时\\外部结果可能未知};
+\node[good] (p) at (8,-2.6) {平台原键／X\\查询回原结果};
+\draw[arr] (m)--(d);\draw[arr] (d)--(t);\draw[arr] (t)--(p);
+\draw[ctl] (c)--(d);\draw[ctl] (u)--(p);
+\node[note,text width=11cm] at (4,-4.4) {改变计划先查原购买；退款创建新 RF，成功金额与未知占额共同受原收款约束。};
+
+\end{tikzpicture}

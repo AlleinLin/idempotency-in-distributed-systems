@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {作业尝试 a1\\候选数据文件};
+\node[box] (b) at (0,-2.4) {作业尝试 a2\\候选数据文件};
+\node[good] (m) at (4,-1.2) {表级提交\\元数据指针／事务日志\\冲突验证};
+\node[good] (s) at (8,-1.2) {读者固定快照\\只读已引用集合};
+\draw[arr] (a)--(m);\draw[arr] (b)--(m);\draw[arr] (m)--(s);
+\node[warn,text width=10.7cm] at (4,-4) {未引用候选：按引用和保留规则回收；源批次重放：另存来源身份与提交关联。};
+
+\end{tikzpicture}

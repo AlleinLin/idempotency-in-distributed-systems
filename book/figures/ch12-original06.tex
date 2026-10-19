@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\foreach \x/\q/\server/\client in {0/1/完成/缺失,3/2/完成/已有,6/3/完成/已有,9/4/未到/缺失}{
+  \node[cell] at (\x,3) {序号 \q};
+  \node[cell] at (\x,2.2) {\server};
+  \node[cell] at (\x,1.4) {\client};}
+\node[note,anchor=east] at (-1.3,2.2) {服务端};
+\node[note,anchor=east] at (-1.3,1.4) {客户端持久结果};
+\node[warn,text width=12cm] (a) at (4.5,-.1) {最大完成序号 = 3，最大已取得序号 = 3；连续确认水位 $h_{\rm ack}$ = 0};
+\node[good,text width=12cm] (b) at (4.5,-1.7) {补齐并持久保存 1 的响应后：firstIncomplete = 4，$h_{\rm ack}$ = 3};
+\draw[arr] (a)--(b);
+\end{tikzpicture}

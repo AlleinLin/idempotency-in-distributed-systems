@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[note,anchor=west] at (0,3.5) {确认前：n 项身份与 n 份完整响应};
+\draw[Blue,fill=blue!8] (0,2.3) rectangle (4.4,3);
+\draw[Gold,fill=orange!10] (4.4,2.3) rectangle (11.4,3);
+\draw[Blue,fill=black!6] (11.4,2.3) rectangle (13.3,3);
+\node at (2.2,2.65) {n\,m};
+\node at (7.9,2.65) {n\,r};
+\node at (12.35,2.65) {c};
+\draw[arr] (6.65,2)--(6.65,1.3);
+\node[note,anchor=west] at (0,.9) {确认后：L 约为 n\,m + w\,r + c};
+\draw[Blue,fill=blue!8] (0,-.3) rectangle (4.4,.4);
+\draw[Gold,fill=orange!10] (4.4,-.3) rectangle (7.8,.4);
+\draw[Blue,fill=black!6] (7.8,-.3) rectangle (9.7,.4);
+\node at (2.2,.05) {n\,m};
+\node at (6.1,.05) {w\,r};
+\node at (8.75,.05) {c};
+\node[note,text width=13.5cm] at (6.65,-1.2) {m 含原身份、输入与关联；选用适配时另计 U；未确认范围控制 w；会话期限与配额约束 n。分区宽度仅示结构。};
+\end{tikzpicture}

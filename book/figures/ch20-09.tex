@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[good] (o) at (0,0) {owner：driver\\创建原 ObjectRef\\管理相关元数据};
+\node[box] (w) at (4,0) {worker A\\执行远程函数\\产生对象值};
+\node[box] (s) at (8,0) {节点对象存储\\值的当前副本\\按需复制／传输};
+\node[good,text width=7.4cm] (r) at (4,-2.8) {worker B 持有引用并读取值\\owner、计算者、值位置分别关联};
+\draw[ctl] (o)--(w);\draw[arr] (w)--(s);
+\draw[ctl] (o.south)--(0,-2.8)--(r.west);
+\draw[arr] (s.south)--(8,-2.8)--(r.east);
+
+\end{tikzpicture}

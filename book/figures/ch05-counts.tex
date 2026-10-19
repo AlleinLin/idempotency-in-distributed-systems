@@ -1,0 +1,14 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3cm] (a) at (0,0) {R1：执行余额更新\\事务随后回滚};
+\node[booknode,text width=3cm] (b) at (5,0) {R2：更新并提交\\形成 P1 / O1 / D1};
+\draw[bookarrow] (a)--(b);
+\node[booknote] at (2.5,1) {两次尝试仍使用原 S};
+\node[booknote,text width=3.5cm] at (0,-2.0) {SQL 可执行两次\\回滚更新不形成扣款效果};
+\node[bookresult,text width=4cm] at (5,-2.0) {成功：终态 1，扣款效果 1\\拒绝：终态 1，扣款效果 0};
+\node[booknode,text width=9cm] at (2.5,-3.8) {另一合法 S2 可再形成一次扣款；各身份的计数分别计算};
+\end{tikzpicture}
+\caption{请求到达、语句执行、事务提交与业务生效使用不同的计数口径。}
+\label{fig:ch05-counts}
+\end{figure}

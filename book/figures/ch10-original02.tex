@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box,text width=5.2cm] (e1) at (0,4.5) {消息身份 I\\处理语义／可信来源／event／EV1\\绑定 EV1 完整原报文与原处理结果};
+\node[box,text width=5.2cm] (e2) at (7,4.5) {另一项接收身份\\同范围的 EV2，或 legacy-order-paid／O1\\各自绑定完整输入};
+\node[good,text width=6.3cm] (f) at (3.5,1.9) {效果身份 B=(O1, initial, initial:O1)\\同一初次履约授权，比较原效果输入\\唯一 F1：awaiting\_dispatch};
+\draw[arr] (e1)--(f);\draw[arr] (e2)--(f);
+\node[box,text width=5.2cm] at (0,-.2) {同事件输入：事件号、类型、版本、时间及快照\\再次接收需与原绑定相同};
+\node[box,text width=5.2cm] at (7,-.2) {同效果输入：P/C/O、账户、商品、数量、Q7\\CNY3000 与原平台范围／X1};
+\node[note,text width=12cm] at (3.5,-2.2) {部署和投递编号记录本次运行；独立 O2 取得自己的 B2\\独立审计消费者沿自己的处理语义建立合法审计效果};
+
+\end{tikzpicture}
+

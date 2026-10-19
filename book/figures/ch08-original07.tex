@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\node[warn,text width=5cm] at (0,3.2) {分离检查与写入};
+\node[good,text width=5cm] at (7,3.2) {资源同一事务内检查与写入};
+\node[box,text width=5cm] (a1) at (0,1.8) {W1 读到水位 7，通过检查};
+\node[box,text width=5cm] (a2) at (0,.4) {W2 提交水位 8 与新内容};
+\node[warn,text width=5cm] (a3) at (0,-1) {W1 无条件写旧内容\\水位 8，内容却已倒退};
+\node[box,text width=5cm] (b1) at (7,1.8) {W2 锁资源行\\检查 $8\geq 7$};
+\node[good,text width=5cm] (b2) at (7,.4) {水位 8 与新内容共同提交};
+\node[good,text width=5cm] (b3) at (7,-1) {W1 等待后读取水位 8\\第 7 代写入被拒绝};
+\foreach \a/\b in {a1/a2,a2/a3,b1/b2,b2/b3} \draw[arr] (\a)--(\b);
+\draw[lane] (3.5,3.8)--(3.5,-1.8);
+
+\end{tikzpicture}

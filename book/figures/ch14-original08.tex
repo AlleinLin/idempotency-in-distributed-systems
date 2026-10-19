@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box] (ev) at (0,1.2) {重建原 EV1\\原 O1 与完整 payload\\按原可信来源发布};
+\node[box] (i) at (5,1.2) {原接收 I\\fulfillment.initial.v1\\purchase-service/event/EV1};
+\node[good] (f) at (10,1.2) {原效果 B\\O1/initial/initial:O1\\实际 F=501};
+\draw[arr] (ev)--(i);\draw[arr] (i)--(f);
+\node[warn,text width=12cm] at (5,-1.2) {若另造 O2：B 变成 O2/initial/initial:O2，可产生另一项初次履约\\履约库自身回退时，先恢复其原 I/B/F/dispatch 证据，再开放效果入口};
+
+\end{tikzpicture}

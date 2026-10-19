@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/观察点一,5/观察点二,10/观察点三}{
+  \node[font=\bfseries] at (\x,0) {\n};
+}
+\node[box,text width=3.7cm] (a) at (0,-1.5)
+  {已发布M1\\旧BASE＋旧INCR\\＋新增INCR};
+\node[box,text width=3.7cm] (b) at (5,-1.5)
+  {已发布M1\\新BASE虽已完成\\尚未被清单选择};
+\node[good,text width=3.7cm] (c) at (10,-1.5)
+  {已发布M2\\新BASE＋所需INCR\\成为完整恢复入口};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[warn,text width=3.7cm] at (0,-4)
+  {新BASE未完成\\按M1恢复};
+\node[warn,text width=3.7cm] at (5,-4)
+  {单看最新文件会误选\\按M1恢复};
+\node[box,text width=3.7cm] at (10,-4)
+  {旧文件可在之后清理\\按M2恢复};
+\end{tikzpicture}

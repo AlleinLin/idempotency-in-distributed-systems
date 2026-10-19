@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box] (c) at (0,0) {C1 未决\\原范围／pay-C1\\原支付输入};
+\node[good,text width=4cm] (s) at (5,1.5) {稳定身份保护\\受保护的到达汇到原操作\\同键恢复原响应};
+\node[good,text width=4cm] (q) at (5,-1.5) {可信查询\\查到 X1 → 核验成功\\查空 → 尚无成功证据};
+\node[warn,text width=3.7cm] (u) at (10.7,-1.5) {旧请求可能在途\\取得终结或关闭依据\\再决定后续动作};
+\draw[arr] (c)--(s);\draw[arr] (c)--(q);\draw[arr] (q)--(u);
+\node[note,text width=13cm] at (5.4,-3.1) {平台保护窗口、可能到达时间与结果取得期限共同决定安全恢复路径。};
+\end{tikzpicture}

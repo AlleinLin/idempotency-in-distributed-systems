@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm](p) at (0,0){平台账单 A17\\原商户／环境／截止};
+\node[box,text width=3.2cm](a) at (4.7,0){权威图像 L9000\\S/C/X／原结果};
+\node[box,text width=3.2cm](f) at (9.4,0){消费与履约图像\\EV/F／dispatch};
+\node[good,text width=6.5cm](j) at (4.7,-2.3){固定输入的关联与全字段比较\\对象编号＋原身份＋金额／币种};
+\draw[arr](p)--(j);\draw[arr](a)--(j);\draw[arr](f)--(j);
+\node[warn,text width=3cm](x) at (0,-4.6){平台有、权威无\\追查回退与身份来源};
+\node[warn,text width=3cm](m) at (4.7,-4.6){金额或关联冲突\\保存双侧证据调查};
+\node[good,text width=3cm](r) at (9.4,-4.6){一致或可解释迟到\\保存对齐依据};
+\draw[arr](j)--(x);\draw[arr](j)--(m);\draw[arr](j)--(r);
+\node[box,text width=9cm](c) at (4.7,-6.6){受控修复命令：原 C＋平台证据＋授权＋原命令 ID\\权威核验后提交观察；退款走独立 RF 与占额};
+\draw[ctl](x)--(c);\draw[ctl](m)--(c);
+\end{tikzpicture}

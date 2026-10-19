@@ -1,0 +1,130 @@
+% 第一章第三节：从客户端观察购买、查询与重复发送。
+前面的事务已经说明购买怎样保存。现在从客户端观察同一过程：通过 HTTP 发送请求、读取响应，再凭购买编号查询保留的记录。购买 API 把入口地址、输入字段和结果规则提供给调用程序；处理层把请求交给事务，在提交得到确认后返回结果。
+
+\subsection*{从一笔购买请求开始}
+
+Alice 选中 \code{paper-001} 后，客户端向购买入口发送 POST，即向指定地址提交处理的 HTTP 方法。下面用 \code{<access\_token>} 表示 Alice 的有效访问凭据，报文省略与讨论无关的头部：
+
+\begin{BookCode}
+POST /purchases HTTP/1.1
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{"product_id": "paper-001"}
+\end{BookCode}
+
+\code{Authorization} 使服务能够确认调用方及其有权使用的账户，\code{Content-Type} 说明请求体采用 JSON，用成员名和值表达输入；本例中 \code{product\_id} 的值为 \code{paper-001}。请求体是报文携带业务输入的部分，这里只提供商品编号；账户从已验证的身份中取得，金额从服务端目录中取得。
+
+账户 1 的初始余额为 10000 分，购买一包 3000 分的相纸后剩下 7000 分。成功响应采用 \code{201 Created}，在 \code{Location} 中给出购买详情地址，响应体这一数据部分包含购买、订单和扣款编号。下面仍只列出与讨论有关的报文内容：
+
+\begin{BookCode}
+HTTP/1.1 201 Created
+Location: /purchases/<purchase_id>
+Content-Type: application/json; charset=utf-8
+X-Request-ID: <request_id>
+
+{
+  "purchase_id": "<purchase_id>",
+  "product_id": "paper-001",
+  "order_id": "<order_id>",
+  "debit_id": "<debit_id>",
+  "status": "succeeded",
+  "amount_minor": 3000,
+  "currency": "CNY"
+}
+\end{BookCode}
+
+尖括号中的内容表示本次生成的编号。调用方保存实际返回的 \code{purchase\_id}，以后就能通过详情地址查询这笔购买。Alice 打开购买详情时，页面也会使用这个编号。
+
+HTTP 状态码表示本次接口处理的分类，响应体表达业务结果。这里的 201、\code{status: succeeded}、订单号和扣款号共同描述购买成功。图~\ref{fig:ch01-http} 标出了数据库提交、服务收到确认、客户端收到响应的先后顺序。检查业务数据时，还需要核对金额及记录之间的关联。
+
+接着保持同一账户，将商品换成 8000 分的 \code{paper-002}，再次发起购买：
+
+\begin{BookCode}
+POST /purchases HTTP/1.1
+Authorization: Bearer <access_token>
+Content-Type: application/json
+
+{"product_id": "paper-002"}
+\end{BookCode}
+
+账户余额只有 7000 分，接口返回 \code{409 Conflict}，业务状态为 \code{insufficient\_funds}。响应包含新购买编号、商品和金额，\code{order\_id}、\code{debit\_id} 为 \code{null}，并给出这条购买的 \code{Location}。数据库新增一条余额不足的购买记录，账户余额保持 7000 分。
+
+\input{figures/ch01-http.tex}
+
+成功和余额不足都是购买处理得到的确定结果。若数据库交互出现错误，接口可能返回 503，此时需要进一步核实数据库中的状态。提交阶段发生连接中断时，数据库可能已经保存了购买，只是确认消息未能传回；这个问题将在下一章展开。
+
+\subsection*{用购买编号读取持久结果}
+
+详情接口接受 \code{GET /purchases/\{purchase\_id\}}。GET 是请求读取指定资源表示的 HTTP 方法；这里读取购买详情。调用方从购买响应中取得实际的购买编号，再用相同身份查询：
+
+\begin{BookCode}
+GET /purchases/<purchase_id> HTTP/1.1
+Authorization: Bearer <access_token>
+\end{BookCode}
+
+GET 返回 \code{200 OK} 和已有的业务记录。它只读取数据，账户余额、订单和流水保持原样。处理 POST 的服务进程即使已经重启，新的进程仍可从数据库中取得这些记录。详情接口按当前接口约定组织响应，因此返回的头部或字段布局可以与先前 POST 的响应不同。
+
+查询从购买记录向订单、流水关联，并同时带上已经授权的账户编号。下面以命名参数表示调用时绑定的值，具体占位符写法由数据库接口决定：
+
+\begin{BookCode}
+SELECT p.purchase_id, p.product_id, p.amount_minor,
+       p.currency, p.status,
+       o.order_id, d.debit_id
+FROM purchases AS p
+LEFT JOIN orders AS o ON o.purchase_id = p.purchase_id
+LEFT JOIN debits AS d ON d.order_id = o.order_id
+WHERE p.purchase_id = :purchase_id
+  AND p.account_id = :account_id;
+\end{BookCode}
+
+查询条件中的 \code{:purchase\_id} 绑定待查的购买编号，\code{:account\_id} 绑定已经授权的账户编号。两处 \code{LEFT JOIN} 使余额不足的购买也能返回，此时订单和流水字段为空。若改成内连接，这类记录会被连接条件过滤掉，详情接口就会漏掉已经受理、因余额不足结束的购买。
+
+账户条件也有实际作用。Alice 知道另一个人的购买编号，仍然只能查询属于自己授权账户的记录。查不到时统一返回 \code{404}，既可以处理编号不存在，也可以避免向其他账户泄露购买情况。UUID 较难猜测，也仍然需要这项权限判断。
+
+假设同一购买编号被账户 2 的持有人用于查询，账户条件就会把它过滤掉，接口返回 404。若请求本身缺少有效凭据，服务则在执行数据库查询之前返回 401。这两步分别检查调用者身份和具体记录的访问权限。
+
+查询 P1 会继续给出 P1、O1、D1 和金额 3000。查询 P2 则返回 \code{insufficient\_funds}，订单与扣款为空。即使之后账户获得了更多钱，P2 的当次判断也不会跟着改变。
+
+购买详情和账户概览对应的时刻也不同。Alice 再成功购买一包 3000 分的相纸后，当前账户余额变为 4000 分；第一次购买的付款金额仍是 3000 分，D1 保存的扣后余额仍是 7000 分。图~\ref{fig:ch01-money-time} 将变化中的账户余额与保留历史值的流水分开画出。页面同时展示这三个值时，可以分别标为本次付款金额、当前账户余额和当次扣后余额。
+
+\input{figures/ch01-money-time.tex}
+
+\subsection*{给一次 HTTP 受理单独编号}
+
+现在观察一次调用中出现的几个编号。服务刚接到 HTTP 请求时生成 \code{request\_id}，开始购买处理时生成 \code{purchase\_id}，成功分支为订单和扣款使用 \code{order\_id}、\code{debit\_id}。访问日志把它们放在同一条记录里，关联格式如下：
+
+\begin{BookCode}
+request_id=R1 method=POST path=/purchases status=201
+purchase_id=P1 order_id=O1 debit_id=D1
+\end{BookCode}
+
+R1 指向这次 HTTP 处理，可以用来查响应状态；P1 指向购买；O1 指向成交订单；D1 指向本地扣款动作。日志将这些编号关联，便于从一次接口调用查到对应的业务数据。余额不足的请求也有请求编号和购买编号，订单与扣款编号则为空。
+
+查询 P1 会产生另一次 HTTP 请求，服务为这次查询生成请求编号 R2，业务对象仍是 P1。因此，\code{X-Request-ID} 随请求变化，\code{purchase\_id} 在多次查询中保持一致。排查 R1 可以了解最初的购买请求，排查 R2 可以了解后来的详情查询，两条请求都能关联到 P1。
+
+日志帮助我们从接口找到业务数据。业务记录本身也保存关联关系：订单通过外键引用购买，流水通过外键引用订单。即使日志已过保存期限，或日志服务暂时不可用，仍可沿业务表查出这笔购买。
+
+\subsection*{购买流程与扣款动作为什么分开}
+
+本章成功购买只有一张订单和一次扣款，因此 P1、O1、D1 总是一起出现。它们仍然记录不同对象。P1 描述服务受理并完成购买的过程，O1 保存成交内容，D1 表示账户减少这个动作。
+
+余额不足的 P2 只留下购买结果，订单和扣款为空。以后加入退款时，一笔购买还会关联原扣款与后续退款。退款记录应有自己的编号、金额和处理结果，并引用原扣款 D1。这样既保留购买时扣除的 3000 分，也能查到后来返还了多少、何时返还。
+
+付款路径也需要分别记录。使用站内余额时，D1 标识本地扣款；改用外部支付时，需要记录外部平台的付款编号，并将它关联到这笔购买。两种编号各自指向具体的付款动作，查询时可以据此找到相应账本中的记录。
+
+本章使用站内余额付款，购买、订单和扣款各有一个明确的记录位置。后续引入退款或外部付款时，再为新增动作补充相应记录。
+
+\subsection*{同样的 POST 再发一次会怎样}
+
+回到 Alice 的账户。前面的成功购买扣掉 3000，随后 8000 分购买被拒绝，余额仍为 7000。若现在再发送 \code{paper-001} 的 POST，服务会生成一组新的购买、订单和扣款编号，再扣 3000，余额变为 4000。
+
+两个成功请求的 JSON 可以完全相同，服务仍把它们当作两次新购买。Alice 可能确实要再买一包，也可能因为第一次迟迟没有响应而重新点击。现有请求体只提供商品编号，服务从中读不到两次发送之间的关系。
+
+订单上的 \code{UNIQUE(purchase\_id)} 检查同一个购买编号对应的订单数量。第一个请求生成 P1，第二个请求生成另一个编号，两笔购买各自建立一张订单，都能通过这个约束。图~\ref{fig:ch01-identity} 对比了查询原购买与发起新购买的两条路径。要识别客户端的重试，还需要一个能够跨请求沿用的操作身份。
+
+\input{figures/ch01-identity.tex}
+
+按这个过程继续演算，账户 1 的购买记录共有三条，订单和流水各两条，余额为 4000。后续核对也应采用这个状态：累计扣款 6000 分，初始 10000 分减去 6000 分，恰好得到当前余额。
+
+详情查询帮助已经取得 P1 的调用方读取 P1。如果调用方根本没有收到 P1，单靠这个接口，还无法判断应当查询哪条购买。第三章会建立可以跨请求保留的操作身份。在那之前，先保留这个具体问题：服务完成了购买，而调用方可能没有拿到查询入口。

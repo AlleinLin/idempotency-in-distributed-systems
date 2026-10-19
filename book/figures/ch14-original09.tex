@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.4cm] (j) at (0,1.6) {完整 J 范围\\$(b_0,b_{\rm cut}]$\\加以前未完成的 C};
+\node[box,text width=3.4cm] (p) at (5,1.6) {原平台范围/逐笔账本\\按原 key/C/X 核对\\保存分页与账期覆盖};
+\node[box,text width=3.4cm] (s) at (10,1.6) {原身份同域关闭\\成功 / H1 / 最终拒绝\\封住首次受理路径};
+\draw[arr] (j)--(p);\draw[arr] (p)--(s);
+\node[good,text width=3.4cm] (success) at (0,-1.3) {找到匹配 X1\\固定成功 $R_J$\\物化 O1/EV1/原结果};
+\node[warn,text width=3.4cm] (pending) at (5,-1.3) {accepted\_pending/H1\\保留未决 C/T\\只沿 H1 持续查询};
+\node[good,text width=3.4cm] (reject) at (10,-1.3) {{\scriptsize closed\_without\_success}\\过去、在途、未来覆盖\\固定原最终拒绝};
+\draw[arr] (p)--(success);\draw[arr] (s)--(pending);\draw[arr] (s)--(reject);
+\node[note,text width=13cm] at (5,-3) {普通查空没有封闭后续路径；没有足够证据的 C 留在台账，不自动换键付款。};
+
+\end{tikzpicture}

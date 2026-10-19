@@ -1,0 +1,14 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=3cm] (p) at (0,0) {P1 原终态：成功\\D1 扣款 3000};
+\node[booknode,text width=3cm] (o) at (5,0) {O1 已创建\\随后进入履约};
+\node[booknode,text width=3cm] (f) at (5,-2) {发货或后续退款\\退款 F1 引用 D1};
+\node[booknote,text width=4cm] (r) at (0,-2) {恢复 P1 继续返回原成功、原订单与原扣款编号};
+\draw[bookarrow] (p)--(o);
+\draw[bookarrow] (o)--(f);
+\draw[bookalert] (p)--(r);
+\end{tikzpicture}
+\caption{订单履约与退款增加后续事实，原购买的已提交结论仍然保留。}
+\label{fig:ch05-operation-order}
+\end{figure}

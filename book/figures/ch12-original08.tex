@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=4.6cm] (a) at (0,3.3) {E1 活动\\完整结果 / $M_{\min}$ / U\\保存水位及固定截止};
+\node[box,text width=4.6cm] (b) at (6.4,3.3) {E1 关闭并收齐在途 A\\完成记录可整段回收\\未完成 C/T 保留};
+\node[good,text width=4.6cm] (c) at (12.8,3.3) {删除 E1 活动行\\旧来件查不到 E1\\一律拒绝旧入口};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=13cm] at (6.4,.8) {登记器保留持久分配进度，只签发从未分配的新 E2；旧许可不能补建 E1};
+\node[note,text width=13cm] at (6.4,-.6) {会话代次、Raft 任期与任务领取代次，分别比较各自对象的资格};
+\end{tikzpicture}

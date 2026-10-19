@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (a) at (0,0) {购买库 A\\P/C＋原平台身份\\T 保存恢复工作};
+\node[box,text width=3.3cm] (e) at (4.5,0) {平台 E\\按固定身份仲裁\\保存资金结果 X};
+\node[good,text width=3.7cm] (r) at (9,0) {购买库 R\\订单＋原结果＋EV\\结束支付任务 T};
+\node[box,text width=3.3cm] (broker) at (9,-3) {消息代理\\保留副本与投递责任\\可多次交付同一 EV};
+\node[good,text width=3.6cm] (q) at (4.5,-3) {履约库 Q\\I/B/F＋原处理结果\\保存回报与后续工作};
+\node[box,text width=3.4cm] (next) at (0,-3) {购买库回报／外部发货\\各自核验输入与身份\\保存本段效果和证据};
+\draw[arr] (a)--(e);
+\draw[arr] (e)--(r);
+\draw[arr] (r)--(broker);
+\draw[arr] (broker)--(q);
+\draw[arr] (q)--(next);
+\node[note,text width=12cm] at (4.5,-4.7) {每个方框有自己的提交决定；跨边界的连线依靠固定身份、持久待办与可验证结果继续};
+\end{tikzpicture}

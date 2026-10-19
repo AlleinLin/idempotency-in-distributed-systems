@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\foreach \x/\title in {0/{权威域 J},4.4/{平台域 L},8.8/{购买投影 W},13.2/{消费域 Q}}{
+  \node[note,font=\bfseries\small\sffamily] at (\x,3.0) {\title};
+  \draw[lane] (\x,2.6)--(\x,-2.1);
+}
+\node[box,text width=2.9cm] (a) at (0,1.6) {$A_J$\\S／原输入／P1 C1 T1};
+\node[good,text width=2.9cm] (e) at (4.4,.3) {E：原范围／pay-C1\\X1，收款 3000};
+\node[box,text width=2.9cm] (r) at (0,-1.3) {$R_J$\\原结果／O1／EV1};
+\node[box,text width=2.9cm] (w) at (8.8,-1.3) {物化原决定\\P1 C1 T1 O1 EV1};
+\node[good,text width=2.9cm] (q) at (13.2,-1.3) {Q：I／B／F501\\原接收结果／dispatch};
+\draw[arr] (a)--node[note,above,sloped]{原付款身份}(e);
+\draw[arr] (e)--node[note,below,sloped]{可信资金证据}(r);
+\draw[arr] (r)--node[note,above]{原编号与完整报文}(w);
+\draw[arr] (w)--node[note,above]{原 EV1}(q);
+\node[note,text width=16cm] at (6.6,-2.9) {初态：平台账户 10000 分，E1 有效，业务记录为空。$A_J$ 与 $R_J$ 属于 J，W 单独提交本地投影。};
+\end{tikzpicture}

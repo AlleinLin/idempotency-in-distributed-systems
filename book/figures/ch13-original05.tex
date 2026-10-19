@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[note,text width=12cm] at (5,4.2) {共同初态：A、B 均为 $(0,0)$；各来源只增加自己的累计分量};
+\node[box] (a) at (0,2.8) {A 新增一次\\$(1,0)$};
+\node[good] (b) at (5,2.8) {B 接收并取最大\\$(1,0)$，重传后保持 $(1,0)$};
+\draw[arr] (a)--node[above,note]{状态}(b);
+\node[box] (c) at (5,.7) {B 自己新增一次\\$(1,1)$};
+\draw[arr] (b)--(c);
+\node[good] (d) at (10,.7) {再同步到 A\\双方为 $(1,1)$\\显示 $1+1=2$};
+\draw[arr] (c)--(d);
+\node[note,text width=13cm] at (5,-.9) {同来源累计值覆盖同一更新前缀；来源身份、独占写入和累计计数持久保存};
+
+\end{tikzpicture}

@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4.7cm] at (2.6,0) {账户 1，创建购买\\(1, purchase.create.v1, K1)\\对应 P1};
+\node[booknode,text width=4.7cm] at (9,0) {账户 2，创建购买\\(2, purchase.create.v1, K1)\\对应 P8};
+\node[booknode,text width=4.7cm] at (2.6,-2) {账户 1，申请退款\\(1, refund.create.v1, K1)\\对应退款 F1};
+\node[bookresult,text width=4.7cm] at (9,-2) {只查字符串 K1\\三个不同对象被混在一起\\可能误合并或泄露数据};
+\node[booknote,text width=12cm] at (5.8,-3.4)
+ {先认证并确定操作范围，再构造完整身份；相同字符串可以存在于不同命名空间};
+\end{tikzpicture}
+\caption{账户和动作共同确定键的解释范围。加入登记会话后，查找还须携带会话维度。}
+\label{fig:ch03-namespaces}
+\end{figure}

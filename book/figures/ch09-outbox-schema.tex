@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+\node[box,text width=4.5cm] (pc) at (0,6.1)
+  {P1 与 C1\\P1 保存 business\_state\\C1 保存 provider\_result\\及完整 payment\_result};
+\node[box,text width=4.5cm] (order) at (0,3.1)
+  {orders：O1\\唯一键：order\_id、purchase\_id\\与 charge\_id，本例 (O1,P1,C1)\\同时核对订单、购买与支付归属};
+\node[box,text width=4.5cm] (task) at (0,.1)
+  {支付任务 T1\\沿 charge\_id 关联 C1\\成功 R 后 phase=done\\发布责任由事件行继续承担};
+\node[good,text width=6cm] (event) at (7.1,3.1)
+  {outbox\_events：同一行 EV1\\[3pt]
+   主键 event\_id=EV1\\
+   唯一事实 (payment.succeeded,C1)\\
+   对象 order／O1，归属 P1/C1/O1\\[3pt]
+   结构版本、建行时刻、完整 payload\\
+   原 target\_name 与 topology\_version\\[3pt]
+   phase、publish\_epoch\\
+   owner\_incarnation、lease\_until\\
+   下次运行时间、acceptance、case\_id};
+\draw[arr] (event.west)--node[note,above,text width=1.7cm]{联合外键\\O/P/C}(order.east);
+\node[box,text width=6cm] (publisher) at (7.1,-1)
+  {发布器读取 EV1 的原身份、快照和目标\\经受控入口改变领取、受理与核查状态};
+\draw[arr] (event.south)--(publisher.north);
+\node[note,text width=4.8cm] at (0,-1.8)
+  {R 创建事件语义，发布重试读取原值\\T1 与 EV1 分别保存两项继续责任};
+\end{tikzpicture}

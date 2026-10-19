@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[cell] (a) at (0,0) {a：I／F 已存};
+\node[cell,fill=orange!8] (b) at (3.5,0) {b：失败};
+\node[cell] (c) at (7,0) {c：I／F 已存};
+\node[warn,text width=4.5cm] (all) at (.5,-2.3) {整批错误\\a／b／c可能重新交付\\a与c读取原消费事务结果};
+\node[good,text width=4.5cm] (part) at (6.5,-2.3) {启用部分批次响应\\只报告 b 的消息ID\\成功项按完成路径处理};
+\draw[arr] (b.south)--(3.5,-1.1)-|(all.north);
+\draw[arr] (b.south)--(3.5,-1.1)-|(part.north);
+\node[note,text width=10cm] at (3.5,-4.2) {两条为可选处理路径；函数抛异常时整批失败，FIFO同时报告未处理项。};
+
+\end{tikzpicture}

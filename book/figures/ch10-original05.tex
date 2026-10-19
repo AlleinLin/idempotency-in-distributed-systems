@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box,text width=4cm] at (0,4.2) {重复：EV1、EV1\\同一事实再到};
+\node[warn,text width=6cm] at (6.4,4.2) {乱序：较晚的已发货快照先到\\较早的待调度快照后到，盲目赋值会倒退};
+\node[box,text width=4cm] (p2) at (0,1.8) {额外有序方案：对象 O1\\已连续完成序号 1};
+\node[warn,text width=3.7cm] (p3) at (5,1.8) {先收到 3，持久保存输入\\等待 2，连续进度为 1};
+\node[good,text width=3.7cm] (p4) at (10,1.8) {补取 2 并完成\\再执行已保存的 3\\连续进度推进到 3};
+\draw[arr](p2)--(p3);\draw[arr](p3)--(p4);
+\node[box,text width=12.4cm] at (5,-.6) {当前 EV1 无对象序号，按独立初次履约授权建单\\增量迁移引入序号时，源端要在对象事务内分配；缺口由补取／核查／有据快照解决\\最高已见 3 与连续已完成 1 需要分别保存};
+
+\end{tikzpicture}
+

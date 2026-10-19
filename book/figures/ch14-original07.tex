@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=2.5cm] (a) at (0,1.3) {$A_J$\\S→P1/C1/T1\\原范围/pay-C1};
+\node[box,text width=2.5cm] (e) at (3.8,1.3) {平台证据\\PEV1 / PEV2\\主动查询 X1};
+\node[good,text width=3.1cm] (r) at (8,1.3) {$R_J$ 唯一结果决定\\C1/X1→O1、EV1\\完整原结果与报文};
+\draw[arr] (a)--(e);\draw[arr] (e)--node[above,note]{核对}(r);
+\node[box,text width=11cm] (local) at (5,-1.2) {本地 R 原子物化：C1 两类结果 + P1 paid + O1 + EV1 + T1 done\\回退后重复物化恢复这些原编号，逐字段核对冲突};
+\draw[arr] (r)--(local);
+
+\end{tikzpicture}

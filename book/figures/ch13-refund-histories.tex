@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[note,text width=12cm] at (5,4.7) {共同初态：X1 已收 3000，尚无退款};
+\node[box,text width=5.1cm] (a) at (1,3.2) {历史 A：一项退款\\RF1 退 1000，响应丢失\\重试 RF1，恢复同一退款\\累计已退 1000};
+\node[box,text width=5.1cm] (b) at (9,3.2) {历史 B：两项合法退款\\RF1 退 1000\\新确认的 RF2 再退 1000\\累计已退 2000};
+\node[good,text width=11.5cm] (id) at (5,1) {原 X1 关联退款来源，RF1/RF2 区别操作及其重试\\同金额可来自同项恢复，也可来自两项独立确认};
+\draw[arr] (a.south)--++(0,-.3)-|(id.north);
+\draw[arr] (b.south)--++(0,-.3)-|(id.north);
+\node[note,text width=12cm] at (5,-.3) {金额准入另计已成功与处理中占用，外部未知结局沿原退款身份核查};
+\end{tikzpicture}

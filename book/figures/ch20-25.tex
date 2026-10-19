@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/map A,3.7/master,7.4/map B,11.1/reduce}{
+ \node at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-6.2);}
+\draw[arr] (0,-1)--node[above,note]{完成 $M_3$，片段在 A} (3.7,-1);
+\draw[arr] (0,-1.8)--node[above,note,text width=8cm]{部分 reduce 已读走片段} (11.1,-1.8);
+\node[warn,text width=1.8cm] at (0,-2.8) {A 失联};
+\draw[arr] (3.7,-3.7)--node[above,note]{重分配 $M_3$} (7.4,-3.7);
+\draw[arr] (7.4,-4.6)--node[above,note]{新位置 B} (3.7,-4.6);
+\draw[arr] (7.4,-5.6)--node[below,note,text width=3.6cm]{未读者从 B 取得\\同一固定输入的重算片段} (11.1,-5.6);
+\end{tikzpicture}

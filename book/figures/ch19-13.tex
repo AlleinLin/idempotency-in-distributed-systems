@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\foreach \x/\g [count=\i] in {0/组 A,4.3/组 B,8.6/组 C}{
+ \node[good] (lead\i) at (\x,0) {\g 的 leader\\锁表／事务管理器};
+ \node[box] (rep\i) at (\x,-1.8) {Paxos 复制\\tablet／事务记录};
+ \node[box] (data\i) at (\x,-4.2) {directory／fragment\\业务键与多版本数据};
+ \draw[arr] (lead\i.south)--(rep\i.north);\draw[arr] (rep\i.south)--(data\i.north);}
+\draw[ctl] (1.6,1.3)--node[above,note]{跨组 2PC：准备、共同决定} (7,1.3);
+
+\end{tikzpicture}

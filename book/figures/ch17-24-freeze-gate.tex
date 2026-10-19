@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box,text width=3.3cm] (a) at (0,0) {G1 接收 M1 的 freeze\\在业务日志中排序\\检查事务责任};
+\node[warn,text width=3.3cm] (p) at (5,1.4) {存在 prepared 参与者\\或未完成协调者事务\\拒绝冻结，保持 active};
+\node[good,text width=3.3cm] (f) at (5,-1.5) {责任满足首版准入\\冻结全部图像修改\\导出 M1 的闭合前缀};
+\node[box,text width=3.3cm] (r) at (10,1.4) {原组继续取得决定\\完成参与者责任\\随后重试迁移};
+\node[box,text width=3.3cm] (i) at (10,-1.5) {向目标导入完整图像\\后续目录发布与激活};
+\draw[arr] (a)--(p);
+\draw[arr] (a)--(f);
+\draw[arr] (p)--(r);\draw[arr] (f)--(i);
+\node[note] at (5,-3.2) {当前首版拒绝迁移未终结 prepared 责任，原责任由原组完成。};
+\end{tikzpicture}

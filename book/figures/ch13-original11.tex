@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,3) {A 产生两个添加\\A1: gift\\A2: priority};
+\node[warn] (b) at (5,3) {B 只收到 A2\\错误记录 $v[A]=2$\\活项只有 priority:A2};
+\node[warn] (c) at (10,3) {A1 迟到\\被误判为已经见过\\gift 永久遗漏};
+\draw[arr] (a)--node[above,note]{仅 A2}(b);\draw[arr] (b)--(c);
+\node[good,text width=12cm] at (5,.5) {连续前缀暂为 0，另记已见 A2；补齐 A1 后才压为 2\\或由因果交付保证先到 A1 再到 A2};
+
+\end{tikzpicture}

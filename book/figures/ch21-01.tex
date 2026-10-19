@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/地域 A,4/地域 B,8/地域 C}{\node at (\x,1) {\n};}
+\foreach \g/\y in {控制/0,G1/-1.2,G2/-2.4,G3/-3.6}{
+\node[cell] (a\g) at (0,\y) {\g-A};
+\node[cell] (b\g) at (4,\y) {\g-B};
+\node[cell] (c\g) at (8,\y) {\g-C};
+\draw[arr,<->] (a\g)--(b\g);\draw[arr,<->] (b\g)--(c\g);
+\draw[arr,<->] (a\g.south) -- ++(0,-.33) -| (c\g.south);}
+\node[box,text width=4.6cm] (i) at (1.4,-5.5) {各地入口／恢复工作者\\按分区与当前资格访问};
+\node[good,text width=4.6cm] (p) at (6.8,-5.5) {平台／消费／履约\\各自独立保存效果};
+\draw[arr] (i)--(p);
+\node[note,text width=11cm] at (4,-7) {各组分别形成多数；购买沿原 TX 访问库存组，工作者经原商户出口查询平台。};
+
+\end{tikzpicture}

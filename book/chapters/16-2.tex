@@ -1,0 +1,158 @@
+服务之间传递的对象可以分成原输入、持久责任、外部证据和读取投影。原输入决定这项购买是什么，持久责任决定服务重启后要接着做什么，外部证据说明另一保存域已经发生什么，投影组织某次查询可呈现的内容。下面沿这些对象给出接口和保存规则。
+
+\subsection{输入进入权威以前的边界}
+
+受理请求包含 \code{s} 和 \code{input} 两个对象。$S$ 的四个字段全部参与识别，入口把完整身份送到所属分区。以下是本章完整请求。金额使用最小货币单位的整数，3000 表示 30 元人民币，输入解释版本由该受理接口固定为 \code{external-v2}。
+
+\begin{BookCode}
+{
+  "s": {
+    "account_id": 1,
+    "action": "purchase.create.external.v2",
+    "session_id": "E1",
+    "idempotency_key": "K1"
+  },
+  "input": {
+    "product_id": "paper-001",
+    "quantity": 1,
+    "quote_id": "Q7",
+    "currency": "CNY",
+    "amount_minor": 3000,
+    "payment_method": "saved-card-7"
+  }
+}
+\end{BookCode}
+
+本接口把身份的字面边界写清楚。\code{account\_id} 为 1 至 9007199254740991 之间的 JSON 整数，兼容常见 JSON 客户端能够精确表达的整数范围。\code{action}、\code{session\_id} 和 \code{idempotency\_key} 各为 1 至 128 字节的 ASCII 标记，以字母或数字开头，其余字符限于字母、数字、点、下划线、冒号和连字符。大小写有别，入口保留原字面，调用方在提交以前持久保存这些值。
+
+输入对象中的 \code{product\_id}、\code{quote\_id} 和 \code{payment\_method} 采用相同的标记边界。\code{currency} 为三个大写 ASCII 字母，\code{amount\_minor} 为上述精确整数范围内的正整数，\code{quantity} 为 1 至 1000000 的整数。当前普通购买要求六个明确字段。组合购买可以额外携带布尔字段 \code{bundle}，它也参与原输入绑定。未知字段、缺失字段、重复 JSON 成员、非有限数值和尾随的第二份 JSON 文档都在进入业务仲裁以前被拒绝。
+
+整数类型在解析时检查。\code{3000.9}、\code{3000.0} 和 \code{3e3} 均不属于本接口接受的金额字面，入口直接拒绝，保留输入类型的差别。账户编号的布尔值 \code{true} 同样被拒绝。所属业务组对同一结构边界再作一次核验，避免内部调用绕开入口检查。报价 Q7 是否有效、商品是否存在、账户能否购买，则属于后面的业务判断。
+
+认证身份在入口取得。普通账户令牌只允许读取或提交其所属账户的操作，\code{account\_id} 必须与授权范围相符。客服、对账与运维使用分开的角色和审计入口。知道 P、C 或完整 $S$ 能够帮助定位记录，授权检查决定调用者能否取得该记录的内容。支付方式字段保存受控引用，原始卡号等敏感输入由支付集成的相应通道处理。
+
+结构校验通过以后，活动会话的受理进入所属分区序列。该序列先检查 E1 的固定截止与关闭资格，再识别已有 $S$。已有绑定携带同一解释版本和同一语义输入，便恢复原受理或原结果；异参返回 \code{conflict}。一个未绑定的新 $S$ 才执行当前报价与业务资源判断。本章假设的商品限定 \code{paper-001}、Q7、CNY 3000 与数量 1，这个业务范围和 JSON 整数类型是两层独立规则。
+
+会话 E1 关闭以后，购买提交入口返回 \code{operation\_expired}，同一旧身份重新提交也经过这条准入检查。已经受理的 C/T 继续保存，查询入口经授权读取原购买，服务端恢复者沿原付款责任工作。图~\ref{fig:ch16-admission} 将关闭检查、已有记录查询和后台恢复分成三个入口，固定准入窗口因而可以和持久业务责任同时成立。
+
+\CSixteenFigure{ch16-15-admission}{提交入口检查会话资格，授权查询与后台恢复读取已受理责任}{fig:ch16-admission}
+
+\subsection{权威记录里的原关联}
+
+$A_J$ 是受理事实。它共同保存完整 $S$、原输入和解释版本、实际 P/C/T，以及原平台范围、平台键和支付输入。副本组只有提交这套关系以后才向调用方确认受理。支付工作者读取 C 时，可以一次取得它应使用的全部外部身份。
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}p{.18\linewidth}p{.34\linewidth}X@{}}
+\toprule
+对象 & 保存位置和写入者 & 后续动作读取的关键内容\\
+\midrule
+$A_J$ & 所属购买分区的权威提交 & $S$、原输入版本、P/C/T、原平台范围与键\\
+C/T & 同一购买分区的可恢复责任 & 付款资格、执行代次、下一次工作和原支付输入\\
+平台原操作与 X & 独立支付平台账本 & 平台对象编号、原输入、当前结论与资金效果\\
+$R_J$ 及 O/EV & 购买权威的同次结果提交 & 原 \code{provider\_result}、\code{payment\_result}、订单与完整事件\\
+I/B/F 及意图 & 消费者同一数据库事务 & 原事件、初次履约守卫、实际 F 和原发货输入\\
+dispatch 原操作 & 独立发货平台的事务 & 稳定键、原输入、原返回与发货效果\\
+\bottomrule
+\end{tabularx}
+\caption{持久对象、写入权威与下游读取内容}\label{tab:ch16-ownership}
+\end{table}
+
+$R_J$ 是结果决定。成功证据经过核验以后，它共同保存原 \code{provider\_result}、固定 \code{payment\_result}、订单 O 和完整 EV。\code{provider\_result} 保留平台侧原证据，\code{payment\_result} 提供本书购买接口采用的稳定成交字段。平台字段后来增加、查询时刻后来变化，都与已保存的原成交关系分开。若另一条证据声称相同 C 具有不相容终态，入口保存冲突证据并进入核查，原成功关系保持可追溯。
+
+Outbox 是结果域中的发布责任。它与 $R_J$、O 和 EV 一起形成，保存完整原事件及尚未确认发布的状态。发布器读原事件发送，取得消息域认可的确认后，再向购买权威提交 \code{published} 标记。确认已经产生而标记尚未提交，恢复者会再次发送原 EV。消息采用有限 TTL 或日志保留期时，\code{published} 只结束这次发布确认的等待，事件继续承担交接恢复责任，直到履约回执在购买权威中持久保存。下一节给出这条责任与履约进度共同推进的状态迁移~\cite{outbox}。
+
+消费者的 Inbox 记录 I 使用 \code{event\_id} 识别已处理事件，同时保存完整原事件和原接收回执。业务守卫 B 使用 \code{initial:O:b1:1} 表示这张订单的初次履约授权，约束同一 O 只映射一个实际 F。同 EV 的重投在 I 汇合，不同 EV 若声称同一初次履约，则在 B 核对。F501 以及 \code{dispatch:initial:O:b1:1} 的意图在这一事务里共同建立~\cite{idempotent-consumer}。
+
+\subsection{跨 HTTP 的付款身份和证据}
+
+付款工作者向自建平台发送固定范围、键、动作和完整支付输入。该范围包括平台、商户、环境及动作解释，键来自已经保存的 C。示例请求中的 \code{pay-C:b1:1} 在工作者退出以后保持。链路追踪号放在请求头或日志中，用于定位一次通信尝试，业务绑定依赖下面的原字段。
+
+\begin{BookCode}
+{
+  "scope": "simulator:merchant-7:test:charge.v1",
+  "key": "pay-C:b1:1",
+  "kind": "charge",
+  "input": {
+    "account_id": 1,
+    "charge_id": "C:b1:1",
+    "currency": "CNY",
+    "amount_minor": 3000
+  }
+}
+\end{BookCode}
+
+平台在自己的事务中绑定 \code{scope}、\code{key}、\code{kind} 与完整 \code{input}，保存 \code{pending} 或终态，并把实际效果与原返回共同关联。重复相同输入取得原操作，同范围同键异参返回冲突。成功证据包含原范围和键、账户、C、币种、金额、状态以及平台收款编号 X1。购买权威把这些字段逐一对回原 C 的输入，再形成 $R_J$。
+
+回调、主动查询与批量对账都进入同一证据合流入口。回调接收者先核验来源，持久保存原报文和事件身份，再安排处理。主动查询从原 C 取得平台对象编号与账户范围，对账从平台明细找到与原 C 的关联。图~\ref{fig:ch16-evidence} 中的三条路径可以反复观察到同一 X1，合流入口只把能够解释原操作的证据应用到原 C/T。
+
+\CSixteenFigure{ch16-16-evidence}{回调、查询和对账先定位原 C，再核验同一原操作的输入与终态}{fig:ch16-evidence}
+
+工作者的 \code{owner} 与 \code{work\_epoch} 管理一次领取后的本地写资格。权威 \code{claim} 在同一序列里检查付款资格，增加执行代次，登记当前领取者。\code{observe} 核对领取者与代次，旧工作者的迟到本地写会被拒绝。已经离开旧工作者的 HTTP 付款请求继续携带原平台键，由平台在自己的域内处理。短期执行代次和原付款身份各自连接一端的保存责任。
+
+\subsection{商业支付适配器怎样接入}
+
+自建平台提供明确的长期键保留、原输入绑定和原结果查询，适合展示跨域恢复。商业平台的相应能力要落实到具体对象和接口。本节以 Stripe API v1 为例，资料版本固定到 \code{2026-09-30.endive}，创建请求显式设置 \code{Stripe-Version}，回调端点另行固定其事件版本~\cite{stripe-versioning}\footnote{API v1/v2 是 Stripe 的接口类别，本书动作名中的 \code{external.v2} 是本地业务版本。二者的版本范围分别保存。}。
+
+Stripe API v1 的 \code{Idempotency-Key} 在端点开始执行以后保存第一次响应的状态码和内容，包括 500。参数校验失败或与正在执行的同键请求冲突，可能发生在执行开始以前，相应结果不进入该缓存。保留时间至少 24 小时，键被裁剪以后再次使用可以执行新请求。调用方在原受理责任中保存第一次可能发送的时间和安全重试期限，未知跨过期限以后转入查询、对账和人工核查路径~\cite{stripe-v1-idempotency}。
+
+平台范围在本书适配器内是一项明确的配置身份，包含供应商、商户账户、测试或真实环境、外部动作和 API 版本。Stripe 的账户由认证上下文及相应账户参数选择，Connect 服务端调用可以用 \code{Stripe-Account} 指定关联账户，测试对象与真实环境对象隔离。键在相应账户内应足够唯一。适配器把这些上下文和原键一起保存，迁移以后便能使用正确凭据和外部对象空间，继续原环境中的 C~\cite{stripe-connect-scope}。
+
+Stripe 的 PaymentIntent 表示一项支付意图，具有可持续查询的对象 ID 与支付状态。购买服务一旦取得该 ID，立即在原 C 中保存映射，后续用原对象恢复。创建对象与确认付款若属于两个外部动作，各自保存稳定子操作身份和原参数。平台对象包含多次尝试时，适配器按其真实状态判断原支付意图的结论~\cite{stripe-payment-intents}。
+
+对象查询有具体定位要求。\code{GET /v1/payment\_intents/:id} 取得已有 PaymentIntent，\code{GET /v1/charges/:id} 取得已有 Charge。它们依赖已知的对象 ID 和对应账户范围。\code{Idempotency-Key} 与 PaymentIntent 编号各有定位用途。若创建响应完全丢失，适配器通过原键保护期内的恢复、已保存的 metadata 关联、可信事件以及平台核查找回对象~\cite{stripe-object-recovery}。
+
+回调要考虑重复、乱序和期限。Stripe 文档说明真实环境下自动重试最长约三天，手动重发与事件查询还有各自窗口。事件生成顺序与交付顺序可以不同，同一事件可多次到达，甚至不同事件对象也可能描述同一业务对象的变化。接收者用原始 HTTP 正文核验 \code{Stripe-Signature}，保存事件 ID、事件版本及对象关联，再把可核验结论投递给原 C 的证据入口。页面传来的 \code{success} 标志只作页面状态，付款证据取自可信来源~\cite{stripe-webhooks}。
+
+事件取回窗口与付款责任保留期分开管理。Stripe 的事件查询公开支持近 30 天的事件，这一窗口只限定相应事件接口。系统保存关键原报文和对象编号，按长期审计政策保留本地证据，未决 C 持续承担恢复责任。旧事件按生成时的 API 结构解释，升级回调版本后保留旧解析器或明确迁移记录~\cite{stripe-object-recovery}。
+
+对账还要区分付款对象与资金结算。Stripe 的 payout reconciliation 把银行到账与一批支付、退款、费用等余额交易匹配，适用条件和数据可用时间由报表定义。它能够帮助发现本地遗漏的外部资金事实，但一张尚未出现该收款的报表，可能只是覆盖日期、结算批次或生成进度不足。恢复者保存报表范围与对象关联，正向查到 X 可以补齐原结果，查空则继续核对所有可能生效路径~\cite{stripe-payout-reconciliation}。
+
+500 也沿未知路径处理。API v1 可能反复回放同一份 500，而平台在事故恢复中发现实际对象并发出事件。购买服务保存原 500 作为一次平台响应，把 C 保持为待核查，结合对象查询与事件取得资金结论。新平台键会创建另一项可能生效的责任，因此发送权限受原操作的恢复状态约束~\cite{stripe-v1-idempotency}。
+
+\subsection{对外查询中的固定事实与当前进度}
+
+正式查询沿用前三部分的三个对象：\code{acceptance} 表示固定受理，\code{progress} 表示本次读取的当前进度，\code{payment\_result} 表示原付款决定。查询先完成账户授权，再从所属权威读取原 P/C 映射及结果。消费域的持久履约回执经受控入口进入购买侧，核对完整原 EV、订单与实际 F，并保存来源和应用水位。同一次权威提交既推进可信履约进度，也解除该 EV 的补发责任；查询投影读取的正是这一交接事实。
+
+\CSixteenFigure{ch16-04-query}{原受理与原付款结果保持固定，当前履约通过有来源的进度投影展示}{fig:ch16-query}
+
+在 EV 尚未被接受履约时，\code{progress} 可以给出 \code{paid} 与 \code{unfulfilled}。F501 在消费事务中提交，购买权威又保存其核验通过的回执以后，\code{fulfillment\_state} 成为 \code{fulfillment\_accepted}。这表示履约域已经接过初次履约及 dispatch 责任，实际发货完成由后续进度表达。付款时保存的原 \code{result} 中含有 \code{unfulfilled} 快照，它继续代表付款时的原响应。读取当前进度时，服务组合一份新的查询响应，同时保留原 \code{acceptance} 和 \code{payment\_result} 的字段值。
+
+\begin{BookCode}
+{
+  "result_version": "purchase-result-external-v2",
+  "acceptance": {
+    "purchase_id": "P:b1:1",
+    "charge_id": "C:b1:1",
+    "operation": {
+      "account_id": 1,
+      "action": "purchase.create.external.v2",
+      "session_id": "E1",
+      "idempotency_key": "K1"
+    },
+    "product_id": "paper-001",
+    "quantity": 1,
+    "quote_id": "Q7",
+    "currency": "CNY",
+    "amount_minor": 3000
+  },
+  "progress": {
+    "business_state": "paid",
+    "fulfillment_state": "fulfillment_accepted"
+  },
+  "payment_result": {
+    "purchase_id": "P:b1:1",
+    "charge_id": "C:b1:1",
+    "order_id": "O:b1:1",
+    "status": "succeeded",
+    "provider_scope": "simulator:merchant-7:test:charge.v1",
+    "provider_charge_id": "X1",
+    "currency": "CNY",
+    "amount_minor": 3000
+  }
+}
+\end{BookCode}
+
+购买侧在同一读取快照中取得上述映射和已应用进度，防止拼出 \code{paid} 却缺失 \code{payment\_result} 的组合。跨域回报尚未到达时，查询继续呈现 \code{unfulfilled} 或明确的进度同步状态。要求更新观察的管理查询可以访问履约来源，返回其来源位置和读取含义，之后由受控入口推进投影。
+
+查询查空也有范围。权威覆盖完整、操作确实未受理，可以返回未找到。分区处于恢复且原映射尚未重建，返回恢复中并提供账户授权的跟踪入口。缓存未命中则回原权威读取。内部运维接口可以返回完整 \code{operation} 对象，正式客户接口只返回已定义并获授权的投影。

@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=5.2cm] (before) at (1,4) {同一来源 A 的 gift 添加\\先有 A1，后来又有 A3\\显式活项保存 gift:A1、gift:A3};
+\node[good,text width=5.2cm] (after) at (9,4) {合并同元素、同源活标记\\gift 对来源 A 只留 A3\\来源 B 的 gift:B1 单独保留};
+\draw[arr] (before)--node[note,above]{承接先前知识}(after);
+\node[box,text width=5.2cm] (live) at (1,1.5) {n 个当前元素，r 个固定来源\\每格至多一个活标记\\活项最多 $n\times r$ 个};
+\node[box,text width=5.2cm] (vector) at (9,1.5) {已观察范围另有版本向量\\每来源一个连续前缀\\合计 r 个计数分量};
+\node[good,text width=11cm] at (5,-.5) {条目总量 $O(nr+r)$；计数增长增加编码位数，动态来源增加向量分量};
+\end{tikzpicture}

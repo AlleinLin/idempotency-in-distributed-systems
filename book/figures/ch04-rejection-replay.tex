@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.7cm] (no) at (2,0) {S1：2000 不足扣 3000\\提交余额不足终态};
+\node[booknode,text width=3.7cm] (topup) at (7,0) {随后合法充值 4000\\2000 → 6000};
+\node[bookresult,text width=3.7cm] (retry) at (12,0) {最后恢复 S1\\读取原拒绝结果};
+\draw[bookarrow] (no)--(topup);\draw[bookarrow] (topup)--(retry);
+\node[booknode,text width=5cm] (saved) at (3.5,-2) {原记录：S1、P1、输入\\insufficient\_funds\\没有订单和扣款};
+\node[booknode,text width=5cm] (now) at (10.5,-2) {恢复后账户仍为 6000\\充值后确认新购买\\需要使用另一身份};
+\draw[bookarrow] (no.south)--(saved.north);
+\draw[bookarrow] (retry.south)--(now.north);
+\node[booknote,text width=13cm] at (7,-3.65) {此图明确安排拒绝先提交、充值随后提交；它检查已保存终态的恢复规则};
+\end{tikzpicture}
+\caption{余额随后增加，已经提交的余额不足结果仍按原身份恢复。}
+\label{fig:ch04-rejection-replay}
+\end{figure}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=4.5cm] (h0) at (0,3.5) {H0：PA1 未到代理\\代理副本数 0};
+\node[good,text width=4.5cm] (h1) at (6.2,3.5) {H1：代理已受理 PA1\\确认丢失，副本数 1};
+\node[warn,text width=10.8cm] (obs) at (3.1,1.4) {两条历史的本地观察相同\\EV1 未 accepted，PA1 无完整受理证据，连接失效};
+\draw[arr] (h0)--(obs);\draw[arr] (h1)--(obs);
+\node[box,text width=4.5cm] (r0) at (0,-.8) {同一恢复决定：另建 PA2\\H0 可形成第一个副本};
+\node[good,text width=4.5cm] (r1) at (6.2,-.8) {同一恢复决定：另建 PA2\\H1 可形成第二个副本};
+\draw[arr] (obs)--(r0);\draw[arr] (obs)--(r1);
+\node[note,text width=11cm] at (3.1,-2.2) {PA1 与 PA2 都读取同一 EV1、版本、快照和目标\\新尝试增加通信记录，原事件身份保持};
+\end{tikzpicture}

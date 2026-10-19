@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=5.4cm] (p) at (6,0) {父操作：账户、购买动作、K1\\服务保存稳定购买编号 P1};
+\node[booknode,text width=3.5cm] (d) at (1.5,-2) {扣款子动作\\(P1, debit, 1)\\扣款重试继续此身份};
+\node[booknode,text width=3.5cm] (n) at (6,-2) {通知子动作\\(P1, notice, 1)\\通知重试继续此身份};
+\node[booknode,text width=3.5cm] (i) at (10.5,-2) {发票子动作\\(P1, invoice, 1)\\发票重试继续此身份};
+\draw[bookarrow] (p)--(d);
+\draw[bookarrow] (p)--(n);
+\draw[bookarrow] (p)--(i);
+\node[booknote,text width=12cm] at (6,-3.6)
+ {接收服务再加自己的已认证调用方与动作范围；箭头说明来源和调用关系，跨服务共同提交另需协议};
+\end{tikzpicture}
+\caption{父操作相同，子动作仍需分别识别；同一子动作重试继续沿用自己的身份。}
+\label{fig:ch03-derived-identity}
+\end{figure}

@@ -1,0 +1,21 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\foreach \x in {0,4.1,8.4,12.5} {\draw[Ink!35,dashed] (\x,-.6)--(\x,-4.7);}
+\node[font=\small\sffamily\bfseries] at (2.05,.7) {提交先完成，响应迟到};
+\node[font=\small\sffamily\bfseries] at (10.45,.7) {客户端先超时，提交稍后完成};
+\node[booknode,text width=1.5cm] at (0,0) {客户端};
+\node[booknode,text width=1.5cm] at (4.1,0) {数据库};
+\node[booknode,text width=1.5cm] at (8.4,0) {客户端};
+\node[booknode,text width=1.5cm] at (12.5,0) {数据库};
+\draw[bookarrow] (0,-1.1)--node[above,font=\scriptsize]{请求与执行路径}(4.1,-1.7);
+\node[booknode,text width=1.7cm] at (4.1,-2.4) {D1c：提交};
+\node[bookresult,text width=1.7cm] at (0,-3.6) {CT：超时};
+\draw[bookarrow] (8.4,-1.1)--node[above,font=\scriptsize]{请求与执行路径}(12.5,-1.7);
+\node[bookresult,text width=1.7cm] at (8.4,-2.4) {CT：超时};
+\node[booknode,text width=1.7cm] at (12.5,-3.6) {D1c：提交};
+\node[booknote,text width=11cm] at (6.25,-5.2) {两条历史中，客户端都在截止时间前没有取得完整业务响应};
+\end{tikzpicture}
+\caption{本地超时可以出现在不同远端进度下。请求和消息建立因果关系，截止时间由客户端独立触发。}
+\label{fig:ch02-causality}
+\end{figure}

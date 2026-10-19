@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[draw=Ink!45,fill=Paper,rounded corners=7pt] (0,-2.3) rectangle (5.4,.2);
+\draw[draw=Ink!45,fill=Paper,rounded corners=7pt] (7.1,-2.3) rectangle (12.5,.2);
+\node[booknote] at (2.7,-.2) {一次购买 $I_1$，身份 $S_1$};
+\node[booknote] at (9.8,-.2) {另一次购买 $I_2$，身份 $S_2$};
+\foreach \x/\t in {1/R1,2.7/R2,4.4/R3,8.6/R4,11/R5}{
+  \node[draw=Ink!55,circle,fill=white,minimum size=9mm,font=\small\sffamily] at (\x,-1.2) {\t};
+}
+\node[booknote,text width=5.4cm] at (2.7,-3.1)
+ {组内身份变化\\同一购买被拆开\\R2 误带新键，可能重复扣款};
+\node[booknote,text width=5.4cm] at (9.8,-3.1)
+ {两组误用同一身份\\不同购买被合并\\R4 误带旧键，第二份未成交};
+\end{tikzpicture}
+\caption{稳定性和分离性分别约束组内与组间的身份关系。}
+\label{fig:ch03-identity-classes}
+\end{figure}

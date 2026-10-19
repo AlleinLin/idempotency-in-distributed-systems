@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/协程 A,4.8/同一 Actor 内存,9.6/协程 B}{
+ \node at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-7.3);}
+\node[good,text width=2.8cm] at (4.8,-.9) {available = 1};
+\draw[arr] (4.8,-1.7)--node[above,note]{读得 seenA = 1} (0,-1.7);
+\node[note,text width=2.8cm] at (0,-2.5) {A await 查询，\\让出事件循环};
+\draw[arr] (4.8,-3.2)--node[above,note]{B 进入，seenB = 1} (9.6,-3.2);
+\draw[arr] (9.6,-4.2)--node[above,note]{按 seenB−1 写0} (4.8,-4.2);
+\node[note,text width=2.8cm] at (9.6,-5) {接受购买 B};
+\draw[arr] (0,-5.7)--node[above,note]{A 恢复，按 seenA−1 写0} (4.8,-5.7);
+\node[note,text width=2.8cm] at (0,-6.5) {接受购买 A};
+\node[warn,text width=4.5cm] at (6.1,-7.7)
+ {最终库存0，接受两笔\\一件库存被分配两次};
+\end{tikzpicture}

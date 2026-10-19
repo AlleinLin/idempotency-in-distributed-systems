@@ -1,0 +1,173 @@
+% 由目录数据排版部分标题页、章节、插图与部分结语。
+\newcommand{\PendingBookPart}{}
+\newcommand{\BookPart}[2]{\gdef\PendingBookPart{\BookPartPage{#1}{#2}}}
+\newcommand{\BookPartPage}[2]{%
+  \clearpage
+  \refstepcounter{part}
+  \addcontentsline{toc}{part}{#1：#2}
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture,overlay]
+    \clip (current page.south west) rectangle (current page.north east);
+    \IfFileExists{assets/part-art/part-\arabic{part}.png}{%
+      \node[inner sep=0pt] at (current page.center)
+        {\includegraphics[width=\paperwidth]{assets/part-art/part-\arabic{part}.png}};
+    }{%
+      \fill[Paper] (current page.south west) rectangle (current page.north east);
+    }
+    \node[anchor=north west,inner sep=0pt,
+      font=\sffamily\fontsize{13}{18}\selectfont,text=Accent]
+      at ([xshift=26mm,yshift=-35mm]current page.north west) {#1};
+    \def\PartPageDisplayTitle{#2}
+    \ifnum\value{part}=4
+      \def\PartPageDisplayTitle{分布式购买系统的\\整体设计与工程架构}
+    \fi
+    \node[anchor=north west,inner sep=0pt,align=left,text width=158mm,
+      font=\sffamily\bfseries\fontsize{30}{42}\selectfont,text=Ink]
+      at ([xshift=26mm,yshift=-51mm]current page.north west) {\PartPageDisplayTitle};
+    \draw[Accent,line width=1pt]
+      ([xshift=26mm,yshift=-81mm]current page.north west)--++(21mm,0);
+    \ifnum\value{part}=1
+      \node[anchor=south,inner xsep=3mm,inner ysep=2mm,fill=Paper,fill opacity=.84,
+        text opacity=1,text=Ink,font=\sffamily\fontsize{8}{11}\selectfont,
+        align=center]
+        at ([yshift=9mm]current page.south)
+        {取意于霍贝玛《米德尔哈尼斯的林荫道》};
+    \fi
+    \ifnum\value{part}=2
+      \node[anchor=south,inner xsep=3mm,inner ysep=2mm,fill=Paper,fill opacity=.84,
+        text opacity=1,text=Ink,font=\sffamily\fontsize{8}{11}\selectfont,
+        align=center]
+        at ([yshift=9mm]current page.south)
+        {取意于透纳《奇切斯特运河》};
+    \fi
+    \ifnum\value{part}=3
+      \node[anchor=south,inner xsep=3mm,inner ysep=2mm,fill=Paper,fill opacity=.84,
+        text opacity=1,text=Ink,font=\sffamily\fontsize{8}{11}\selectfont,
+        align=center]
+        at ([yshift=9mm]current page.south)
+        {取意于莫奈《白杨树》};
+    \fi
+    \ifnum\value{part}=4
+      \node[anchor=south,inner xsep=3mm,inner ysep=2mm,fill=Paper,fill opacity=.84,
+        text opacity=1,text=Ink,font=\sffamily\fontsize{8}{11}\selectfont,
+        align=center]
+        at ([yshift=9mm]current page.south)
+        {取意于卡纳莱托《从弗兰吉尼宫到圣马尔库奥拉广场的大运河》};
+    \fi
+  \end{tikzpicture}
+  \null\clearpage
+}
+\newcommand{\BookChapter}[3]{%
+  \ifnum#1>\LastReadyChapter\relax
+  \else
+    \PendingBookPart
+    \gdef\PendingBookPart{}
+    \setcounter{chapter}{\numexpr#1-1\relax}
+    \ifnum#1=7\relax
+      % 从第二部分起，为行内代码设置小幅词界。
+      \renewcommand{\code}[1]{\allowbreak{\ttfamily\def\_{\textunderscore\allowbreak}##1}}
+      \xeCJKsetup{CJKecglue={\hskip .22em plus .1em minus .08em}}
+    \fi
+    \chapter{#2}\label{chapter:#1}
+    \def\CurrentChapterId{#1}
+    \setcounter{section}{0}
+    \ChapterArt{#1}
+    \InputIfFileExists{chapters/#1-intro.tex}{}{}
+    #3
+    \ifnum#1=6\relax
+      \input{backmatter/part-1-closing.tex}
+    \fi
+    \ifnum#1=10\relax
+      \input{backmatter/part-2-closing.tex}
+    \fi
+    \ifnum#1=15\relax
+      \input{backmatter/part-3-closing.tex}
+    \fi
+    \ifnum#1=21\relax
+      \input{backmatter/part-4-closing.tex}
+    \fi
+  \fi
+}
+\newcommand{\BookSection}[1]{%
+  \section{#1}\label{section:\CurrentChapterId-\arabic{section}}
+  \edef\SectionSource{chapters/\CurrentChapterId-\arabic{section}.tex}
+  \InputIfFileExists{\SectionSource}{}{%
+    \PackageError{book}{Missing section source: \SectionSource}{Create the real section text before switching to body mode.}}
+}
+
+\newcommand{\ChapterArt}[1]{%
+  \IfFileExists{assets/chapter-art/chapter-#1.png}{%
+    \begin{center}
+      \includegraphics[width=\linewidth,height=.43\textheight,keepaspectratio]{assets/chapter-art/chapter-#1.png}
+      \par\vspace{4pt}
+      {\scriptsize\color{Muted}\ChapterArtCredit{#1}\par}
+      \BookEpigraph{#1}
+    \end{center}
+    \vspace{2mm}
+  }{\PackageError{book}{Missing chapter art for #1}{Generate and review chapter opening art before publication.}}
+}
+\newcommand{\ChapterArtCredit}[1]{%
+  \ifnum#1=1
+    取意于伦勃朗《布商同业公会的理事》
+  \fi
+  \ifnum#1=2
+    \strut
+  \fi
+  \ifnum#1=3
+    \strut
+  \fi
+  \ifnum#1=4
+    \strut
+  \fi
+  \ifnum#1=5
+    \strut
+  \fi
+  \ifnum#1=6
+    \strut
+  \fi
+  \ifnum#1=7
+    取意于维米尔《写信的女子与女佣》
+  \fi
+  \ifnum#1=8
+    取意于伦勃朗《夜巡》
+  \fi
+  \ifnum#1=9
+    取意于维米尔《情书》
+  \fi
+  \ifnum#1=10
+    取意于伦勃朗《布商公会理事》
+  \fi
+  \ifnum#1=11
+    取意于拉斐尔《雅典学院》
+  \fi
+  \ifnum#1=12
+    取意于维米尔《天文学家》
+  \fi
+  \ifnum#1=13
+    取意于保罗·克利《城堡与太阳》
+  \fi
+  \ifnum#1=14
+    取意于透纳《被拖去解体的战舰特米雷尔号》
+  \fi
+  \ifnum#1=15
+    取意于维米尔《持天平的女人》
+  \fi
+  \ifnum#1=16
+    取意于彼得·勃鲁盖尔《巴别塔》
+  \fi
+  \ifnum#1=17
+    取意于葛饰北斋《神奈川冲浪里》
+  \fi
+  \ifnum#1=18
+    取意于萨尔瓦多·达利《记忆的永恒》
+  \fi
+  \ifnum#1=19
+    取意于保罗·塞尚《圣维克多山》
+  \fi
+  \ifnum#1=20
+    取意于克劳德·莫奈《圣拉扎尔火车站》
+  \fi
+  \ifnum#1=21
+    取意于保罗·西涅克《红色浮标》
+  \fi
+}

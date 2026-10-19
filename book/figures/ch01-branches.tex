@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=5.4cm] (p) at (6,0) {开始事务，插入购买记录\\状态为 pending};
+\node[booknode,text width=5.4cm] (u) at (6,-1.5) {执行带余额条件的 UPDATE\\检查返回结果};
+\node[booknode,text width=4.4cm] (yes) at (2.3,-3.5) {返回一行：扣款成功\\建立订单与流水\\购买改为 succeeded};
+\node[booknode,text width=4.4cm] (no) at (9.7,-3.5) {返回零行：余额不足\\账户、订单与流水保持原样\\购买改为 insufficient\_funds};
+\node[bookresult,text width=5.4cm] (c) at (6,-5.6) {提交这一笔事务\\保存对应分支的完整结果};
+\draw[bookarrow] (p)--(u);
+\draw[bookarrow] (u.south)--++(0,-.35)-|node[above,pos=.75,font=\footnotesize]{一行}(yes.north);
+\draw[bookarrow] (u.south)--++(0,-.35)-|node[above,pos=.75,font=\footnotesize]{零行}(no.north);
+\draw[bookarrow] (yes.south)|-(c.west);
+\draw[bookarrow] (no.south)|-(c.east);
+\end{tikzpicture}
+\caption{扣款成功与余额不足分别形成确定的业务结果。执行错误另走回滚处理。}
+\label{fig:ch01-branches}
+\end{figure}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.7cm] (a) at (0,3.6) {旧主 A\\committed 到 41\\已确认 S1};
+\node[box,text width=3.7cm] (b) at (5.4,3.6) {旧备 B / 新主候选\\committed 到 40\\prepared 已到 41};
+\node[box,text width=3.7cm] (c) at (10.8,3.6) {旧备 C\\prepared 至少到 41\\保存旧确认的候选};
+\node[note,text width=14cm] at (5.4,5) {同一旧配置：主 A 已提交，备 B/C 已准备，备副本提交点可以暂时落后};
+\node[good,text width=6cm] (m) at (1.5,.7) {配置管理器：比较旧版本并安装新配置\\租约/宽限期：旧主先停止资格\\新主完成协调后再服务};
+\node[good,text width=6cm] (r) at (9.3,.7) {B 将自己准备列表接续到新提交前缀\\新配置共同保存 41\\应用 S1 并保存 M(S1) / 原结果};
+\draw[arr] (b.south)--++(0,-.4)-|(m.north);\draw[arr] (m)--(r);
+\node[note,text width=14cm] at (5.4,-1.3) {当前配置内：$\mathrm{committed}_q \subseteq \mathrm{committed}_p \subseteq \mathrm{prepared}_q$\\接班协议把旧准备证据延续到新配置；原 S 去重由应用状态处理};
+
+\end{tikzpicture}

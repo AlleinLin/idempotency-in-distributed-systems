@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (2,0.45) {竞争事务的结局};
+\node[booknote] at (7,0.45) {持久事实};
+\node[booknote] at (12,0.45) {等待者下一步};
+\node[booknode,text width=3.7cm] (ok) at (2,-.45) {提交 succeeded};
+\node[booknode,text width=3.7cm] (oy) at (7,-.45) {S、P1、O1、D1\\原成功结果};
+\node[booknode,text width=3.7cm] (or) at (12,-.45) {同参返回原成功};
+\node[booknode,text width=3.7cm] (no) at (2,-2) {提交余额不足};
+\node[booknode,text width=3.7cm] (ny) at (7,-2) {S、P1、原拒绝\\订单与扣款为空};
+\node[booknode,text width=3.7cm] (nr) at (12,-2) {同参返回原拒绝};
+\node[booknode,text width=3.7cm] (ab) at (2,-3.55) {事务回滚};
+\node[bookresult,text width=3.7cm] (ay) at (7,-3.55) {本次尝试无已提交终态\\占用与修改撤销};
+\node[booknode,text width=3.7cm] (ar) at (12,-3.55) {重新竞争 S\\按实际条件继续};
+\draw[bookarrow] (ok)--(oy);\draw[bookarrow] (oy)--(or);
+\draw[bookarrow] (no)--(ny);\draw[bookarrow] (ny)--(nr);
+\draw[bookarrow] (ab)--(ay);\draw[bookarrow] (ay)--(ar);
+\end{tikzpicture}
+\caption{业务拒绝作为终态提交，事务回滚则把本次尝试的修改撤销。}
+\label{fig:ch04-outcome-evidence}
+\end{figure}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=3.5cm] (exe) at (0,0) {本地执行单元\\事务／脚本／普通命令};
+\node[box,text width=3.5cm] (mem) at (5,1.6) {内存对象\\实际类型与值改变};
+\node[box,text width=3.5cm] (ops) at (5,-1.6) {收集需传播的修改\\按规则加入MULTI／EXEC};
+\node[good,text width=3.5cm] (aof) at (10,0) {AOF缓冲与文件\\重启时重放};
+\node[good,text width=3.5cm] (rep) at (10,-3.2) {复制流\\副本连续应用};
+\draw[arr] (exe)--(mem);\draw[arr] (exe)--(ops);
+\draw[arr] (ops.east)--++(.4,0)|-(aof.west);
+\draw[arr] (ops.east)--++(.4,0)|-(rep.west);
+\node[note,text width=12cm] at (5,-4.8)
+  {先形成实际修改，再按相应执行边界传播。\\副本应用位置与AOF同步位置沿各自路径推进。};
+\end{tikzpicture}

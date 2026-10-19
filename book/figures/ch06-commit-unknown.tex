@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=9.5cm] (lost) at (5.5,3.5) {COMMIT 已发出，应用尚未得到确认；恢复继续使用原 S};
+\node[bookresult,text width=3cm] (yes) at (1.6,1.4) {数据库已提交\\插入零行\\新 SELECT 读 P1};
+\node[booknode,text width=3cm] (no) at (5.5,1.4) {数据库已回滚\\可能取得身份\\首次完成购买};
+\node[booknode,text width=3cm] (wait) at (9.4,1.4) {原事务未结束\\唯一检查等待\\或本次返回 503};
+\draw[bookarrow] (lost) -- (yes);
+\draw[bookarrow] (lost) -- (no);
+\draw[bookarrow] (lost) -- (wait);
+\node[booknote] at (5.5,-.1) {连接异常对应观察不完整；三个数据库分支由相同身份步骤处理};
+\end{tikzpicture}
+\caption{提交确认未到达时保留三种数据库结局}
+\label{fig:ch06-commit-unknown}
+\end{figure}

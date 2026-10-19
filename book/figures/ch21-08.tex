@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.5cm] (n) at (1.3,1) {新受理预算\\限制新责任流入};
+\node[good,text width=4.5cm] (r) at (6.7,1) {恢复保留预算\\查询／回填／发布};
+\node[cell] (a) at (0,-1.7) {b1：取有限条};
+\node[cell] (b) at (4,-1.7) {b2：取有限条};
+\node[cell] (c) at (8,-1.7) {b3：取有限条};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\draw[ctl] (c.south)--(8,-2.8)--(0,-2.8)--(a.south);
+\draw[arr] (r)--(b);
+\node[note,text width=11cm] at (4,-4) {各分区限制并发槽位；超时后退避并转向其他责任；旧积压按年龄与期限排序。};
+
+\end{tikzpicture}

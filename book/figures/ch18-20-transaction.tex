@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=3.5cm] (q1) at (0,1.8) {排队阶段\\参数或命令错误};
+\node[warn,text width=3.5cm] (x1) at (5,1.8) {EXECABORT\\整份队列不执行};
+\draw[arr] (q1)--(x1);
+\node[note] at (2.5,2.7) {到EXEC};
+\node[box,text width=3.5cm] (q2) at (0,-1.3) {排队成功\\每条回复QUEUED};
+\node[box,text width=3.5cm] (run) at (5,-1.3) {EXEC连续执行\\SET → LPOP → SET};
+\node[warn,text width=3.5cm] (res) at (10,-1.3) {结果数组\\OK／\mbox{WRONGTYPE}／OK};
+\draw[arr] (q2)--(run);\draw[arr] (run)--(res);
+\node[good,text width=7cm] at (7.5,-3.8)
+  {第一条写入保留，第二条类型错误，第三条继续。\\其他客户端命令不插入这些子命令之间。};
+\node[note,text width=3.5cm] at (10,1.8) {共同初态：\\projection:P1可写\\第二分支先写成字符串};
+\end{tikzpicture}

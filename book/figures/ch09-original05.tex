@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=3cm] (p1) at (0,3.5) {W1 第 7 代\\PA1 已发送};
+\node[warn,text width=3cm] (p2) at (4.3,3.5) {租期结束，W2 接管\\第 8 代，准备 PA2};
+\node[box,text width=3cm] (p3) at (8.6,3.5) {PA1 迟到观察\\核对原尝试及目标};
+\draw[arr] (p1)--(p2);\draw[arr] (p2)--(p3);
+\node[good,text width=5cm] (yes) at (1.5,1.2) {成功受理确认\\独立证据入口\\锁 EV1→PA1，保存受理证据\\EV1.accepted，撤销当前领取};
+\node[warn,text width=5cm] (no) at (7.5,1.2) {失败或未知：保存 PA1 观察\\旧代次不能重新安排 EV1\\W2 的当前领取继续};
+\draw[arr] (p3.south)--++(0,-.4)-|(yes.north);
+\draw[arr] (p3.south)--++(0,-.4)-|(no.north);
+\node[box,text width=11cm] at (4.5,-1) {PA2 若已经在途，可以继续到达\\已受理事件保持完成，重复副本指向 EV1};
+
+\end{tikzpicture}

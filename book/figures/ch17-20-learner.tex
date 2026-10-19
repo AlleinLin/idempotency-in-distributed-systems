@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.1cm] (v) at (0,0) {原投票集合 A/B/C\\多数为2\\继续处理目录};
+\node[box,text width=3.1cm] (l) at (4.7,0) {新节点 D：learner\\接收快照与日志\\暂不增加投票门槛};
+\node[good,text width=3.1cm] (p) at (9.4,0) {追上后通过提升检查\\A/B/C/D 四投票成员\\新多数为3};
+\draw[arr] (v)--(l);
+\draw[arr] (l)--(p);
+\node[warn,text width=4.1cm] (f) at (4.7,-2.4) {尚未同步时提升被拒绝\\继续追赶后再次申请};
+\draw[ctl] (l)--(f);
+\node[note] at (4.7,-3.8) {成员配置按产品规则串行提交，业务分区归属独立保存。};
+\end{tikzpicture}

@@ -1,0 +1,26 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[note,anchor=east] at (0,2.4) {路由第 8 代事务};
+\node[note,anchor=east] at (0,.9) {水位推进事务};
+\node[note,anchor=east] at (0,-.6) {迟到路由第 8 代};
+\foreach \y in {2.4,.9,-.6} \draw[lane] (.2,\y)--(12.4,\y);
+\draw[arr] (.3,3.25)--(12.4,3.25) node[right,note]{时间};
+\fill[Blue] (1,2.4) circle(2pt);
+\node[note,above] at (1,2.4) {取得 g7 行锁};
+\draw[Blue,line width=4pt] (1,2.4)--(5,2.4);
+\node[note,below,text width=3.3cm] at (3,2.3) {比较 8，通过\\写原 P/C};
+\fill[Blue] (5,2.4) circle(2pt);
+\node[note,above] at (5,2.4) {提交或回滚，释放锁};
+\draw[Gold,line width=2pt,densely dashed] (2.1,.9)--(5,.9);
+\node[note,below] at (3.5,.85) {等待同一行锁};
+\draw[arr] (5,2.25)--(5,1.05);
+\draw[Blue,line width=4pt] (5,.9)--(8.1,.9);
+\node[note,above] at (6.5,.95) {锁内安装水位 9};
+\fill[green!35!black] (8.1,.9) circle(2.5pt);
+\node[note,below] at (8.1,.8) {提交 9};
+\draw[lane] (8.1,-1.35)--(8.1,2);
+\fill[Gold] (10.5,-.6) circle(2.5pt);
+\node[warn,text width=3cm,anchor=north] at (10.5,-.9)
+  {8 小于当前水位 9\\拒绝写入};
+\node[note,text width=4cm] at (3,-1.6)
+  {同一资源上的比较、写入与水位推进\\共同受行锁和提交次序保护};
+\end{tikzpicture}

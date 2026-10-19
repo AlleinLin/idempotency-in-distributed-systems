@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\foreach \x/\n/\state in {0/7/未提交,3/8/已提交,6/9/已提交,9/10/处理中} {
+ \node[cell,text width=2.3cm,minimum height=1.2cm] at (\x,0) {投递／记录 \n\\\state};
+}
+\draw[Gold,line width=2pt] (-1.4,-1.2)--(1.4,-1.2);
+\node[note,text width=4cm,text=Gold] at (0,-2) {连续前缀停在 7 以前\\8／9 完成先登记于集合};
+\draw[arr] (0,1.6)--node[above,note]{7 提交以后} (6,1.6);
+\node[note,text width=5cm] at (8,1.7) {批量 ACK 可确认至 9\\Kafka 可提交下一位置 10};
+\end{tikzpicture}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\draw[arr] (0,0)--(14.1,0);
+\foreach \x/\title/\detail in {0.6/{$A_J$}/{固定 S C1 T1},3.5/{平台 E}/{X1／7000},6.4/{$R_J$}/{O1／原 EV1},9.3/{发布 EV1}/{代理接受},12.2/{Q 提交}/{I B F501}}{
+  \fill[Blue] (\x,0) circle (2.5pt);
+  \node[note,text width=2.4cm] at (\x,1.0) {\title\\\detail};
+}
+\foreach \x/\txt in {1.6/{本地 A 前退出},4.5/{$R_J$ 前失联},7.4/{本地 R 前退出},10.3/{发布标记前退出},13.2/{ACK 前退出}}{
+  \draw[Gold,thick] (\x,-.35)--(\x,.35);
+  \node[note,text width=2.5cm] at (\x,-1.0) {\txt};
+}
+\node[note,text width=14cm] at (7,-2.05) {每条竖线的左侧决定已经保存；恢复继续使用原身份，接续尚未完成的本地物化、发送或确认。};
+\end{tikzpicture}

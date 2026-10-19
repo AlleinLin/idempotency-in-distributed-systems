@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.0cm] (cb) at (0,3.1) {回调\\事件 PEV1／PEV2};
+\node[box,text width=3.0cm] (q) at (4.4,3.1) {主动查询\\平台对象 X1};
+\node[box,text width=3.0cm] (re) at (8.8,3.1) {对账\\逐笔收款明细};
+\node[box,text width=9.0cm] (v) at (4.4,1.2) {验证来源、平台范围和 C1／X1\\核对币种、3000 分与已保存支付输入};
+\node[good,text width=9.0cm] (m) at (4.4,-.7) {锁定同一 C1，执行合法迁移并提交 R\\成功：证据＋唯一 O1＋支付结果＋P1 paid\\重复成功恢复原 O1，较早 processing 记为旧观察};
+\draw[arr] (cb)--(v);\draw[arr] (q)--(v);\draw[arr] (re)--(v);\draw[arr] (v)--(m);
+\node[note,text width=11.8cm] at (4.4,-2.3) {不同事件也可报告同一 X1；事件去重与支付事实核对共同约束处理\\不匹配或矛盾终态保存冲突，进入核查};
+
+\end{tikzpicture}

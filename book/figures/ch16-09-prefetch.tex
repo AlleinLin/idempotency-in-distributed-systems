@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.2cm] (q) at (0,0) {队列初态\\EV1，EV2，EV3，EV4\\同优先级入队};
+\node[warn,text width=3.2cm] (a) at (5,1.2) {消费者 A：prefetch=1\\持有 EV1 尚未 ACK\\本消费者信用用尽};
+\node[good,text width=3.2cm] (b) at (5,-1.2) {消费者 B：prefetch=1\\EV2 提交并 ACK\\再收到 EV3／EV4};
+\node[box,text width=3.3cm] (o) at (10.2,0) {可观察完成顺序\\EV2 → EV3 → EV4 → EV1\\每次投递按 I/B 核验};
+\draw[arr] (q)--(a);\draw[arr] (q)--(b);\draw[arr] (a)--(o);\draw[arr] (b)--(o);
+\node[note,text width=12cm] at (5,-3) {prefetch 限制未确认投递数量。并发消费者、重投与优先级分别影响读者实际观察到的处理顺序。};
+
+\end{tikzpicture}

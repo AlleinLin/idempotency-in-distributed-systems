@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/源 A,4.5/目标 B,9/其他节点} {
+ \node[font=\bfseries] at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-5.7);}
+\node[warn,text width=2.7cm] at (0,-1) {暂停写入\\等待归属发布};
+\node[warn,text width=2.7cm] at (4.5,-1) {接管消息暂时延迟};
+\node[warn,text width=2.7cm] at (0,-2.5) {超时失败\\恢复接收 w};
+\draw[arr] (4.5,-3.6)--node[above,note]{迟到的新归属／较大 configEpoch} (9,-3.6);
+\draw[arr] (9,-4.4)--node[above,note]{配置向 B 收敛} (0,-4.4);
+\node[warn,text width=8cm] at (4.5,-6.1) {w 未复制到 B，随归属收敛丢失。\\数据恢复点与配置新旧必须分别判断。};
+
+\end{tikzpicture}

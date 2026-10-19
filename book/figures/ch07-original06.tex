@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.7cm] (h0) at (0,1.8) {H丢失\\原请求已永久丢失\\多次查询均空};
+\node[box,text width=4.7cm] (h1) at (7,1.8) {H延迟\\原请求仍在途中\\同样多次查询均空};
+\node[warn,text width=4.7cm] (r0) at (0,-.3) {为取得进展而重发\\后来请求首次扣款};
+\node[warn,text width=4.7cm] (r1) at (7,-.3) {相同观察下同样重发\\旧请求随后也可扣款};
+\draw[arr] (h0)--(r0);\draw[arr] (h1)--(r1);
+\draw[<->,draw=Gold,thick] (h0)--node[note,above,font=\scriptsize]{有限前缀相同}(h1);
+\node[note,text width=12cm] at (3.5,-1.75) {前提：任意延迟、扣款可重复、查询只读、没有身份仲裁或原子关闭\\要同时保证安全与自动进展，需要新增可区分事实或执行限制};
+
+\end{tikzpicture}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (n) at (0,0) {NameNode\\租约恢复\\选新恢复代次};
+\node[box] (p) at (4,0) {恢复 DataNode\\收集代次／长度\\及副本状态};
+\node[good,text width=3.4cm] (f) at (8.8,1.5) {存在 FINALIZED\\核对完成长度一致\\选匹配副本};
+\node[box,text width=3.4cm] (w) at (8.8,-1.5) {最佳状态RBW／RWR\\在该状态集合中\\选择最小长度};
+\node[good,text width=7.2cm] (c) at (4,-4) {同步参与副本 → 回报 NameNode\\更新块与文件状态，保存元数据日志};
+\draw[arr] (n)--(p);\draw[arr] (p)--(f);\draw[arr] (p)--(w);
+\draw[arr] (f.east)--(11,1.5)--(11,-4)--(c.east);
+\draw[arr] (w.south)--(8.8,-4)--(c.east);
+
+\end{tikzpicture}

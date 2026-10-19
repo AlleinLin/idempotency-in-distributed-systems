@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+\draw[arr] (0,0)--(12,0) node[right,note]{真实时间};
+\draw[thick,draw=Blue] (1,-.15)--(1,.15);
+\draw[thick,draw=Blue] (3,-.15)--(3,.15);
+\draw[thick,draw=Blue] (6,-.15)--(6,.15);
+\draw[thick,draw=Blue] (9,-.15)--(9,.15);
+\node[note] at (1,1.2) {T1 选择\\提交时间 $s_1$};
+\node[note] at (3,-1.1) {等待 TT.after($s_1$)\\然后完成 T1};
+\node[note] at (6,1.2) {随后\\开始 T2};
+\node[note] at (9,-1.1) {提交请求到达\\$s_2\ge$ 此时 latest};
+\draw[good,rounded corners] (0,-2.4) rectangle (11.5,-3.5);
+\node[note] at (5.75,-2.95) {$s_1 <$ T1 完成 $<$ T2 开始 $\le$ 请求到达 $\le s_2$};
+
+\end{tikzpicture}

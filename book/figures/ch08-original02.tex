@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+
+\foreach \x/\lab in {2/接管以前,5.5/W2 接管,9/R 已提交} {\node[box,text width=2.5cm] at (\x,3) {\lab};}
+\node[note,anchor=east] at (.3,1.8) {P1 业务};
+\node[note,anchor=east] at (.3,.4) {T1 资格};
+\node[note,anchor=east] at (.3,-1) {C1 证据};
+\node[box,text width=2.7cm] (p1) at (2,1.8) {awaiting\_payment};
+\node[box,text width=2.7cm] (p2) at (5.5,1.8) {awaiting\_payment};
+\node[good,text width=2.5cm] (p3) at (9,1.8) {paid、唯一 O1};
+\node[box,text width=2.5cm] (t1) at (2,.4) {W1:a，第 7 代};
+\node[warn,text width=2.5cm] (t2) at (5.5,.4) {W2:b，第 8 代};
+\node[good,text width=2.5cm] (t3) at (9,.4) {done，清除持有者};
+\node[box,text width=2.5cm] (c1) at (2,-1) {unconfirmed};
+\node[box,text width=2.5cm] (c2) at (5.5,-1) {unconfirmed};
+\node[good,text width=2.5cm] (c3) at (9,-1) {succeeded，X1};
+\foreach \a/\b in {p1/p2,p2/p3,t1/t2,t2/t3,c1/c2,c2/c3} \draw[arr] (\a)--(\b);
+\node[note,text width=10.8cm] at (5,-2.2) {接管只更换执行归属；可信支付证据使本地业务与任务共同完成\\平台 E 可能早于接管，也可能晚于接管};
+
+\end{tikzpicture}

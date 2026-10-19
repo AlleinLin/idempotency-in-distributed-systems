@@ -1,0 +1,49 @@
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=1cm,y=1cm,
+  stage/.style={draw=Ink!25,fill=Paper!55,rounded corners=2pt,
+    minimum height=2.65cm,inner sep=0pt},
+  consequence/.style={stage,draw=Accent!50,fill=Accent!5}]
+\node[font=\small\bfseries] at (2.1,6.6) {Bob 在这里中断};
+\node[font=\small\bfseries] at (7.45,6.6) {交接时留下的状态};
+\node[font=\small\bfseries] at (12.55,6.6) {若 Alice 直接照单继续};
+
+\foreach \y in {4.85,1.4}{
+  \node[stage,minimum width=4.15cm] at (2.1,\y) {};
+  \node[stage,minimum width=3.8cm] at (7.45,\y) {};
+  \node[consequence,minimum width=4.5cm] at (12.55,\y) {};
+  \draw[flow] (4.25,\y)--(5.45,\y);
+  \draw[flow] (9.45,\y)--(10.2,\y);
+}
+
+% 上排：只有登记发生了，操作在中断时尚未执行。
+\node[font=\small\bfseries] at (2.1,5.78) {先记再做};
+\node at (2.1,5.28) {勾选“已完成”};
+\draw[draw=Ink,line width=.7pt] (2.1,5.02)--(2.1,4.85);
+\draw[Accent,line width=1.2pt] (1.98,4.85)--(2.22,4.61)
+  (1.98,4.61)--(2.22,4.85);
+\node[anchor=west,text=Accent,font=\footnotesize] at (2.45,4.73) {此处中断};
+\draw[draw=Muted,dashed] (2.1,4.55)--(2.1,4.34);
+\node[text=Muted] at (2.1,4.03) {加试剂：尚未执行};
+\node at (7.45,5.2) {操作单：已勾选};
+\node at (7.45,4.5) {样本：未加试剂};
+\node at (12.55,5.4) {Alice 跳过这一步};
+\draw[flow,draw=Accent] (12.55,5.12)--(12.55,4.79);
+\node[text=Accent,font=\large\bfseries] at (12.55,4.35) {漏加试剂};
+
+% 下排：只有加试剂发生了，登记在中断时尚未完成。
+\node[font=\small\bfseries] at (2.1,2.33) {先做再记};
+\node at (2.1,1.83) {加入试剂};
+\draw[draw=Ink,line width=.7pt] (2.1,1.57)--(2.1,1.4);
+\draw[Accent,line width=1.2pt] (1.98,1.4)--(2.22,1.16)
+  (1.98,1.16)--(2.22,1.4);
+\node[anchor=west,text=Accent,font=\footnotesize] at (2.45,1.28) {此处中断};
+\draw[draw=Muted,dashed] (2.1,1.1)--(2.1,.89);
+\node[text=Muted] at (2.1,.58) {登记：尚未完成};
+\node at (7.45,1.75) {该步骤栏：仍空白};
+\node at (7.45,1.05) {样本：已加过试剂};
+\node at (12.55,1.95) {Alice 再加一次};
+\draw[flow,draw=Accent] (12.55,1.67)--(12.55,1.34);
+\node[text=Accent,font=\large\bfseries] at (12.55,.9) {重复加入试剂};
+\end{tikzpicture}
+\caption{中断后，操作单与样本留下不同状态。若接班人直接照单继续，可能漏加，也可能重复加入试剂。}\label{fig:gaps}
+\end{figure}

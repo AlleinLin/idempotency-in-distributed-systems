@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box,text width=3.6cm] (r1) at (0,3.2) {Raft 候选者\\先持有足够新的日志\\再争取本任期选票};
+\node[box,text width=3.6cm] (r2) at (5.2,3.2) {投票者比较日志\\同任期最多投一票\\保存投票后答复};
+\node[good,text width=3.6cm] (r3) at (10.4,3.2) {合法新领导者\\带着旧提交前缀\\继续复制};
+\draw[arr] (r1)--(r2);\draw[arr] (r2)--(r3);
+\node[box,text width=3.6cm] (p1) at (0,.2) {经典 Paxos 新提议者\\本地可以缺少旧值\\先发更高编号准备};
+\node[box,text width=3.6cm] (p2) at (5.2,.2) {准备多数答复\\报告最高已接受提议\\承诺阻止更小编号};
+\node[good,text width=3.6cm] (p3) at (10.4,.2) {选取继承值\\以新编号继续接受\\收集并传播决定};
+\draw[arr] (p1)--(p2);\draw[arr] (p2)--(p3);
+\node[note,text width=14cm] at (5.2,-1.7) {两行分别按各自协议保留旧决定；应用层都按完整 S 恢复原绑定与 R(S)};
+\end{tikzpicture}

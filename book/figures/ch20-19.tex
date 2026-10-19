@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/运行时／RIC,4.7/Runtime API,9.4/handler}{
+\node at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-5.3);}
+\draw[arr] (0,-1)--node[above,note]{GET next} (4.7,-1);
+\draw[arr] (4.7,-2)--node[above,note]{事件／request ID／invocation ID／截止} (0,-2);
+\draw[arr] (0,-3)--node[above,note]{事件与上下文} (9.4,-3);
+\draw[arr] (9.4,-4)--node[above,note]{结果或异常} (0,-4);
+\draw[arr] (0,-5)--node[above,note]{POST response／error，关联当前调用} (4.7,-5);
+
+\end{tikzpicture}

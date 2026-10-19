@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node[good,text width=5.4cm] (input) at (0,4.6)
+  {Q 保存 I1.done 的完整结果\\outcome=created\\fulfillment\_id=501\\state=awaiting\_dispatch};
+\node[box,text width=5.4cm] (first) at (7,4.6)
+  {Q 同时建立真实 F1\\数据库返回编号 501\\state=awaiting\_dispatch\\同一 B 只建立一份 F};
+\draw[arr] (input.east)--node[note,above]{引用 501}(first.west);
+\node[good,text width=5.4cm] (restore) at (0,.9)
+  {EV1 重投，恢复原 I1\\返回原 created 结果\\编号继续为 501\\结果快照中的 state 保持原值};
+\node[box,text width=5.4cm] (current) at (7,.9)
+  {发货进度已经提交\\F1.state=dispatched\\当前进度查询读取 F1\\返回本次看到的 dispatched};
+\draw[arr] (input.south)--node[note,left]{按原 I1 恢复}(restore.north);
+\draw[arr] (first.south)--node[note,right]{调度与发货推进}(current.north);
+\node[note,text width=12.2cm] at (3.5,-1.4)
+  {原处理结果回答那次接收提交了什么，当前 F 回答这份履约现在到哪一步\\进度推进保留 I1 的原输入、原结果和真实 F 引用};
+\end{tikzpicture}

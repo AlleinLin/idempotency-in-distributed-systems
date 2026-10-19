@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[good,text width=11.4cm] (m) at (4,1.4) {manifest：分区 b1／来源代次／应用索引\\原权威回执摘要 + 传输格式／传输摘要 + 有序块列表};
+\node[box] (a) at (0,-1) {完整操作映射\\S／原输入\\P／C／T\\原平台键};
+\node[box] (b) at (4,-1) {原结果／O／EV\\待办与工作代次\\发布状态};
+\node[box] (c) at (8,-1) {会话／关闭与截止\\退款与未知占额\\库存／准备记录\\协调 TX};
+\draw[arr] (m)--(a);\draw[arr] (m)--(b);\draw[arr] (m)--(c);
+\node[note,text width=11.7cm] at (4,-3) {来源证明说明谁形成前缀，摘要说明字节匹配，\\结构检查说明业务关联完整。};
+
+\end{tikzpicture}

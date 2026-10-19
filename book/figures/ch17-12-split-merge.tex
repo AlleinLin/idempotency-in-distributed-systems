@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm] (a) at (0,1.8) {R：$[a,z)$\\同一复制历史};
+\node[good] (l) at (5,2.6) {R1：$[a,m)$};
+\node[good] (r) at (5,.8) {R2：$[m,z)$};
+\draw[arr] (a)--node[above,note]{split} (l);\draw[arr] (a)--(r);
+\node[box] (s) at (0,-1.8) {源 prepare-merge\\保存目标与\\追赶日志位置};
+\node[warn] (t) at (5,-1.8) {目标 commit-merge\\协调源端追赶\\停止相应应用};
+\node[good,text width=3cm] (m) at (9.7,-1.8) {扩大的目标区间\\源端退出\\更新范围与版本};
+\draw[arr] (s)--(t);\draw[arr] (t)--(m);
+\node[note] at (4.8,-3.5) {范围版本、配置版本与复制应用位置分别表达各自进度。};
+\end{tikzpicture}

@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+\foreach \x/\label in {0/L1,3.5/接受者 A,7/接受者 B,10.5/接受者 C,14/L2}{
+\node at (\x,4.8) {\label};\draw[lane] (\x,4.4)--(\x,-.4);}
+\draw[arr] (0,3.9)--node[above,note]{接受 (7,S1)}(3.5,3.9);
+\draw[arr] (0,3.3)--node[above,note]{接受 (7,S1)}(7,3.3);
+\node[note,fill=white] at (0,2.5) {退出};
+\node[good,text width=4.2cm] at (4.6,2.5) {A/B 已持久接受\\位置 41 选定 S1};
+\draw[arr] (14,1.8)--node[above,note]{准备 8}(10.5,1.8);
+\draw[arr] (14,1.15)--node[above,note]{准备 8}(7,1.15);
+\draw[arr] (10.5,.5)--node[above,note]{承诺 + 无接受值}(14,.5);
+\draw[arr] (7,-.15)--node[below,note]{承诺 + (7,S1)}(14,-.15);
+\node[good,text width=7cm] at (7,-1.5) {L2 取得 B/C 多数答复，选择最高已接受值 S1\\发送接受 (8,S1)，再次取得多数后传播决定};
+
+\end{tikzpicture}

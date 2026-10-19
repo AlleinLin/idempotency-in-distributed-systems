@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (lock) at (0,0) {新增入口保护\\锁 C 后锁 T\\重核 P/C/T 归属};
+\node[box,text width=3.8cm] (payment) at (4.3,0) {原支付证据分支\\成功／最终拒绝／未决\\沿第 7.4 节核验};
+\node[good,text width=3.7cm] (done) at (8.9,0) {首次终态新增收尾\\结束 T，清领取\\代次推进后共同提交};
+\draw[arr] (lock)--(payment);
+\draw[arr] (payment)--(done);
+\node[note,text width=11.5cm] at (4.4,-1.7) {未决观察保留非 done 的 T；重复终态读取已保存的支付结果及任务完成事实};
+\end{tikzpicture}

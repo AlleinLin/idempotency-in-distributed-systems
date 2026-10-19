@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (a) at (0,5) {A：S → P1/C1/T1\\原输入与固定 pay-C1};
+\node[good,text width=3.4cm] (e) at (4.7,5) {平台 E：X1\\10000 → 7000};
+\node[box,text width=3.4cm] (r) at (9.4,5) {R：O1＋原结果＋EV1\\P1.paid，T1.done};
+\draw[arr](a)--(e);\draw[arr](e)--(r);
+\node[box,text width=3.4cm] (pa) at (9.4,2.5) {PA1／PA2\\同 EV1 两次发布};
+\node[box,text width=3.4cm] (mq) at (4.7,2.5) {代理 M1／M2\\三次交付同一事件};
+\node[good,text width=3.4cm] (q) at (0,2.5) {Q：I1＋F1＋回报待办\\初次履约单提交一份};
+\draw[arr](r)--(pa);\draw[arr](pa)--(mq);\draw[arr](mq)--(q);
+\node[box,text width=3.4cm] at (0,0) {恢复原 I1 两次\\数据库可有更多提交\\新增 F 次数为 1};
+\node[box,text width=3.4cm] at (4.7,0) {履约回报待办一份\\后续发布与购买库消费\\另行推进订单进度};
+\node[warn,text width=3.4cm] at (9.4,0) {实际发货：此历史为 0\\后续沿 dispatch 身份\\另行提交与恢复};
+\node[note,text width=13cm] at (4.7,-1.7) {调用、投递、事务提交、新效果和外部动作分别计数\\每段都按对应身份核对效果，按持久待办安排后续运行};
+
+\end{tikzpicture}
+

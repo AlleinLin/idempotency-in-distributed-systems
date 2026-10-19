@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (c) at (0,0) {图像客户端\\文件／块位置};
+\node[good] (m) at (4,1.5) {元数据服务\\名字 → 有序块\\发布版本／位置};
+\node[box] (a) at (4,-1.6) {数据节点 A\\块副本};
+\node[box] (b) at (8,-1.6) {数据节点 B\\块副本};
+\draw[ctl] (c.north)--(0,1.5)--node[above,note]{查询／发布} (m.west);
+\draw[arr] (c)--node[below left,note]{直接传输字节} (a);
+\draw[arr] (a)--node[below,note]{复制} (b);
+\draw[ctl] (m)--(a);\draw[ctl] (m)--(b);
+
+\end{tikzpicture}

@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\foreach \x in {0,4,8,12} {\draw[Ink!35,dashed] (\x,-.5)--(\x,-6.2);}
+\node[booknode,text width=1.6cm] at (0,0) {旧请求 R1};
+\node[booknode,text width=1.6cm] at (4,0) {恢复查询};
+\node[booknode,text width=1.6cm] at (8,0) {重试 R2};
+\node[booknode,text width=1.6cm] at (12,0) {主数据库};
+\node[bookresult,text width=2cm] at (0,-1.1) {执行前暂停};
+\draw[bookarrow] (4,-1.8)--node[above,font=\scriptsize]{查询购买}(12,-1.8);
+\draw[bookarrow] (12,-2.5)--node[above,font=\scriptsize]{无记录，余额 10000}(4,-2.5);
+\draw[bookalert] (8,-3.3)--node[above,font=\scriptsize]{P2 提交}(12,-3.3);
+\node[bookresult,text width=2cm] at (12,-4.1) {余额 7000};
+\draw[bookalert] (0,-4.9)--node[above,font=\scriptsize]{R1 恢复执行，P1 也提交}(12,-4.9);
+\node[bookresult,text width=2.6cm] at (12,-5.8) {余额 4000\\两条扣款流水};
+\node[booknote,text width=7cm] at (4.5,-6.7) {\mbox{空查询准确反映当时的数据}\\\mbox{旧请求仍有后续执行机会}};
+\end{tikzpicture}
+\caption{查询无记录以后，重试与旧请求先后提交。普通只读查询没有改变原处理的执行资格。}
+\label{fig:ch02-query-race}
+\end{figure}

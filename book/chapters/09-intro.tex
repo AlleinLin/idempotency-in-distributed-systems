@@ -1,0 +1,22 @@
+\newcommand{\CNineFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Pale}{HTML}{F1F5F7}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=Pale,inner sep=7pt,text width=3.6cm,minimum height=1cm},
+    good/.style={box,fill=green!5!white,draw=green!35!black},
+    warn/.style={box,fill=orange!7,draw=Gold},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!35,densely dashed}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+P1 已经付款成功，O1 也已经建立。购买服务把成功结果返回给 Alice，随即退出。履约系统没有收到通知，O1 一直停在 \code{unfulfilled}。支付恢复任务 T1 已经结束，继续扫描 T1 也找不到需要发布通知的工作。
+
+这次缺失的记录位于购买库与消息系统之间：购买库知道订单已经成立，消息系统尚未取得通知。我们先沿两边的提交次序寻找缝隙，再把通知写成可以恢复的工作。付款使用原 C1，通知取得自己的身份。发布进程退出以后，后来者根据持久记录继续发送同一项业务事实。

@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/handler,4.2/平台账本,8.4/业务权威,12.6/Runtime API}{
+ \node at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-6.5);}
+\draw[arr] (0,-1)--node[above,note]{原 scope／pay-C} (4.2,-1);
+\node[good,text width=2.6cm] at (4.2,-2) {提交 $X_1$};
+\draw[arr] (4.2,-3)--node[above,note]{完整原结果} (0,-3);
+\draw[arr] (0,-4)--node[above,note]{回填原 $C/T$} (8.4,-4);
+\draw[arr] (0,-5)--node[above,note]{POST response} (12.6,-5);
+\draw[Gold,dashed,thick] (-.8,-2.5)--(13.3,-2.5);
+\node[note,text=Gold,fill=white] at (9,-2.5) {此处退出：平台已提交，handler 尚未获知};
+\node[good,text width=11.9cm] at (6.3,-7.1)
+ {后继调用读取原 $C/T$，按原键查询 $X_1$，再补回权威并提交本次响应};
+\end{tikzpicture}

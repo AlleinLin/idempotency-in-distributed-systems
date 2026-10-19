@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[good] (o) at (0,0) {购买权威\\原 EV／Outbox};
+\node[box,text width=4.3cm] (r) at (5,1.4) {RabbitMQ 队列路径\\exchange → queue → 投递\\ACK 释放相应交付责任};
+\node[box,text width=4.3cm] (k) at (5,-1.4) {Kafka 日志路径\\topic／partition／offset\\消费组各存下一读取位置};
+\node[good] (i) at (10.2,0) {同一消费事务接口\\核验 EV／I-B\\原 F／dispatch 意图};
+\draw[arr] (o)--(r);\draw[arr] (o)--(k);
+\draw[arr] (r)--(i);\draw[arr] (k)--(i);
+\node[note,text width=12cm] at (5,-3) {两条路径在一次部署中择一。协议投递或日志位置可变化，原事件身份随两端业务事实保存。};
+\end{tikzpicture}

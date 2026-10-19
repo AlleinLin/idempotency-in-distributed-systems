@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box] (q) at (0,0) {查询原 $S$\\到当前 leader};
+\node[box] (v) at (4.2,0) {核验领导资格\\联系所需多数};
+\node[box] (b) at (8.4,0) {应用屏障\\前序工作完成};
+\node[good] (r) at (8.4,-2.5) {状态锁下读取\\返回一致图像};
+\node[warn,text width=5.2cm] (f) at (2.1,-2.5) {核验或屏障失败\\结束本次读取，重新定位后重试};
+\draw[arr] (q)--(v);\draw[arr] (v)--node[above,note]{通过} (b);
+\draw[arr] (b)--node[right,note]{完成} (r);
+\draw[ctl] (v.south)--(f.north east);
+\draw[ctl] (b.south west)--(f.east);
+\node[note] at (4.2,-4) {允许陈旧的展示投影另设来源与水位，受理与占额由权威状态仲裁。};
+\end{tikzpicture}

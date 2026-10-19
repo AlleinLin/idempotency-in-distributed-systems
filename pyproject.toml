@@ -1,0 +1,12 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["book", "tools", "runs"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+ignore = ["E741"]
+
+[tool.ruff.lint.per-file-ignores]
+# DBOS is imported after this script reads its runtime configuration.
+"examples/multipartition/durable_workflow_lab.py" = ["E402"]

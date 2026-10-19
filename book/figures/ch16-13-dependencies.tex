@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[good,text width=3.3cm] (a) at (0,0) {购买分区多数\\$A_J$／C-T／$R_J$／Outbox};
+\node[warn,text width=3.5cm] (p) at (5,2) {平台不可达\\原 C/T 未决并安排查询\\此前成功 EV 可继续传播};
+\node[warn,text width=3.5cm] (m) at (5,-2) {消息域不可达\\原 Outbox 未完成\\已付款查询继续可读};
+\node[warn,text width=3.5cm] (f) at (10,-2) {履约库不可达\\保留投递／位移前缀\\购买侧无回执持续恢复};
+\node[box,text width=3.5cm] (b) at (10,2) {其他健康分区\\各自多数与独立责任\\继续受理和恢复};
+\draw[arr] (a)--(p);\draw[arr] (a)--(m);\draw[arr] (m)--(f);
+\node[draw=Blue,fill=blue!3,text width=12cm,inner sep=7pt] at (5,-4.7)
+  {共同资源边界：按分区、支付恢复、事件传播与发货分别限制准入／并发／连接池。\\积压占用磁盘和扫描预算，独立保存事实配合容量隔离才能维持健康路径。};
+\end{tikzpicture}

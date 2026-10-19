@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=2.4cm] (s) at (1.4,2.3) {完整 S\\至多一份 P};
+\node[bookresult,text width=2.6cm] (p) at (5.1,2.3) {成功 P1\\输入、币种、3000};
+\node[booknode,text width=2.6cm] (o) at (9.2,3.1) {恰好一张 O1\\归属 P1};
+\node[booknode,text width=2.6cm] (d) at (9.2,1.5) {恰好一条 D1\\归属 P1、O1};
+\draw[bookarrow] (s) -- (p);
+\draw[bookarrow] (p) -- (o);
+\draw[bookarrow] (p) -- (d);
+\node[booknode,text width=4.5cm] (r) at (2.6,-.2) {保存 \(R(S)\)：实际 P1、O1、D1\\每次同参恢复 \(\pi_B(r)=R(S)\)};
+\node[booknode,text width=4.5cm] (money) at (8.4,-.2) {\(b=b_0-\sum_{d\in D}a(d)\)\\余额非负，扣款均有终态};
+\draw[bookarrow] (p.south) -- (r.north);
+\draw[bookarrow] (d.south) -- (money.north);
+\end{tikzpicture}
+\caption{数量、资金、归属与结果投影共同约束成功记录}
+\label{fig:ch06-invariants}
+\end{figure}

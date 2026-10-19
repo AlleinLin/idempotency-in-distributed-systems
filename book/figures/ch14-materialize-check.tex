@@ -1,0 +1,22 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[box,text width=4.6cm] (j) at (0,2.5)
+  {$A_J/R_J$ 固定决定\\S/P1/C1/T1、X1/O1/EV1\\两类结果与原事件完整报文};
+\node[box,text width=4.6cm] (w) at (7,2.5)
+  {当前购买库原行\\实际主键与完整归属\\原输入与原结果\\版本、时间和 payload};
+\node[box,text width=6cm] (cmp) at (3.5,.5)
+  {在同一本地重建事务中逐字段比较\\条件更新还检查预期影响行数};
+\draw[arr] (j)--(cmp);\draw[arr] (w)--(cmp);
+\node[good,text width=3.1cm] (missing) at (-1,-2)
+  {缺行，S/原C/范围-X相容\\补入原编号、原内容};
+\node[good,text width=3.1cm] (same) at (3.5,-2)
+  {原行与决定完整相同\\恢复已有提交};
+\node[warn,text width=3.1cm] (bad) at (8,-2)
+  {归属冲突或更新零行\\整批回滚、重读、核查};
+\draw[arr] (cmp)--(missing);
+\draw[arr] (cmp)--(same);
+\draw[arr] (cmp)--(bad);
+\node[good,text width=7cm] (commit) at (1.2,-4)
+  {对应行与本批物化边界共同提交\\确认丢失时按原关系和边界重读};
+\draw[arr] (missing)--(commit);
+\draw[arr] (same)--(commit);
+\end{tikzpicture}

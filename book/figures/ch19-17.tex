@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {对象地址\\region ID＋offset};
+\node[good] (m) at (4,0) {当前配置映射\\primary／备份\\缓存 RDMA 引用};
+\node[box] (p) at (8,1.6) {primary 注册内存\\网卡读取对象\\返回完成};
+\node[box] (b) at (8,-1.6) {备份非易失日志\\单边写入提交记录\\CPU 后续处理};
+\draw[ctl] (a)--(m);\draw[arr] (m)--node[above,note]{读取} (p);
+\draw[arr] (m.south)--(4,-1.6)--node[below,note]{复制提交} (b.west);
+\node[note,text width=10.5cm] at (4,-3.6) {对象读从 primary 取得；备份日志的网卡确认与软件应用分别发生。};
+
+\end{tikzpicture}

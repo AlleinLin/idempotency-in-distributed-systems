@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[good,text width=3.35cm] (a) at (0,0) {$A_J$：固定原受理\\$S$／原输入／P-C-T\\原 scope／pay-C};
+\node[good,text width=3.35cm] (r) at (4.9,0) {$R_J$：固定原结果\\原付款证据／O-EV\\事件原报文};
+\node[box,text width=3.35cm] (p) at (9.8,0) {当前进度：后续观察\\待付款 $\to$ 已付款\\$\to$ 已接受履约};
+\draw[arr] (a)--(r);
+\draw[ctl] (r)--(p);
+\node[box,text width=8.4cm] (q) at (4.9,-2.5) {一次查询分别返回原受理、已保存原结果与当前进度\\履约完成后，历史付款结果继续指向原 X/O/EV};
+\draw[arr] (a.south)--(q.north west);
+\draw[arr] (r)--(q);\draw[arr] (p.south)--(q.north east);
+\end{tikzpicture}

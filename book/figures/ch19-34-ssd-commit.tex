@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm] (p) at (0,1.3) {\mbox{prepare}到primary\\按版本锁定写对象\\记录准备};
+\node[box,text width=3.2cm] (b) at (4.4,1.3) {\mbox{prepare}到副本\\复制日志落SSD\\非易失缓冲日志};
+\node[box,text width=3.2cm] (v) at (8.8,1.3) {全部\mbox{prepare}回复后\\验证读集\\失败则abort};
+\draw[arr] (p.north)--(0,2.5)--(8.8,2.5)--(v.north);
+\draw[arr] (b)--(v);
+\node[note] at (4.4,3.1) {同一prepare阶段联系primary和副本，收齐回复后验证};
+\node[good,text width=4.2cm] (bc) at (8,-1.8) {先向副本commit\\保存提交记录};
+\node[good,text width=4.2cm] (pc) at (1.9,-1.8) {再向primary commit\\更新对象并解锁};
+\draw[arr] (v)--(bc);\draw[arr] (bc)--(pc);
+\node[note,text width=11.5cm] at (4.4,-3.4) {这条结构在prepare阶段就联系primary及副本。\\验证与提交顺序共同连接事务成立条件和复制保存条件。};
+\end{tikzpicture}

@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=3cm] (s) at (0,3.6) {原四分量 S\\受理 P1／C1};
+\node[box,text width=3cm] (f) at (4.2,3.6) {事实身份\\payment.succeeded／C1};
+\node[good,text width=3cm] (e) at (8.4,3.6) {事件 EV1\\对象 O1，固定快照};
+\draw[arr] (s)--(f);\draw[arr] (f)--(e);
+\node[box,text width=3cm] (p1) at (6.3,1.4) {第一次发布尝试\\读取 EV1 原报文};
+\node[box,text width=3cm] (p2) at (10.5,1.4) {第二次发布尝试\\读取同一 EV1 原报文};
+\draw[arr] (e.south)--++(0,-.4)-|(p1.north);
+\draw[arr] (e.south)--++(0,-.4)-|(p2.north);
+\node[warn,text width=7.1cm] at (8.4,-1) {两次发布可能形成两个代理副本\\都携带 EV1 与相同语义报文\\相同金额的 K2 沿 C2 建另一事件};
+\node[box,text width=3cm] at (0,.8) {支付任务 T1 已 done\\原事件另待发布};
+
+\end{tikzpicture}

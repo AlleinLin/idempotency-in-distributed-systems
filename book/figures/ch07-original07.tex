@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.7cm] (s) at (0,2.5) {完整 S\\账户、动作、E1、K1};
+\node[box,text width=4.7cm] (p) at (7,2.5) {P1\\Q7、商品、数量、CNY 3000};
+\node[box,text width=4.7cm] (c) at (0,.25) {C1 支付操作\\原支付输入、发送期限};
+\node[box,text width=4.7cm] (k) at (7,.25) {平台范围＋pay-C1\\每次发送均从 C1 读取};
+\node[good,text width=4.7cm] (x) at (7,-2.0) {平台 X1\\回调、查询、账单可核对};
+\draw[arr] (s)--(p);\draw[arr] (p.south) -- ++(0,-.45) -| (c.north);
+\draw[arr] (c)--(k);\draw[arr] (k)--(x);
+\node[note,text width=4.8cm] at (0,-1.9) {A 同时保存 P1 与 C1 映射\\X1 在平台创建后再核对保存};
+
+\end{tikzpicture}

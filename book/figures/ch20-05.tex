@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.3cm] (a) at (0,0) {算法1：尝试目录};
+\node[box,text width=4.3cm] (b) at (6,0) {算法2：尝试目录};
+\node[box,text width=4.3cm] (c) at (0,-2) {任务提交\\移动到任务已提交目录};
+\node[warn,text width=4.3cm] (d) at (6,-2) {任务提交\\直接合并到最终目录};
+\node[good,text width=4.3cm] (e) at (0,-4.2) {作业提交\\汇合任务／清理／标记};
+\node[good,text width=4.3cm] (f) at (6,-4.2) {作业提交\\清理／成功标记};
+\draw[arr] (a)--(c);\draw[arr] (b)--(d);\draw[arr] (c)--(e);\draw[arr] (d)--(f);
+\node[note,text width=11cm] at (3,-5.8) {版本2的最终目录可先出现部分任务文件；读取者按完整作业协议选择输入。};
+
+\end{tikzpicture}

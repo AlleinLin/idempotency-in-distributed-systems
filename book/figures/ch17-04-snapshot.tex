@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\foreach \x/\v in {0/1,1.8/2,3.6/3,5.4/$k$,7.2/{$k+1$},9/{$k+2$},10.8/$n$}{
+  \node[cell] at (\x,1.6) {\v};}
+\node[good,text width=5.8cm] (s) at (2.7,-.25) {快照覆盖应用前缀至 $k$\\完整会话／绑定／原结果／待办\\格式／位置／清单／摘要};
+\node[box,text width=4.8cm] (l) at (9,-.25) {后续日志 $k+1$ 至 $n$\\按原顺序应用};
+\node[good,text width=6.6cm] (r) at (5.5,-2.6) {恢复：解析与关联核验通过后替换状态\\接上后续日志，恢复至 $n$};
+\draw[arr] (s)--(r);\draw[arr] (l)--(r);
+\node[note] at (5.4,2.5) {快照可靠保存之后，回收其覆盖的部分日志。};
+\end{tikzpicture}

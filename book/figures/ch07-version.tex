@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node[box,text width=5.3cm] (old) at (0,2.3)
+  {旧购买尚未查明\\账户 1、会话 E1、键 K1\\动作 \texttt{purchase.create.v1}};
+\node[box,text width=5.3cm] (new) at (7,2.3)
+  {改动作以后，完整身份改变\\账户 1、会话 E1、键 K1\\动作 \texttt{purchase.create.}\\\texttt{external.v2}};
+\node[good,text width=5.3cm] (restore) at (0,0)
+  {沿 v1 原入口恢复\\查原 P、O、D 与原结果};
+\node[warn,text width=5.3cm] (twice) at (7,0)
+  {v2 取得另一受理位置\\新 P/C 可再发起平台收款};
+\draw[arr] (old)--node[note,left]{同一购买重试}(restore);
+\draw[arr,draw=Gold] (old.east)--node[note,above]{改动作}(new.west);
+\draw[arr] (new)--(twice);
+\node[note,text width=12.5cm] at (3.5,-1.5)
+  {旧本地扣款与新外部收款可能都成功\\新的 v2 身份只用于用户另一次明确确认};
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.3cm] (l) at (0,1.2) {1. Lock\\primary锁写对象\\记录新值\\与region集};
+\node[box,text width=3.3cm] (v) at (4.2,1.2) {2. Validate\\读取只读对象版本\\失败则abort};
+\node[good,text width=3.3cm] (b) at (8.4,1.2) {3. Commit backups\\全部相关备份\\非易失日志写入\\等待全部网卡确认};
+\node[good,text width=3.3cm] (p) at (8.4,-2.4) {4. Commit primaries\\写各primary日志\\至少一份确认后回复};
+\node[box,text width=6.1cm] (t) at (2.2,-2.4) {primary处理后更新／解锁\\全部primary确认后延后截断\\备份在截断时应用对象更新};
+\draw[arr] (l)--(v);\draw[arr] (v)--(b);\draw[arr] (b)--(p);\draw[arr] (p)--(t);
+
+\end{tikzpicture}

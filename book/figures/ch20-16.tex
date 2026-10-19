@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (s) at (0,1.2) {同步\\调用方等待响应};
+\node[box] (a) at (4,1.2) {异步\\服务队列保存事件};
+\node[box] (e) at (8,1.2) {事件源映射\\poller 读取批次};
+\node[good] (sr) at (0,-1.2) {调用方／上游\\按其规则重试};
+\node[good] (ar) at (4,-1.2) {异步队列\\错误／年龄／退避};
+\node[good] (er) at (8,-1.2) {流／队列来源\\位置／可见性\\批次重投};
+\draw[arr] (s)--(sr);\draw[arr] (a)--(ar);\draw[arr] (e)--(er);
+\node[note,text width=11cm] at (4,-3.2) {三条路径都可能重复处理业务事件，handler携带原 S／C／T。};
+
+\end{tikzpicture}

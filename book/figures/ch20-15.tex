@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,1) {旧 Actor A\\原 C1 请求在途};
+\node[box] (b) at (0,-1.5) {新 Actor B\\原键查询 C1／T1};
+\node[good] (p) at (4,0) {平台\\同一 scope／pay-C1\\保存成功 X1};
+\node[good] (r) at (8,0) {权威原 C1\\完整结果与 R(S)\\结束原恢复责任};
+\draw[arr] (a)--node[above,note]{迟到} (p);
+\draw[arr] (b)--(p);
+\draw[arr] (p)--(r);
+
+\end{tikzpicture}

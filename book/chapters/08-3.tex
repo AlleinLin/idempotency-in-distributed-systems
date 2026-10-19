@@ -1,0 +1,127 @@
+\subsection*{领取资格怎样有界延续}
+
+只保存 \code{owner=W1}，W1 失联后就没有自动接管时点。我们给领取设置租约：数据库授予某次工作者运行一段有期限的调度资格。\code{owner\_incarnation} 标识这次进程运行，每次启动取得新的值，例如 W1:a 与 W1:b。\code{lease\_until} 保存这轮资格的到期时刻，由数据库领取或续期事务写入。
+
+即使进程运行身份保持相同，也要保留 \code{lease\_epoch}。W1:a 第一轮持有第 7 代，超时以后再次领到第 8 代，它的旧线程可能带第 7 代回写。只比较 W1:a 会误认旧线程属于当前领取。携带 T1、运行身份和代次，调度入口才能区分同一进程的两轮工作。
+
+本章以购买数据库的时钟决定领取和到期，客户端时钟只用于安排本地唤醒。所有领取、续期、再次安排和完成事务，统一先锁 C1，再锁 T1，取得锁以后读取当前状态并采样数据库时刻。这项顺序也用于回调 R，避免一方先锁任务、另一方先锁支付形成反向等待。数据库采用 PostgreSQL 18 的 Read Committed，行锁持续到事务结束~\cite{pg}。
+
+候选选择可以在事务外完成，真正领取按下面的步骤判断。时间 \(t\) 在两行都锁定以后采样：
+
+\begin{BookCode}
+按候选 T 读取固定 charge_id，开始事务
+锁定该 C，再锁定 T，重新核对 T.charge_id=C
+t ← clock_timestamp()
+若 C 已有终态且 T 已 done，结束事务，返回完成
+若 C/T 缺失或终态关系矛盾，回滚并核查
+若 T 为 ready 且 next_run_at ≤ t，允许领取
+若 T 为 leased 且 lease_until ≤ t，允许接管
+其他情况结束事务，返回本轮未取得资格
+允许时 lease_epoch 加一，保存本次 owner_incarnation
+令 phase=leased，lease_until=t+30秒
+要求 UPDATE RETURNING 恰好一行
+读取真实 task_id、charge_id、owner_incarnation、lease_epoch、lease_until
+提交，取得提交确认后再准备外部动作
+\end{BookCode}
+
+初始 \code{lease\_epoch=0}，第一次提交领取得到 1，每次接管再增加。30 秒是这里选择的调度参数，平台调用可能超过这个时长。领取事务若暂停到租期已经过去才提交，工作者拿到确认时可能已经没有可用时间，应重新核对或放弃本轮，扫描器随后可以接管。
+
+\subsection*{到期前后两个工作者怎样交错}
+
+用数据库时间表示一条独立历史。T1 的第 7 代由 W1:a 持有，到期时刻为 10:00:30。W1 在 10:00:20 暂停。W2 在 10:00:31 取得两行锁，看到未决 C1 和已到期第 7 代，提交第 8 代领取。W1 在 10:00:40 恢复，可能继续运行内存中的代码。
+
+\CEightFigure{ch08-original04}{第 8 代接管以后，旧第 7 代回写经过当前记录检查}{fig:ch08-takeover}
+
+W1 要安排下一次运行，提交 T1、W1:a 和第 7 代。事务读取到 W2:b、第 8 代，拒绝更新。W1 要续期，同样要匹配当前持有者及代次，并且在持锁后的采样时刻尚未到期。到期后即使没有 W2，W1 也重新走领取规则取得新代次，从而使过期线程与新一轮工作分开。
+
+续期与重新安排共享同一个资格入口。调用者携带上次实际返回的 T、运行身份和代次。事务根据 T 定位 C，按 C→T 取得锁，重新核对关联、C 未决、T 为 \code{leased}、持有者及代次相同，并在锁后采样 \(t\)，要求 \(\text{lease\_until}>t\)。任一资格条件不成立，返回本轮失去资格并结束旧工作，缺失关联或矛盾状态则回滚核查。
+
+续期分支将 \code{lease\_until} 改为 \(t\) 加本轮租期，要求返回同一 T/C 与代次，保留当前持有者。重新安排分支使用下面的 UPDATE。\code{:t} 取自锁后采样，\code{:next\_time} 是有限的未来调度时刻：
+
+\begin{BookCode}
+UPDATE recovery_tasks
+SET phase = 'ready',
+    owner_incarnation = NULL,
+    lease_until = NULL,
+    next_run_at = :next_time
+WHERE task_id = 'T1'
+  AND charge_id = :charge
+  AND phase = 'leased'
+  AND owner_incarnation = :worker_run
+  AND lease_epoch = :epoch
+  AND lease_until > :t
+RETURNING task_id, charge_id, lease_epoch;
+\end{BookCode}
+
+影响一行，提交这次安排并结束当前领取。影响零行，整笔修改回滚，工作者重新读取状态并结束旧领取。续期也要求恰好返回一行，确认后才使用新的期限。字段校验失败、代次溢出或其他数据库异常均回滚，外部发送资格保持未取得。领取提交的通信结局未知时，先重读 T/C、\code{phase}、持有者、代次和期限，确认保存的资格。续期或重排确认丢失时也这样处理，因为 UPDATE 可能已经提交。
+
+续期保留同一代次，按本轮规则更新到期时刻，新领取才增加代次。首次终态 R 推进一次代次并清除所有者，撤销当前资格。所有调度写入都经过同一检查，较小代次的请求在较大代次提交后就会因版本不匹配被拒绝。
+
+\subsection*{锁等待以后时间究竟是哪一刻}
+
+时间函数的语义会直接改变上述判断。PostgreSQL 的 \code{current\_timestamp} 和 \code{now()} 返回事务开始时刻，\code{statement\_timestamp()} 返回本语句开始时刻，\code{clock\_timestamp()} 返回实际调用时刻~\cite{pg}。前两类值可能早于行锁等待结束。
+
+例如，W1 的租约在 10:00:30 到期。续期事务在 10:00:29 开始，然后等待另一事务持有的行锁，10:00:35 才继续。若比较 \code{lease\_until > current\_timestamp}，10:00:30 大于事务起点 10:00:29，已经过期的领取就会通过判断。语句在等待以前开始时，单用 \code{statement\_timestamp()} 也有同类问题。
+
+\CEightFigure{ch08-original05}{时间检查放在取得行锁以后，才包含此前等待的时间}{fig:ch08-clock}
+
+本章显式在取得两行锁以后调用 \code{clock\_timestamp()}，用返回值判断并计算新期限。这个值定义本次受保护决定的判断时点。此后即使事务短暂暂停，其他领取也会在相同行锁处等待，在前一事务结束后读取新状态。工作者取得提交确认后，可以再次核对剩余租期，再准备下一步。网络请求最终何时到达，由后续通信决定。
+
+行锁本身也有生命周期。W1 开始事务后一直暂停，即使租约已经到期，W2 也可能等不到那两行锁。数据库在 \code{lease\_until} 到达时会保留原事务及行锁。因此外部查询、支付调用与长计算都放在领取事务以外，管理程序要能终结失联的数据库会话或长期事务。旧持锁事务结束，接管才重新获得机会。
+
+数据库时钟也有运行条件。正常向前推进有助于解释 30 秒期限，向后校时可能延迟接管，向前跳变可能使任务提前被判为到期。本地状态通过行锁和代次串行仲裁，允许长暂停的外部写入则交给下一节的资源保护。若业务要求租期严格对应真实时间，就要规定时钟误差、校时和故障恢复条件，并据此安排可用时长与余量。
+
+\subsection*{重启后哪些数据必须继续存在}
+
+服务进程重启取得新的 \code{owner\_incarnation}，读取原 T1 与 C1，未到期时等待，到期后通过领取事务接管。任务行中的 \code{lease\_epoch} 保留并递增。数据库重启后保留已确认提交，任务状态和领取代次也就随之恢复。
+
+这里依赖数据库保住已承诺历史。若恢复旧备份使第 8 代回到第 6 代，再发出的第 7 代会与历史领取冲突，资源保留第 8 代水位时还会拒绝恢复者。反过来，若资源也遗忘高水位，旧消息又可能通过。恢复到旧历史需要另建停入口、重新确定代次和核对外部事实的程序，第十四章再处理这一故障模型。
+
+局部任务代次的作用域也在这里固定：T1 的第 8 代只与 T1 的其他代次比较。T2 第一次领取的第 1 代是另一项合法工作。若多个任务共同修改一个受保护资源，要为该资源建立共同仲裁的代次，或把资源拆成分别受保护的对象。直接比较 T1 与 T2 的数字会错误拒绝其中一项。
+
+\subsection*{当前任务结构与约束}
+
+前面每个字段都来自一种恢复需要。下面给出 T 的完整核心结构，购买、支付、订单和观察表采用第 7.4 节的列及归属约束。任务保存恢复资格，业务输入从 C/P 的原快照读取。
+
+\begin{BookCode}
+CREATE TABLE recovery_tasks (
+  task_id text PRIMARY KEY,
+  charge_id text NOT NULL UNIQUE REFERENCES external_payments,
+  phase text NOT NULL CHECK (phase IN ('ready','leased','done')),
+  owner_incarnation text,
+  lease_epoch bigint NOT NULL DEFAULT 0 CHECK (lease_epoch >= 0),
+  lease_until timestamptz,
+  next_run_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  work_mode text NOT NULL DEFAULT 'automatic'
+    CHECK (work_mode IN ('automatic','check')),
+  CHECK (isfinite(next_run_at)),
+  CHECK (lease_until IS NULL OR isfinite(lease_until)),
+  CHECK (
+    (phase = 'leased' AND owner_incarnation IS NOT NULL
+                      AND lease_until IS NOT NULL)
+    OR
+    (phase IN ('ready','done') AND owner_incarnation IS NULL
+                             AND lease_until IS NULL)
+  )
+);
+\end{BookCode}
+
+主键与 C 的唯一外键使任务有稳定归属。非空、枚举和有限时刻检查排除缺少调度依据的行。最后一项检查让 \code{leased} 同时保存持有者及期限，\code{ready}、\code{done} 同时清空二者。代次不下降、未决 C 必有非完成 T、终态与任务共同结束，则由受保护的事务路径保持。单行检查约束负责字段组合，跨表状态关系在这些迁移中核对。
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}p{.15\linewidth}p{.36\linewidth}X@{}}
+\toprule
+保存位置 & 当前字段 & 关联与写入规则\\
+\midrule
+P/C 原记录 & 四分量 \(S\)、保存版本和输入、固定平台身份、证据与结果 & A 建立原绑定，R 发布终态，任务执行读取原快照\\
+T 身份 & \code{task\_id}、\code{charge\_id} & T 主键，C 唯一且有外键，A 一起提交\\
+T 资格 & \code{phase}、\code{owner\_incarnation}、\code{lease\_epoch}、\code{lease\_until} & C→T 锁序下领取、续期或撤销，核对实际返回值\\
+T 调度 & \code{next\_run\_at}、\code{work\_mode} & 未决时保存下次运行依据，窗口外继续核查\\
+O 与观察 & 原订单归属、平台 X 唯一、原结果及观察字段 & R 成功或拒绝分支与 T 完成共同提交，重复恢复原结果\\
+\bottomrule
+\end{tabularx}
+\caption{恢复任务加入后的核心记录及写入位置}\label{tab:ch08-structure}
+\end{table}
+
+调度报文可以携带 T、运行身份和代次，付款金额与平台键则由服务从原 C 读取。某个工作者误带其他金额，服务核对后返回输入冲突并保存诊断。当前领取授予的是安排恢复工作的权限，C1 的支付绑定由原受理事务确定，后续发送和证据核对都引用它。

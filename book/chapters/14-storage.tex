@@ -1,0 +1,353 @@
+\subsection*{把权威决定落到可核对的存储结构}
+
+下面用一个逻辑分片的教学等价布局，把上述关系写成 PostgreSQL SQL。权威库中的 \code{j} 保存目录、会话、受理和结果，购买库中的 \code{w} 保存投影与恢复进度。它们分别提交，生产部署可位于不同实例。会话 $\Gamma$ 和目录 D 是不同逻辑对象，可以与 J 共享同一权威事务域，这样关闭、冻结与首次受理有共同次序。
+
+受理行显式保存完整 S、输入版本与内容、实际 P/C/T 和平台身份。结果行通过原 C 引用受理，显式保存 O/EV、两类原结果与事件。S 在本例按固定四元素 JSON 数组编码，位置依次是整数账户、非空字符串动作、会话和键。入口从已认证账户和已核验会话构造它，账户使用 JSON 数字，字符串 \code{"1"} 不是账户 1 的另一种合法编码。下面的检查函数同时供受理、物化和退款表使用。受控写入器负责授权、报价和证据核验，数据库负责表中列出的类型、唯一性、非空、引用与事务原子性：
+
+% SQL14-J-DDL
+\begin{BookCode}
+CREATE SCHEMA j;
+CREATE FUNCTION j.valid_s(v jsonb) RETURNS boolean
+ LANGUAGE sql IMMUTABLE STRICT AS $$
+ SELECT CASE WHEN jsonb_typeof(v)='array'
+                    AND jsonb_array_length(v)=4 THEN
+   jsonb_typeof(v->0)='number' AND (v->>0)~'^[1-9][0-9]*$'
+   AND jsonb_typeof(v->1)='string' AND v->>1<>''
+   AND jsonb_typeof(v->2)='string' AND v->>2<>''
+   AND jsonb_typeof(v->3)='string' AND v->>3<>''
+ ELSE false END $$;
+CREATE TABLE j.directory(
+  g text PRIMARY KEY, route_epoch bigint NOT NULL,
+  owner text NOT NULL, mode text NOT NULL,
+  last_position bigint NOT NULL DEFAULT 0,
+  next_refund bigint NOT NULL DEFAULT 0,
+  CHECK(mode IN ('open','frozen','recovering','restricted')));
+CREATE TABLE j.sessions(
+  session_id text PRIMARY KEY, account_id bigint NOT NULL,
+  action text NOT NULL, deadline timestamptz NOT NULL,
+  state text NOT NULL CHECK(state IN ('active','closed')));
+\end{BookCode}
+
+目录和会话界定准入范围。受理、结果与决定表在此范围内保存绑定、终态和可枚举历史：
+
+% SQL14-J-TABLES
+\begin{BookCode}
+CREATE TABLE j.accepted(
+  g text NOT NULL REFERENCES j.directory(g),
+  s jsonb NOT NULL CHECK(j.valid_s(s) IS TRUE),
+  input_version text NOT NULL, input jsonb NOT NULL,
+  p text NOT NULL UNIQUE, c text UNIQUE, t text UNIQUE,
+  provider_scope text, provider_key text, provider_input jsonb,
+  acceptance jsonb NOT NULL, stable_rejection jsonb,
+  PRIMARY KEY(g,s), UNIQUE(provider_scope,provider_key),
+  CHECK((c IS NULL AND t IS NULL AND stable_rejection IS NOT NULL
+         AND provider_scope IS NULL AND provider_key IS NULL
+         AND provider_input IS NULL)
+     OR (c IS NOT NULL AND t IS NOT NULL
+         AND provider_scope IS NOT NULL
+         AND provider_key IS NOT NULL AND provider_input IS NOT NULL
+         AND stable_rejection IS NULL)));
+CREATE TABLE j.results(
+  c text PRIMARY KEY REFERENCES j.accepted(c),
+  status text NOT NULL CHECK(status IN ('succeeded','rejected')),
+  o text UNIQUE, ev text UNIQUE,
+  provider_result jsonb NOT NULL, payment_result jsonb NOT NULL,
+  event_body jsonb,
+  CHECK((status='succeeded' AND o IS NOT NULL AND ev IS NOT NULL
+         AND event_body IS NOT NULL)
+     OR (status='rejected' AND o IS NULL AND ev IS NULL
+         AND event_body IS NULL)));
+CREATE TABLE j.decisions(
+  g text NOT NULL REFERENCES j.directory(g), position bigint NOT NULL,
+  route_epoch bigint NOT NULL, kind text NOT NULL,
+  body jsonb NOT NULL, PRIMARY KEY(g,position));
+\end{BookCode}
+
+\code{accepted} 对应 $A_J$ 的绑定，\code{results} 对应 $R_J$。\code{decisions} 保存按序枚举的完整决定副本，包括会话登记、关闭和冻结，\code{body} 中携带该决定的完整行图像和恢复责任。成功事件的 \code{event\_body} 包含原 \code{event\_id}、版本、\code{occurred\_at} 以及全部 payload。\code{acceptance} 保存原受理结果，\code{provider\_input} 保存平台实际解释的原输入，两者不由恢复时的商品现价重新生成。最终拒绝的证据位于 \code{provider\_result}，本地拒绝结果位于 \code{payment\_result}。
+
+下面演示将一份已经校验过的受理决定共同写入关系表与枚举日志。目录与 E1 视为位置 0 的完整初态；生产登记、关闭与冻结的后续变更，也与各自完整决定共同提交。真实入口从授权上下文取得账户、从登记行取得期限，在已有 S 分支先比较原版本和全部输入。此处固定在首次合法受理分支，判期假设数据库时钟是可信精确时间源，区间时间部署改用锁内取得的受信上界。示例回执中的 P1/C1/T1 就是本次权威分配的实际编号：
+
+% SQL14-J-ACCEPT
+\begin{BookCode}
+INSERT INTO j.directory VALUES('g7',8,'A','open',0,0);
+INSERT INTO j.sessions VALUES
+ ('E1',1,'purchase.create.external.v2','2026-10-19 10:00Z','active');
+BEGIN;
+DO $$
+DECLARE d j.directory%ROWTYPE; e j.sessions%ROWTYPE; n bigint;
+BEGIN
+ SELECT * INTO STRICT d FROM j.directory WHERE g='g7' FOR UPDATE;
+ SELECT * INTO STRICT e FROM j.sessions WHERE session_id='E1' FOR UPDATE;
+ IF d.route_epoch<>8 OR d.mode<>'open' OR e.state<>'active'
+    OR clock_timestamp()>=e.deadline OR e.account_id<>1
+    OR e.action<>'purchase.create.external.v2' THEN
+   RAISE EXCEPTION 'invalid original admission';
+ END IF;
+INSERT INTO j.accepted VALUES(
+ 'g7','[1,"purchase.create.external.v2","E1","K1"]',
+ 'external-v2',
+ '{"product_id":"paper-001","quantity":1,"quote_id":"Q7",
+   "currency":"CNY","amount_minor":3000,"payment_method":"PM1"}',
+ 'P1','C1','T1','simulator:merchant-7:test:charge.v1','pay-C1',
+ '{"account_id":1,"charge_id":"C1","currency":"CNY",
+   "amount_minor":3000,"payment_method":"PM1"}',
+ '{"purchase_id":"P1","charge_id":"C1",
+   "operation":{"account_id":1,"action":"purchase.create.external.v2",
+     "session_id":"E1","idempotency_key":"K1"},
+   "product_id":"paper-001","quantity":1,"quote_id":"Q7",
+   "currency":"CNY","amount_minor":3000}',NULL);
+WITH allocated AS (
+ UPDATE j.directory SET last_position=last_position+1
+ WHERE g='g7' AND route_epoch=8 AND mode='open'
+ RETURNING g,last_position,route_epoch)
+INSERT INTO j.decisions
+ SELECT allocated.g,allocated.last_position,allocated.route_epoch,'accept',to_jsonb(a)
+ FROM allocated JOIN j.accepted a ON a.g=allocated.g AND a.c='C1';
+GET DIAGNOSTICS n=ROW_COUNT;
+IF n<>1 THEN RAISE EXCEPTION 'accept decision count %',n; END IF;
+END $$;
+COMMIT;
+\end{BookCode}
+
+受理事务检查锁定的目录、会话和可信时间以后才插入，末次条件写入必须影响一行；零行或任何异常都回滚整笔受理。结果事务同样先锁目录与原 C，核验成功证据，插入唯一结果和完整决定副本，再推进相同位置。回调重复时先读取原结果并完整比较，只有尚无结果的分支插入新决定。表约束不能判断一份平台证据是否真实，核验入口承担这项责任。
+
+这里的 \code{last\_position} 通过同一目录行锁串行分配，并和决定共同提交。后继事务等前者提交或回滚以后再取下一个数，回滚不会留下已分配空洞。这个单权威分片的编号规则给出了连续已提交范围。普通 \code{sequence} 或自增主键允许回滚空洞，事务还可能按不同先后提交，不能直接承担这项含义。多分片可以各自拥有顺序和游标，跨分片总顺序另由相应协议提供。
+
+\subsection*{本地物化怎样与游标共同提交}
+
+为了集中展示比较与回滚，下面将购买库的行写成统一事实表。\code{kind/id} 分别标记 P、C、T、O、EV，父引用表达 P 到 C、C 到 T、C 到 O、O 到 EV 的原归属，\code{body} 保存该对象的全部列。P 的 \code{s/c/t/stable\_rejection} 保存完整身份、原付款及任务编号，或原稳定拒绝；这些字段直接取自 $A_J$。C 的 \code{p/t/scope/key} 保存原购买、任务及平台身份；T 的 \code{c} 指向原付款；O 的 \code{p/c/scope/x/ev} 保存原购买、付款、平台收款及事件归属；EV 保存原事件编号及完整 payload。实际部署可以使用原来的独立关系表，两种布局必须恢复相同字段与约束。编码检查 \code{valid\_s} 是纯本地函数，J、W 位于不同数据库时，分别安装相同定义，W 的约束在自己的数据库中计算。
+
+仅以 \code{(kind,id)} 唯一，挡不住另一张订单 O2 与 O1 同时指向 C1。下面再约束每个 S 至多一个 P、每个 P 至多一个 C、每个 C 至多各有一个 T 和 O、每个 O 至多一个 EV，并分别约束平台范围内的原 key 和收款 X。物化函数随后检查受理付款确实带齐 T，成功付款带齐原 O/EV，稳定拒绝分支则没有 C/T/O/EV。这样，同一业务关系换了对象编号，也会在插入时相遇。已有同编号事实只有完整相同，或恰好等于明确给定的原未决图像时，才允许确认或推进。
+
+% SQL14-W-DDL
+\begin{BookCode}
+CREATE SCHEMA w;
+CREATE TABLE w.cursor(
+ g text PRIMARY KEY, accepted_epoch bigint NOT NULL,
+ last_position bigint NOT NULL, mode text NOT NULL);
+CREATE TABLE w.facts(
+ kind text NOT NULL, id text NOT NULL,
+ parent_kind text, parent_id text, body jsonb NOT NULL,
+ PRIMARY KEY(kind,id),
+ FOREIGN KEY(parent_kind,parent_id) REFERENCES w.facts(kind,id)
+ DEFERRABLE INITIALLY DEFERRED,
+ CHECK((parent_kind IS NULL)=(parent_id IS NULL)),
+ CHECK((CASE kind
+   WHEN 'P' THEN parent_kind IS NULL AND j.valid_s(body->'s')
+     AND ((body->>'c' IS NULL AND body->>'t' IS NULL
+           AND body->'stable_rejection'<>'null'::jsonb)
+       OR (body->>'c'<>'' AND body->>'t'<>''
+           AND body->'stable_rejection'='null'::jsonb))
+   WHEN 'C' THEN parent_kind='P'
+     AND body->>'p'=parent_id AND body->>'t'<>''
+     AND body->>'scope'<>'' AND body->>'key'<>''
+     AND body->>'state' IN ('unconfirmed','succeeded','rejected')
+   WHEN 'T' THEN parent_kind='C' AND body->>'c'=parent_id
+   WHEN 'O' THEN parent_kind='C' AND body->>'c'=parent_id
+     AND body->>'p'<>'' AND body->>'scope'<>'' AND body->>'x'<>''
+     AND body->>'ev'<>''
+   WHEN 'EV' THEN parent_kind='O' AND body->>'event_id'=id
+     AND body->'payload'->>'order_id'=parent_id
+   ELSE false END) IS TRUE));
+CREATE UNIQUE INDEX facts_s ON w.facts((body->'s'))
+ WHERE kind='P';
+CREATE UNIQUE INDEX facts_parent ON w.facts(kind,parent_id)
+ WHERE kind IN ('C','T','O','EV');
+CREATE UNIQUE INDEX facts_payment_key
+ ON w.facts((body->>'scope'),(body->>'key')) WHERE kind='C';
+CREATE UNIQUE INDEX facts_order_purchase
+ ON w.facts((body->>'p')) WHERE kind='O';
+CREATE UNIQUE INDEX facts_order_payment
+ ON w.facts((body->>'scope'),(body->>'x')) WHERE kind='O';
+CREATE TABLE w.recovery_ledger(
+ g text NOT NULL, c text NOT NULL, source_position bigint NOT NULL,
+ body jsonb NOT NULL,
+ PRIMARY KEY(g,c,source_position));
+\end{BookCode}
+
+台账每个版本保存原受理位置、平台范围和键、证据状态、外部路径状态、持久查询编号 H（适用时）、本地物化状态与下一动作。按 C 读取最新 \code{source\_position}，就能枚举尚未终结的责任。新决定可以追加台账版本，前版继续说明以前怎样处置。游标越过某项决定以前，其全部目标事实与可扫描的未决责任都在本批中落盘。
+
+唯一索引约束一项关系不能被两行占用，原编号之间的指向还要逐项比较。先定义受理关系检查，参数分别列出本批涉及的 P 与 C。检查沿这些主键和父引用找到局部链路：P 中的原 C/T 必须实际存在，C 必须指回原 P，C 与 T 相互指向。即使本批只重放 P，按其父键找到的已有 C 也参与核对，稳定拒绝 P 若残留 C 就会失败：
+
+% SQL14-CHECK-ACCEPT
+\begin{BookCode}
+CREATE FUNCTION w.check_acceptance_relations(
+ p_ids text[],c_ids text[]) RETURNS void
+ LANGUAGE plpgsql AS $$
+BEGIN
+ IF EXISTS(
+   SELECT 1 FROM w.facts p
+   LEFT JOIN w.facts c ON c.kind='C' AND c.id=p.body->>'c'
+   WHERE p.kind='P' AND p.id=ANY(p_ids)
+     AND p.body->>'c' IS NOT NULL
+     AND (c.id IS NULL OR c.parent_id IS DISTINCT FROM p.id
+       OR c.body->>'t' IS DISTINCT FROM p.body->>'t'))
+ OR EXISTS(
+   SELECT 1 FROM w.facts c
+   LEFT JOIN w.facts p ON p.kind='P' AND p.id=c.parent_id
+   WHERE c.kind='C' AND c.id=ANY(c_ids) AND
+     (p.id IS NULL OR p.body->>'c' IS DISTINCT FROM c.id
+       OR p.body->>'t' IS DISTINCT FROM c.body->>'t'))
+ OR EXISTS(
+   SELECT 1 FROM unnest(p_ids) k(id)
+   JOIN w.facts c ON c.kind='C' AND c.parent_id=k.id
+   JOIN w.facts p ON p.kind='P' AND p.id=k.id
+   WHERE p.body->>'c' IS DISTINCT FROM c.id
+      OR p.body->>'t' IS DISTINCT FROM c.body->>'t')
+ OR EXISTS(
+   SELECT 1 FROM w.facts c
+   LEFT JOIN w.facts t ON t.kind='T' AND t.id=c.body->>'t'
+   WHERE c.kind='C' AND c.id=ANY(c_ids) AND
+     (t.id IS NULL OR t.parent_id IS DISTINCT FROM c.id))
+ OR EXISTS(
+   SELECT 1 FROM unnest(c_ids) k(id)
+   JOIN w.facts t ON t.kind='T' AND t.parent_id=k.id
+   JOIN w.facts c ON c.kind='C' AND c.id=k.id
+   WHERE c.body->>'t' IS DISTINCT FROM t.id)
+ THEN
+   RAISE EXCEPTION 'materialized relationship conflict';
+ END IF;
+END $$;
+\end{BookCode}
+
+结果关系检查接收本批涉及的 C 与 O，沿成功 C 找回原 O，再沿 O 找到原 EV。O 与 C 保存的原平台范围、X 和原支付结果必须相符，事件 payload 继续指向同一 P/C/O：
+
+% SQL14-CHECK-RESULT
+\begin{BookCode}
+CREATE FUNCTION w.check_result_relations(
+ c_ids text[],o_ids text[]) RETURNS void
+ LANGUAGE plpgsql AS $$
+BEGIN
+ IF EXISTS(
+   SELECT 1 FROM w.facts c
+   LEFT JOIN w.facts o ON o.kind='O'
+     AND o.id=c.body->'payment_result'->>'order_id'
+   WHERE c.kind='C' AND c.id=ANY(c_ids)
+     AND c.body->>'state'='succeeded'
+     AND (o.id IS NULL OR o.parent_id IS DISTINCT FROM c.id))
+ OR EXISTS(
+   SELECT 1 FROM w.facts o
+   LEFT JOIN w.facts c ON c.kind='C' AND c.id=o.parent_id
+   WHERE o.kind='O' AND o.id=ANY(o_ids) AND (
+     c.id IS NULL OR o.body->>'p' IS DISTINCT FROM c.parent_id
+     OR o.body->>'scope' IS DISTINCT FROM c.body->>'scope'
+     OR c.body->>'state' IS DISTINCT FROM 'succeeded'
+     OR o.body->>'x' IS DISTINCT FROM
+        c.body->'provider_result'->>'provider_charge_id'
+     OR o.id IS DISTINCT FROM
+        c.body->'payment_result'->>'order_id'))
+ OR EXISTS(
+   SELECT 1 FROM w.facts o
+   LEFT JOIN w.facts ev ON ev.kind='EV' AND ev.id=o.body->>'ev'
+   WHERE o.kind='O' AND o.id=ANY(o_ids) AND
+     (ev.id IS NULL OR ev.parent_id IS DISTINCT FROM o.id))
+ OR EXISTS(
+   SELECT 1 FROM unnest(o_ids) k(id)
+   JOIN w.facts ev ON ev.kind='EV' AND ev.parent_id=k.id
+   JOIN w.facts o ON o.kind='O' AND o.id=k.id
+   WHERE
+     ev.id IS DISTINCT FROM o.body->>'ev'
+     OR ev.body->'payload'->>'purchase_id' IS DISTINCT FROM o.body->>'p'
+     OR ev.body->'payload'->>'charge_id' IS DISTINCT FROM o.parent_id)
+ THEN
+   RAISE EXCEPTION 'materialized relationship conflict';
+ END IF;
+END $$;
+\end{BookCode}
+
+物化入口接收同一已核验权威快照的一项决定。\code{p\_facts} 中每项包含类型与编号 \code{kind/id}、父类型与编号 \code{parent\_kind/parent\_id} 及完整 \code{body}。允许状态推进时，调用者额外给出精确的 \code{old\_body}。入口只接受下一连续位置。调用者先验证来源分片、位置、完整性和冻结上界，再在受控恢复资格内调用。两项关系检查在事实写入以后、台账与游标写入以前执行：
+
+% SQL14-MATERIALIZE
+\begin{BookCode}
+CREATE FUNCTION w.materialize(
+ p_g text,p_epoch bigint,p_position bigint,
+ p_facts jsonb,p_ledger jsonb) RETURNS bigint
+ LANGUAGE plpgsql AS $$
+DECLARE k w.cursor%ROWTYPE; f jsonb; r w.facts%ROWTYPE;
+        z jsonb; old_value jsonb; n bigint;
+        p_ids text[]; c_ids text[]; o_ids text[];
+BEGIN
+ SELECT * INTO STRICT k FROM w.cursor WHERE g=p_g FOR UPDATE;
+ IF k.accepted_epoch<>p_epoch OR k.mode<>'recovering'
+    OR p_position<>k.last_position+1 THEN
+   RAISE EXCEPTION 'invalid recovery gate or noncontiguous position';
+ END IF;
+ FOR f IN SELECT value FROM jsonb_array_elements(p_facts) LOOP
+   SELECT * INTO r FROM w.facts
+    WHERE kind=f->>'kind' AND id=f->>'id' FOR UPDATE;
+   IF NOT FOUND THEN
+     INSERT INTO w.facts VALUES(f->>'kind',f->>'id',
+       f->>'parent_kind',f->>'parent_id',f->'body');
+   ELSIF r.parent_kind IS DISTINCT FROM f->>'parent_kind'
+      OR r.parent_id IS DISTINCT FROM f->>'parent_id' THEN
+     RAISE EXCEPTION 'parent conflict: %',f->>'id';
+   ELSIF r.body=f->'body' THEN
+     NULL;
+   ELSIF f ? 'old_body' AND r.body=f->'old_body' THEN
+     UPDATE w.facts SET body=f->'body'
+      WHERE kind=r.kind AND id=r.id AND body=f->'old_body';
+     GET DIAGNOSTICS n=ROW_COUNT;
+     IF n<>1 THEN RAISE EXCEPTION 'conditional update count %',n; END IF;
+   ELSE
+     RAISE EXCEPTION 'full image conflict: %',f->>'id';
+   END IF;
+ END LOOP;
+\end{BookCode}
+
+完成本批对象的比较与写入后，入口收集它们的原主键和父键。反向读取既有子行，使只重放父对象的批次也检查到原子链：
+
+% SQL14-MATERIALIZE-CONT1
+\begin{BookCode}
+ -- Include both touched rows and the original keys named by their images.
+ SELECT array_agg(DISTINCT id) FILTER(WHERE kind='P' AND id IS NOT NULL),
+        array_agg(DISTINCT id) FILTER(WHERE kind='C' AND id IS NOT NULL),
+        array_agg(DISTINCT id) FILTER(WHERE kind='O' AND id IS NOT NULL)
+ INTO p_ids,c_ids,o_ids
+ FROM jsonb_array_elements(p_facts) a(item)
+ CROSS JOIN LATERAL (VALUES
+   (a.item->>'kind',a.item->>'id'),
+   (a.item->>'parent_kind',a.item->>'parent_id'),
+   ('P',a.item->'body'->>'p'),('C',a.item->'body'->>'c'),
+   ('C',a.item->'body'->'payload'->>'charge_id'),
+   ('O',a.item->'body'->'payment_result'->>'order_id')
+ ) keys(kind,id);
+ -- Also inspect existing children if only their parent was touched.
+ c_ids:=coalesce(c_ids,ARRAY[]::text[]) || ARRAY(
+   SELECT c.id FROM unnest(p_ids) candidate(id)
+   JOIN w.facts c ON c.kind='C' AND c.parent_id=candidate.id);
+ o_ids:=coalesce(o_ids,ARRAY[]::text[]) || ARRAY(
+   SELECT o.id FROM unnest(c_ids) candidate(id)
+   JOIN w.facts o ON o.kind='O' AND o.parent_id=candidate.id);
+ PERFORM w.check_acceptance_relations(p_ids,c_ids);
+ PERFORM w.check_result_relations(c_ids,o_ids);
+ FOR z IN SELECT value FROM jsonb_array_elements(p_ledger) LOOP
+   INSERT INTO w.recovery_ledger VALUES
+     (p_g,z->>'c',p_position,z->'body') ON CONFLICT DO NOTHING;
+   SELECT body INTO STRICT old_value FROM w.recovery_ledger
+    WHERE g=p_g AND c=z->>'c' AND source_position=p_position;
+   IF old_value IS DISTINCT FROM z->'body' THEN
+     RAISE EXCEPTION 'recovery responsibility conflict';
+   END IF;
+ END LOOP;
+\end{BookCode}
+
+全部关系与台账一致以后，最后条件推进本地游标：
+
+% SQL14-MATERIALIZE-CONT2
+\begin{BookCode}
+ UPDATE w.cursor SET last_position=p_position
+  WHERE g=p_g AND accepted_epoch=p_epoch
+    AND last_position=k.last_position AND mode='recovering';
+ GET DIAGNOSTICS n=ROW_COUNT;
+ IF n<>1 THEN RAISE EXCEPTION 'cursor update count %',n; END IF;
+ RETURN p_position;
+END $$;
+\end{BookCode}
+
+一次调用及其外层事务共同保存整项决定；任一插入、唯一索引、外键、关系核对、完整比较或影响行数失败，异常使本次事务回滚，游标与先前准备写入都不发布。父引用的延迟外键在提交时检查，使同批对象可以按任意先后补齐；调用者只有确认外层提交成功，才发布物化完成。
+
+局部检查依赖一个归纳前提：位置 0 的基线已经完整核验，此后事实写入只经过这个受控入口。每批从实际对象及其原引用收集 P/C/O，再按主键与 \code{facts\_parent} 唯一索引核对。批内对象数为 $b$、既有对象总数为 $N$ 时，索引查找的工作量随 $b\log N$ 增长；重放一项固定大小决定无需重新遍历前面全部事实。数据库可按小表成本选择顺序扫描，查询的逻辑检查范围始终是本批链路。旁路改表造成的无关历史损坏由基线或周期审计发现；生产中把这些对象拆回独立关系表时，相同的主键、唯一性和双向关联规则各自保留。
+
+提交未知时，恢复者重读游标和原对象。游标已经越过目标位置时，核对目标图像后确认完成；尚未越过就按相同来源继续。零行测试还可以通过测试触发器抑制目标更新，检查函数确实抛错并撤销此前写入。
+
+参考实现采用 \code{operations}、\code{charges} 和 \code{workflow} 保存权威关系，购买库分别保存购买、支付、任务、订单和 Outbox；其 \code{projection\_cursor.body} 保存各类完整图像计数与快照摘要。这里另加有序 \code{decisions} 和逐位置物化，是用于解释连续前缀的教学布局。两种游标的来源和编码不同，恢复目标都是一份固定、可逐字段核对的完整图像。

@@ -1,0 +1,2 @@
+-r requirements.txt
+ray==2.59.0

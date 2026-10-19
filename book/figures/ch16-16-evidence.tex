@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box] (cb) at (0,2) {回调\\验证签名／保存原事件};
+\node[box] (q) at (0,0) {主动查询\\原账户／原对象 ID};
+\node[box] (r) at (0,-2) {批量对账\\原批次／日期／关联};
+\node[warn,text width=4cm] (v) at (5,0) {定位原 C\\比对 scope／key／C\\账户／金额／币种／X／状态\\不相容证据持久转核查};
+\node[good,text width=3.5cm] (j) at (10,0) {当前写资格通过\\可信成功形成 $R_J$\\原结果／O-EV 同次提交};
+\draw[arr] (cb)--(v);\draw[arr] (q)--(v);\draw[arr] (r)--(v);\draw[arr] (v)--(j);
+\node[note,text width=12cm] at (5,-3.7) {三条观察可以重复指向同一 X1。查空只说明当前查询范围内尚无证据，原 C/T 继续负责恢复。};
+\end{tikzpicture}

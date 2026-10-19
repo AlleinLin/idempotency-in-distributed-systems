@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\foreach \x in {0,5,10} {\draw[Ink!35,dashed] (\x,-.4)--(\x,-6.4);}
+\node[booknode,text width=2cm] at (0,0) {客户端};
+\node[booknode,text width=2cm] at (5,0) {购买服务};
+\node[booknode,text width=2cm] at (10,0) {数据库};
+\draw[bookarrow] (0,-.9)--node[above,font=\footnotesize]{R1：购买 paper-001}(5,-.9);
+\draw[bookarrow] (5,-1.8)--node[above,font=\footnotesize]{购买事务与 COMMIT}(10,-1.8);
+\node[booknode,text width=3.5cm] at (10,-2.6) {P1、O1、D1\\已提交，余额 7000};
+\draw[bookarrow] (10,-3.4)--node[above,font=\footnotesize]{提交成功确认}(5,-3.4);
+\node[bookresult,text width=3.6cm] at (5,-4.3) {暂停响应路径\\客户端尚未收到结果};
+\draw[bookalert,dashed] (5,-5.2)--node[below,font=\footnotesize]{本次响应丢失}(1.4,-5.2);
+\draw[Accent,line width=1.2pt] (1.1,-5)--(1.5,-5.4) (1.1,-5.4)--(1.5,-5);
+\node[bookresult,text width=2.4cm] at (0,-6.1) {等待期限耗尽};
+\node[booknote,text width=3.2cm] at (10,-5.4) {响应中断发生在\\业务记录提交以后};
+\end{tikzpicture}
+\caption{提交已经完成，结果传递中断。客户端超时以后，数据库中仍有一次成功购买。}
+\label{fig:ch02-commit-gap}
+\end{figure}

@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+\node[good,text width=11.7cm] (auth) at (6,2.1)
+ {在线权威：原 $S\to P/C/T$、$TX$ 决定、原结果与 $O/EV$};
+\node[box,text width=3.1cm] (batch) at (1.5,0)
+ {批量作业\\固定输入／差异文件};
+\node[box,text width=3.1cm] (ray) at (6,0)
+ {Ray 任务与 Actor\\依赖／对象／实例内存};
+\node[box,text width=3.1cm] (fn) at (10.5,0)
+ {事件函数\\事件／调用／执行环境};
+\node[good,text width=11.7cm] (recover) at (6,-2.2)
+ {恢复入口：读原责任与资格 → 查询或发送原操作 → 回写完整结果};
+\node[box,text width=4.6cm] (pay) at (3,-4.1)
+ {独立平台账本\\原 scope／pay-C／收款 $X$};
+\node[box,text width=4.6cm] (consumer) at (9,-4.1)
+ {消费与履约保存域\\原 $EV\to I/B/F\to$ dispatch};
+\draw[ctl] (auth)--(batch);
+\draw[ctl] (auth)--(ray);
+\draw[ctl] (auth)--(fn);
+\draw[arr] (batch)--(recover);
+\draw[arr] (ray)--(recover);
+\draw[arr] (fn)--(recover);
+\draw[arr] (recover)--(pay);
+\draw[arr] (recover)--(consumer);
+\end{tikzpicture}

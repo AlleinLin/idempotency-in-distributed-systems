@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\draw[bookarrow] (0,0) -- (11.8,0);
+\node[booknode,text width=2.6cm] (start) at (1.5,1.2) {WITH 开始\\固定语句快照};
+\node[booknode,text width=2.6cm] (commit) at (5.4,1.2) {竞争事务提交\\唯一检查见冲突};
+\node[bookresult,text width=2.8cm] (next) at (9.6,1.2) {下一条 SELECT\\新快照读到原行};
+\draw[bookarrow] (start) -- (commit);
+\draw[bookarrow] (commit) -- (next);
+\draw[dashed,draw=Muted] (1.5,.6) -- (1.5,0);
+\draw[dashed,draw=Muted] (5.4,.6) -- (5.4,0);
+\draw[dashed,draw=Muted] (9.6,.6) -- (9.6,0);
+\node[booknote,text width=7cm] at (4.1,-.8) {同一 WITH 内普通查询仍按旧快照读取，可能查空\\恢复转到下一条语句；首次扣款仍须实际插入身份};
+\end{tikzpicture}
+\caption{唯一检查的等待结局与普通查询的语句快照可能不同}
+\label{fig:ch06-statement-snapshot}
+\end{figure}

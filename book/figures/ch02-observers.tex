@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.7cm] (phone) at (0,0) {Alice 的手机\\P1 响应丢失};
+\node[booknode,text width=3.3cm] (p1) at (5,0) {已提交的 P1\\O1、D1，余额 7000};
+\node[booknode,text width=2.7cm] (other) at (10.3,0) {另一台授权设备\\已经读到 P1};
+\draw[bookarrow] (p1)--(other);
+\node[bookresult,text width=3.3cm] (erase) at (5,-1.9) {若删除 P1 并改建 P2};
+\draw[bookalert] (p1)--(erase);
+\node[bookresult,text width=2.7cm] (missing) at (10.3,-1.9) {再次查询 P1\\记录消失};
+\draw[bookalert] (erase)--(missing);
+\node[booknote,text width=2.7cm] at (0,-1.9) {手机最终得到成功\\还需核对\\完整业务历史};
+\draw[Ink!25,dashed] (-1.5,-3)--(11.8,-3);
+\node[booknode,text width=4.7cm] (debit) at (1,-4) {保留原购买与扣款 D1};
+\node[booknode,text width=4.7cm] (refund) at (8.9,-4) {若需返还，新增退款 F1\\引用 D1，记录返还金额};
+\draw[bookarrow] (debit)--(refund);
+\end{tikzpicture}
+\caption{其他观察者已经取得的记录也需要延续。补偿通过新增关联记录修正经济结果，保留此前的扣款历史。}
+\label{fig:ch02-observers}
+\end{figure}

@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (2,1) {偶然碰撞};
+\node[booknote] at (6.6,1) {旧键误复用};
+\node[booknote] at (11.2,1) {原身份遗失};
+\node[booknode,text width=3.5cm] (a) at (2,0) {新操作 A、B\\分别独立生成键};
+\node[booknode,text width=3.5cm] (b) at (6.6,0) {新操作 B\\复制 A 的 K1};
+\node[booknode,text width=3.5cm] (c) at (11.2,0) {恢复操作 A\\重新生成 K2};
+\node[bookresult,text width=3.5cm] (ae) at (2,-1.7) {偶然得到相同值\\概率依赖键空间};
+\node[bookresult,text width=3.5cm] (be) at (6.6,-1.7) {两项购买变成同身份\\更长的 K1 仍被复制};
+\node[bookresult,text width=3.5cm] (ce) at (11.2,-1.7)
+ {同一购买，两个身份\\随机数生成正确\\仍可能再次扣款};
+\draw[bookarrow] (a)--(ae);
+\draw[bookalert] (b)--(be);
+\draw[bookalert] (c)--(ce);
+\end{tikzpicture}
+\caption{三个问题依赖不同的规则。增加随机位数主要降低独立生成时的偶然碰撞。}
+\label{fig:ch03-key-errors}
+\end{figure}

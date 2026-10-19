@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (c) at (0,0) {客户端\\暂存原路由 A};
+\node[box] (a) at (4,0) {A：MIGRATING B\\现存键本地执行\\缺失键 ASK};
+\node[box] (b) at (8,0) {B：IMPORTING A\\ASKING 后接受\\一次目标请求};
+\draw[arr] (c)--(a);
+\draw[arr] (a.south)--(4,-1.6)--node[below,note]{ASK：仅本次转向} (0,-1.6)--(c.south);
+\draw[arr] (c.south)--(0,-3)--node[below,note]{同一目标连接：ASKING → 原请求} (8,-3)--(b.south);
+\draw[ctl] (a.north)--(4,1.5)--node[above,note]{MIGRATE} (8,1.5)--(b.north);
+
+\end{tikzpicture}

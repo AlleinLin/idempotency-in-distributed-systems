@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=5.5cm] at (0,3.5) {内存状态机崩溃\\内存 W/M/Γ 全部丢失};
+\node[box,text width=5.5cm] at (8,3.5) {持久应用状态崩溃\\本地事务已有 W/M 与边界};
+\node[good,text width=5.5cm] (a) at (0,1.4) {从完整快照或初态重建\\按序应用持久提交日志\\重建同一份本地镜像};
+\node[good,text width=5.5cm] (b) at (8,1.4) {读取同一已保存边界 j\\只继续其后缀\\数据与 j 共同提交};
+\draw[arr] (0,2.9)--(a);\draw[arr] (8,2.9)--(b);
+\node[warn,text width=13.3cm] at (4,-.8) {持久数据已扣款却未保存 M/边界，重放可能再扣；先保存大边界却漏业务数据，恢复可能跳过原购买};
+
+\end{tikzpicture}

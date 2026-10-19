@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/权威事务域,4.8/失效恢复者,9.6/缓存与查询}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.5)--(\x,-6);
+}
+\node[good,text width=3.4cm] at (0,-1.3)
+  {共同提交\\投影版本2＋待失效事件};
+\node[warn,text width=3.4cm] at (4.8,-2.6) {发送前退出};
+\node[warn,text width=3.4cm] at (9.6,-2.6)
+  {旧投影／旧token可能存在\\提交到失效的窗口};
+\draw[arr] (0,-3.7)--node[above,note]{持久待办重新读取} (4.8,-3.7);
+\draw[arr] (4.8,-4.7)--node[above,note]{可重复失效} (9.6,-4.7);
+\node[good,text width=8.6cm] at (4.8,-6.6)
+  {查询携带min\_revision＝2：缓存若为版本1，转到足够新来源。\\恢复投递推进失效；最低版本检查约束窗口内的读取。};
+\end{tikzpicture}

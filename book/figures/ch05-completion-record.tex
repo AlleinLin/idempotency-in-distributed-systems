@@ -1,0 +1,14 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=10cm] (s) at (0,0) {完整 S：账户 1、purchase.create.v1、E1、K1\\绑定原规范化输入与规范化版本};
+\node[bookresult] (p) at (0,-1.5) {P1 的唯一终态及结果版本};
+\node[booknode,text width=4.2cm] (a) at (-3,-3.2) {成功\\O1 / D1 / CNY 3000\\当次余额 7000};
+\node[booknode,text width=4.2cm] (b) at (3,-3.2) {余额不足拒绝\\原因及所需 CNY 3000\\无订单、无扣款};
+\draw[bookarrow] (s)--(p);
+\draw[bookarrow] (p)--(a);
+\draw[bookarrow] (p)--(b);
+\end{tikzpicture}
+\caption{完成记录把操作身份、原输入和该终态所需的完整结果连接起来。}
+\label{fig:ch05-completion-record}
+\end{figure}

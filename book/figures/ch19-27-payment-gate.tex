@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box] (ct) at (0,1.3) {原S受理\\保存P／C／T\\ready=false};
+\node[box] (tx) at (4.4,1.3) {联合库存TX\\全部必要yes\\持久commit决定};
+\node[good] (finish) at (8.8,1.3) {通知原参与者\\保存推进结果\\释放原C/T资格};
+\draw[arr] (ct)--(tx);\draw[arr] (tx)--(finish);
+\node[good,text width=4.1cm] (gate) at (2.2,-1.7) {所有实际发送入口核验\\原绑定／原TX／ready=true};
+\node[box,text width=4.1cm] (platform) at (8.1,-1.7) {独立平台操作\\原scope／pay-C\\未知时查询原结果};
+\draw[arr] (finish.south)--(8.8,-.1)--(2.2,-.1)--(gate.north);
+\draw[arr] (gate)--(platform);
+\node[note,text width=11.5cm] at (4.4,-3.3) {后台扫描、人工恢复与迟到工作者都经过资格核验。\\C/T的存在、持久commit决定和平台收款分别是三个事实。};
+\end{tikzpicture}

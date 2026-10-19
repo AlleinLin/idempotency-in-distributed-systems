@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[note] at (-2.3,1.8) {新受理};
+\node[cell,text width=3.8cm] (n1) at (1,1.8) {b1 在 G1：C:b1:1};
+\node[cell,text width=3.8cm] (n2) at (7,1.8) {b1 在 G2：C:b1:2};
+\draw[arr] (n1)--(n2);
+\node[note] at (4,2.6) {迁移包含原分配进度};
+\node[note] at (-2.3,-.1) {旧操作};
+\node[box,text width=3.8cm] (o1) at (1,-.1) {原 P1／C1／T1\\scope／pay-C1\\已预留 O1／EV1};
+\node[good,text width=3.8cm] (o2) at (7,-.1) {导入后的原关系\\P1／C1／T1／O1／EV1\\同一 scope／pay-C1};
+\draw[arr] (o1)--node[above,note]{逐字段保存} (o2);
+\node[note,text width=11.7cm] at (3.7,-2.2) {G 的名字不参与业务重新编号。灾难回退先取回丢失历史与资格，再开放新分配。};
+\end{tikzpicture}

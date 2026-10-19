@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+
+\node[box,text width=10.7cm] at (4,1) {同步单线程、同一提交者、通常执行：A完成 → B开始};
+\node[good,text width=10.7cm] at (4,-.6) {异步：A读状态 → await → B进入 → A恢复执行};
+\node[warn,text width=10.7cm] at (4,-2.2) {线程Actor：A与B可能同时读写共享状态};
+\node[good,text width=10.7cm] at (4,-4) {资源与原 S 的写入由权威仲裁\\任务重试、不同提交者及显式乱序配置分别核对};
+
+\end{tikzpicture}

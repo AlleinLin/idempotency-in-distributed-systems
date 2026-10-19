@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=3cm] (a) at (1.6,2.6) {1. A0 取得 S1};
+\node[booknode,text width=3cm] (b) at (5.6,2.6) {2. A0 准备成功};
+\node[booknode,text width=3cm] (c) at (9.6,2.6) {3. A1 也取得 S1};
+\node[bookresult,text width=3cm] (d) at (1.6,.4) {4. A0 提交\\余额 7000};
+\node[booknode,text width=3cm] (e) at (5.6,.4) {5. A1 准备成功};
+\node[bookresult,text width=3cm] (f) at (9.6,.4) {6. A1 提交\\余额 4000};
+\draw[bookarrow] (a) -- (b);
+\draw[bookarrow] (b) -- (c);
+\draw[bookarrow] (c.south) -- (9.6,1.5) -- (1.6,1.5) -- (d.north);
+\draw[bookarrow] (d) -- (e);
+\draw[bookalert] (e) -- (f);
+\node[booknote,text width=10.5cm] at (5.6,-1) {账户排队与余额条件仍成立；删除完整 S 排他后，同一身份形成两份成功};
+\end{tikzpicture}
+\caption{去掉身份唯一性后的六步反例}
+\label{fig:ch06-no-unique}
+\end{figure}

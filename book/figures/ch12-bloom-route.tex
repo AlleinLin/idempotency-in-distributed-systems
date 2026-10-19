@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=4cm] (b) at (5,5.8) {完整 S 进入布隆过滤器};
+\node[box,text width=4cm] (hit) at (1,3.9) {命中：可能已见\\查询准确身份索引};
+\node[box,text width=4cm] (miss) at (9,3.9) {未命中：可少读一次\\直接尝试受保护插入};
+\draw[arr] (b.south)--++(0,-.3)-|(hit.north);
+\draw[arr] (b.south)--++(0,-.3)-|(miss.north);
+\node[good,text width=3.8cm] (old) at (0,1.8) {索引已有 S\\核对 V/X\\恢复或返回退休};
+\node[warn,text width=5.5cm] (arb) at (7.1,1.8) {准确唯一仲裁\\成功：共同提交首次绑定与业务\\冲突：读取胜者，核对原绑定};
+\draw[arr] (hit)--node[note,left]{找到}(old);
+\draw[arr] (hit)--node[note,above,sloped]{未找到}(arb);
+\draw[arr] (miss)--(arb);
+\node[note,text width=12cm] at (5,-.1) {过滤器滞后或误判时，原绑定与唯一仲裁继续保护同一 S};
+\end{tikzpicture}

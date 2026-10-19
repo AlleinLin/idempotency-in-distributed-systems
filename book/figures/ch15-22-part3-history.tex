@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=3.7cm] (commit) at (0,1.7) {决定形成\\完整 S／原输入／原结果\\效果与责任有保存位置};
+\node[good,text width=3.7cm] (replica) at (5.3,1.7) {复制与快照\\决定随应用边界恢复\\重放取得原绑定};
+\node[warn,text width=3.7cm] (close) at (10.6,1.7) {回收与关闭\\旧入口关闭依据保留\\新登记身份从未重用};
+\node[box,text width=3.7cm] (restore) at (10.6,-1.4) {购买投影回退\\J 与效果域核对\\按原编号整批物化};
+\node[good,text width=3.7cm] (work) at (5.3,-1.4) {继续既有责任\\C/T／RF／EV／dispatch\\证据决定终态};
+\node[box,text width=3.7cm] (new) at (0,-1.4) {接受新的业务意图\\有效范围与新身份\\授权、余额或额度仲裁};
+\draw[arr] (commit)--(replica);\draw[arr] (replica)--(close);
+\draw[arr] (close)--(restore);\draw[arr] (restore)--(work);
+\draw[arr] (work)--(new);\draw[arr] (new)--(commit);
+\node[note,text width=14cm] at (5.3,-3.1) {表示与位置可以变化，恢复沿原决定继续；新的购买、退款和补发分别形成新的业务决定。};
+\end{tikzpicture}

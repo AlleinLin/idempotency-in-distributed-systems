@@ -1,0 +1,20 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (u) at (0,0)
+ {unpublished\\$R_J$/O/原 EV 已提交\\安排原报文发布};
+\node[warn,text width=3.4cm] (p) at (6,0)
+ {published\\消息确认已持久写回\\尚无可信消费交接};
+\node[good,text width=3.8cm] (h) at (12.4,0)
+ {handoff\_confirmed\\原回执与来源已持久保存\\进度=fulfillment\_accepted};
+\draw[arr] (u)--node[above,note,text width=1.6cm,align=center]{确认后\\提交标记} (p);
+\draw[arr] (p)--node[above,note,text width=1.8cm,align=center]{核验回执后\\同次提交} (h);
+\node[good,text width=5cm] (c) at (6,-3.4)
+ {履约域同一事务：I/B/F501/dispatch 意图\\回执关联完整原 EV、O、F 与来源记录};
+\draw[ctl] (c.north) --node[right,note]{已提交回执可重复查询} (p.south);
+\draw[ctl] (c.east) -| (h.south);
+\draw[arr] (p.north west) -- (3.7,2.5) -- (8.3,2.5) -- (p.north east);
+\node[note,text width=13cm,align=center,anchor=south] at (6,2.8)
+ {到期无回执：重发原 EV，确认后保留交接待办};
+\node[note,text width=13cm] at (6,-5.1)
+ {published 先持久保存，再接纳回执停扫；仅 ACK 或 offset 不构成业务交接证据。\\
+  回执落到购买权威前退出：重查原 I；落定后：发货由独立 dispatch 扫描继续。};
+\end{tikzpicture}

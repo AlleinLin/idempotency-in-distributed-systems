@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (1.4,.6) {客户端};
+\node[booknote] at (11,.6) {服务};
+\draw[draw=Ink!30,dashed] (1.4,.2)--(1.4,-3.7);
+\draw[draw=Ink!30,dashed] (11,.2)--(11,-3.7);
+\draw[bookarrow] (1.4,-.3)--node[above,font=\footnotesize]{发起 41，尚未收到结果}(11,-.7);
+\draw[bookarrow] (1.4,-1.2)--node[above,font=\footnotesize]{并发发起 42}(11,-1.6);
+\draw[bookarrow] (11,-2)--node[above,font=\footnotesize]{42 的结果先返回}(1.4,-2.4);
+\draw[bookalert] (1.4,-2.9)--node[above,font=\footnotesize]{41 仍需恢复，继续携带 41}(11,-3.3);
+\node[booknote,text width=12cm] at (6.2,-4.2)
+ {已经看到 42，并不能推出 41 已结束；允许并发调用时，保存最近序号不足以覆盖全部未完成操作};
+\end{tikzpicture}
+\caption{原协议的单个未完成调用前提，不能直接搬到允许并发购买的客户端。}
+\label{fig:ch03-sequences}
+\end{figure}

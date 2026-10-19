@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\foreach \x/\lab in {0/W1,4/唯一身份约束,8/W2}{
+\node[box,text width=2.5cm] at (\x,4.6) {\lab};\draw[lane](\x,4)--(\x,-3.9);}
+\draw[arr](0,3.3)--node[note,above]{插入 I1，尚未提交}(4,3.3);
+\draw[arr](8,2.4)--node[note,above]{同 I1 插入，等待}(4,2.4);
+\node[good,text width=3cm] at (0,.8) {锁授权 B1，创建真实 F\\保存回报待办及终态结果};
+\draw[arr](0,-.65)--node[note,above,pos=.7]{共同提交 Q1}(4,-.65);
+\draw[arr](4,-1.4)--node[note,above]{冲突分支返回零行}(8,-1.4);
+\node[good,text width=3.1cm] at (8,-2.7) {新语句读 I1 完整原输入\\同内容恢复原结果／真实 F};
+\node[warn,text width=3.4cm] at (0,-2.7) {若 W1 回滚\\W2 可以成为首次提交者\\随后 W1 按已提交绑定恢复};
+\node[note,text width=11cm] at (4,-4.7) {Read Committed：唯一约束仲裁与新语句可见性分别起作用\\竞争者等待约束仲裁，再用新语句恢复已提交绑定};
+
+\end{tikzpicture}
+

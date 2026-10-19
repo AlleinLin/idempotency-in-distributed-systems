@@ -1,0 +1,51 @@
+\begin{tikzpicture}[x=1cm,y=1cm,
+  every node/.style={font=\small\sffamily,align=center},
+  svc/.style={draw=Blue,fill=white,rounded corners=2pt,minimum height=1cm,
+    text width=3cm,inner sep=5pt},
+  store/.style={svc,draw=green!40!black,fill=green!5},
+  frame/.style={draw=black!25,rounded corners=3pt,fill=blue!2},
+  label/.style={font=\small\sffamily\bfseries,text=Blue,anchor=east,text width=.8cm}]
+\fill[blue!3] (-2,-.7) rectangle (13.8,1.1);
+\fill[green!3] (-2,-4.1) rectangle (13.8,-1);
+\fill[blue!3] (-2,-7.5) rectangle (13.8,-4.4);
+\fill[orange!4] (-2,-10) rectangle (13.8,-7.8);
+\node[label] at (-2.15,0) {接入};
+\node[label] at (-2.15,-2.6) {业务\\权威};
+\node[label] at (-2.15,-5.8) {异步\\协作};
+\node[label] at (-2.15,-8.9) {独立\\效果};
+\node[svc] (client) at (.2,0) {调用方\\持久保存 $S$／原输入};
+\node[svc] (api) at (5.6,0) {API 入口\\认证／校验／路由缓存};
+\node[svc] (query) at (11.8,0) {授权查询\\原受理／原结果／进度};
+\node[store,text width=4.4cm,minimum height=1.65cm] (a) at (5.6,-2.6)
+  {所属购买分区：完整复制状态机\\会话／$A_J$／P-C-T／退款占用\\$R_J$／O-EV／Outbox};
+\node[store] (inv) at (.2,-2.6) {库存参与分区\\TX／prepare／决定};
+\node[svc,text width=3cm] (proj) at (11.8,-2.6) {查询投影／缓存\\来源位置与应用水位};
+\node[svc] (pay) at (.2,-5.8) {支付恢复工作者\\领取／原键发送／核证};
+\node[svc] (relay) at (5.6,-5.8) {Outbox 发布器\\完整原 EV／发布标记};
+\node[store] (consumer) at (11.8,-5.8) {履约数据库与消费者\\I／B／F／dispatch 意图};
+\node[store] (platform) at (.2,-8.9) {支付平台账本\\原 scope/key／X／原返回};
+\node[store] (mq) at (5.6,-8.9) {一个消息保存域\\RabbitMQ 或 Kafka};
+\node[store] (dispatch) at (11.8,-8.9) {发货扫描器／效果平台\\原 dispatch 键／独立效果};
+\node[svc,text width=3.2cm] (cp) at (.2,2.6) {复制控制面\\归属／配置／迁移资格};
+\node[svc,text width=3.2cm] (blob) at (11.8,2.6) {图像存储\\不可变块／manifest\\完整前缀与校验};
+\draw[arr] (client)--node[above,note]{$S$／输入} (api);
+\draw[arr] (api)--(a);
+\draw[arr] (query.south west)--node[above,note]{权威读取} (a.north east);
+\draw[arr,<->] (a)--node[above,note]{原 TX} (inv);
+\draw[arr] (a.south west)--node[left,note]{原 C/T} (pay.north east);
+\draw[arr] (a)--(relay);
+\draw[arr,<->] (pay)--node[left,note]{原身份／证据} (platform);
+\draw[arr] (relay)--node[right,note]{完整 EV} (mq);
+\draw[arr] (mq.east) --node[below,note]{可重复投递} (9.4,-8.9) -- (9.4,-6.9) -- (consumer.south west);
+\draw[arr] (consumer)--(dispatch);
+\draw[ctl] (consumer.north west)--(9.4,-4.45)--(9.4,-3.2)
+  --(a.east);
+\node[note,anchor=west,fill=white,inner sep=2pt] at (9.65,-3.65) {可信交接回执};
+\draw[ctl] (proj)--(query);
+\draw[ctl] (a.east)--(proj.west);
+\draw[ctl] (cp.east) -| node[pos=.5,above,note]{定位与刷新} (api.north);
+\draw[ctl] (cp.west) --++(-1.2,0) |- (inv.west);
+\draw[ctl] (a.south east) -- (8.4,-4.15) -- (14.2,-4.15) -- (14.2,2.6) -- (blob.east);
+\node[note,text width=18cm] at (5.7,-10.8)
+  {绿色框保存权威事实；白色执行组件可替换。实线传递业务输入与证据，虚线传递控制或派生内容。\\各外部效果与消息保存域独立提交，箭头以原身份和持久责任连接。};
+\end{tikzpicture}

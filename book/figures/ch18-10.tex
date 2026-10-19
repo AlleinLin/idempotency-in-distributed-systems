@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (c) at (0,0) {启动配置};
+\node[box] (pre) at (4,1.4) {显式 preload-file\\rdb:／aof: 来源};
+\node[box] (normal) at (4,-1.4) {未指定显式来源\\检查 AOF 开关};
+\node[good] (a) at (8,-.4) {启用 AOF\\BASE → INCR\\按清单顺序};
+\node[box] (r) at (8,-2.8) {未启用 AOF\\普通 RDB};
+\draw[arr] (c)--node[above,note]{有} (pre);\draw[arr] (c)--node[below,note]{无} (normal);
+\draw[arr] (normal)--(a);\draw[arr] (normal)--(r);
+\node[note] at (8,1.4) {显式来源加载失败则启动失败};
+
+\end{tikzpicture}

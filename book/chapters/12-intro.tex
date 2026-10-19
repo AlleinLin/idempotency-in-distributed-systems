@@ -1,0 +1,24 @@
+\newcommand{\CTwelveFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=3.5cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=Gold,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!30,densely dashed},
+    cell/.style={draw=Blue,minimum width=2.1cm,minimum height=.65cm,
+      fill=blue!3,inner sep=3pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+第十一章把业务状态、完整身份的绑定、登记会话一起放进快照；选用序号适配的分支还保存其双向关系。副本换了，重试找到的仍是原购买。随着系统运行，快照中的逐笔结果也在增长。购买一旦完成，这些记录究竟还在为谁保存？删除一份响应，与允许旧请求重新执行之间，隔着哪些判断？
+
+先沿用两种已经建立的业务模型。本地动作 \code{purchase.create.v1} 用余额和扣款流水直接展示重复效果。外部动作 \code{purchase.create.external.v2} 继续沿 S、P1/C1/T1、固定平台范围及 \code{pay-C1} 恢复，成功后由 R 保存 O1、C1 的原支付结果与 EV1。每条数值历史都从各自明确的初态开始。本章逐步缩小需要保存的内容，同时保持旧操作的解释和已经受理工作的去向。

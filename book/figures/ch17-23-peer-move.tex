@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=3.3cm] (a) at (0,0) {初态：R 的 Peer 在 A/B/C\\D 尚无完整数据\\PD 选择替换 A};
+\node[box,text width=3.3cm] (d) at (4.9,0) {D 建立新 Peer\\取得快照与后续日志\\追上 R 的复制历史};
+\node[good,text width=3.3cm] (f) at (9.8,0) {按成员协议完成变更\\R 的 Peer 在 B/C/D\\旧 A 退出相应资格};
+\draw[arr] (a)--(d);
+\draw[arr] (d)--(f);
+\node[box,text width=10.9cm] at (4.9,-2.5) {仅转移 leader：在已存在的合格 Peer 之间交接主要读写角色\\Peer 搬迁：额外传输持久数据和增量日志，并完成成员变化};
+\end{tikzpicture}

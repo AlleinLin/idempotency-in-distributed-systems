@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode] (a) at (0,0) {初始余额\\10000};
+\node[booknode] (b) at (4,0) {P1 扣 3000\\当次余额 7000};
+\node[booknode] (c) at (8.5,0) {P2 扣 1000\\当前余额 6000};
+\draw[bookarrow] (a)--(b);
+\draw[bookarrow] (b)--(c);
+\node[bookresult] (d) at (3,-2) {恢复原 S：P1 / D1 / 7000};
+\node[booknode] (e) at (8.5,-2) {查询账户：6000};
+\draw[bookalert] (b)--(d);
+\draw[bookarrow] (c)--(e);
+\end{tikzpicture}
+\caption{原扣款后的余额与账户当前余额分别来自两个时间依据。}
+\label{fig:ch05-original-current}
+\end{figure}

@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[box,text width=4.4cm] (in) at (0,5.6) {合法来源、完整来件\\按 I 查已提交接收绑定};
+\node[good,text width=4.4cm] (same) at (6.5,5.6) {I 已有终态且完整输入相同\\恢复原结果与 F 引用};
+\draw[arr] (in)--node[note,above]{同输入}(same);
+\node[warn,text width=4.4cm] (ic) at (0,2.7) {同 I，完整输入不同\\保留原 I／F／结果\\核查保存 \mbox{incoming} 与 \mbox{original}};
+\node[box,text width=4.4cm] (b) at (6.5,2.7) {新 I：按 B 锁授权\\比较全部效果输入与决定};
+\draw[arr] (in)--node[note,left]{异输入}(ic);
+\draw[arr] (in.south east)--node[note,above,sloped]{本次取得新 I}(b.north west);
+\node[warn,text width=4.4cm] (bc) at (6.5,-.35) {效果输入冲突或 hold\\删除本事务 I.pending\\完整来件与核查共同提交};
+\draw[arr] (b)--(bc);
+\node[good,text width=4.4cm] (go) at (0,-.35) {同效果输入、允许\\创建 F 或恢复原 F\\共同保存本次 I 终态与回报依据};
+\draw[arr] (b.south west)--(go.north east);
+\node[note,text width=11.7cm] at (3.25,-2.3) {核查含原因、负责角色与开放状态，重复来件恢复同一项\\每条已确定分支保存持久处理依据以后，才确认当前代理投递};
+\end{tikzpicture}

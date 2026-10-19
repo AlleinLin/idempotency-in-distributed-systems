@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote,text width=13cm] at (7,.45) {$a(b)=7000$；$g(b)=b-1000$；共同初始余额为 10000};
+\node[booknode,text width=4.4cm] (adj) at (3,-.7) {连续重复\\$10000\stackrel{a}{\longrightarrow}7000\stackrel{a}{\longrightarrow}7000$};
+\node[booknode,text width=4.4cm] (eq) at (11,-.7) {$a(a(10000))=a(10000)$\\余额投影上相同};
+\draw[bookarrow] (adj)--(eq);
+\node[booknode,text width=4.4cm] (inter) at (3,-2.4) {中间插入 $g$ 后重复 $a$\\$7000\stackrel{g}{\longrightarrow}6000\stackrel{a}{\longrightarrow}7000$};
+\node[bookresult,text width=4.4cm] (diff) at (11,-2.4) {原 $a$ 完成后只执行 $g$\\最终应为 6000};
+\draw[bookalert] (inter)--(diff);
+\node[booknote,text width=13cm] at (7,-3.8) {连续重复等式没有检查 $a\to g\to a$ 的交错；迟到请求需要恢复原结果};
+\end{tikzpicture}
+\caption{幂等等式比较紧邻重复，插入其他操作需要另查执行历史。}
+\label{fig:ch04-adjacent-idempotence}
+\end{figure}

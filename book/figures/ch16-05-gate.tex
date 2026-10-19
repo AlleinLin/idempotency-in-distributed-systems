@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.2cm] (a) at (0,0) {受理权威\\保存 C/T\\reservation\_ready\\初值 false};
+\node[box,text width=3.2cm] (b) at (4.5,0) {库存参与者\\SKU-A／SKU-B\\各自 prepare 占用};
+\node[good,text width=3.2cm] (c) at (9,0) {协调者持久 commit\\所有 yes 的原 TX\\恢复完成各参与者};
+\node[good,text width=3.2cm] (d) at (9,-2.5) {权威 ready=true\\claim 原子核验资格\\取得本地执行代次};
+\node[box,text width=3.2cm] (e) at (4.5,-2.5) {可替换支付工作者\\读取原 scope／pay-C\\调用独立平台};
+\node[box,text width=3.2cm] (f) at (0,-2.5) {平台保存 X1\\回调／查询／对账\\合流原 C/T};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);\draw[arr] (d)--(e);\draw[arr] (e)--(f);
+
+\end{tikzpicture}

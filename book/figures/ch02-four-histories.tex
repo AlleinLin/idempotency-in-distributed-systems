@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=10cm] at (5,0) {每条历史的起点：余额 10000，购买、订单、流水为空};
+\foreach \i/\y/\a/\b/\c in {
+1/-1.4/{A：请求未到服务}/{没有开始购买事务}/{10000；0 笔},
+2/-2.8/{B：事务部分执行}/{最终整体回滚}/{10000；0 笔},
+3/-4.2/{C：提交后失去响应}/{P1、O1、D1 已保存}/{7000；1 笔},
+4/-5.6/{D：仍在途或执行中}/{稍后提交或回滚}/{尚无终局}} {
+  \node[booknode,text width=3.2cm] (a\i) at (.1,\y) {\a};
+  \node[booknode,text width=3.6cm] (b\i) at (5,\y) {\b};
+  \node[booknode,text width=2.5cm] (c\i) at (10,\y) {\c};
+  \draw[bookarrow] (a\i)--(b\i);
+  \draw[bookarrow] (b\i)--(c\i);
+}
+\node[booknote,text width=11cm] at (5,-6.6) {客户端都可能等待超时；右列分别统计该分支中的余额与已提交成功购买数};
+\end{tikzpicture}
+\caption{一次超时覆盖四类不同远端历史。每行独立从相同初始状态推演。}
+\label{fig:ch02-four-histories}
+\end{figure}

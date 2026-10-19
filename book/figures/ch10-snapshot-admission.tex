@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+\node[box,text width=12.2cm] (source) at (4.4,7.8)
+  {源端在同一对象状态边界导出快照及覆盖版本 k=5\\核验来源、对象和完整前缀 1 至 5，再进入本地安装};
+\node[box,text width=12.2cm] (lock) at (4.4,5.3)
+  {快照安装与普通增量取得同一对象锁\\锁内重读当前状态与连续位置 h，按这一次比较决定动作};
+\draw[arr] (source.south)--(lock.north);
+\node[warn,text width=3.5cm] (older) at (0,1.8)
+  {k<h：例如 h=6\\快照只覆盖至 5\\保存旧观察\\保留第 6 项后的内容\\h 继续为 6};
+\node[box,text width=3.5cm] (equal) at (4.4,1.8)
+  {k=h：例如 h=5\\比较同版本投影\\一致则恢复原状态\\缺失可有据重建\\含义冲突交核查};
+\node[good,text width=3.5cm] (newer) at (8.8,1.8)
+  {k>h：例如 h=1\\完整前缀核验通过\\安装快照并置 h=5\\覆盖相应等待项\\下一项从 6 继续};
+\draw[arr] (lock.south west)--(older.north);
+\draw[arr] (lock.south)--(equal.north);
+\draw[arr] (lock.south east)--(newer.north);
+\node[box,text width=12.2cm] (commit) at (4.4,-1.5)
+  {投影内容、h、等待项状态与可扫描的后续工作共同提交\\普通增量随后取得同一对象锁，读取新 h 后再核对自己的前驱};
+\draw[arr] (older.south)--(commit.north west);
+\draw[arr] (equal.south)--(commit.north);
+\draw[arr] (newer.south)--(commit.north east);
+\end{tikzpicture}

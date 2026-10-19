@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[good,text width=4cm] (j) at (0,1.5) {购买权威读取快照\\$A_J$：S／P-C／报价\\$R_J$：O-X／付款结果};
+\node[box,text width=4cm] (q) at (0,-1.5) {可信交接回执投影\\完整原 EV／O／F501\\保存来源与应用水位};
+\node[box,text width=4.5cm] (r) at (6.5,0) {授权查询响应\\acceptance：原受理\\progress：本次读取进度\\payment\_result：原付款};
+\draw[arr] (j)--(r);\draw[arr] (q)--(r);
+\node[warn,text width=4cm] (old) at (12,0) {付款时保存的原 result\\progress=unfulfilled\\作为原响应快照保留};
+\draw[ctl] (j.east) to[bend left=15] (old.north);
+\node[note,text width=12cm] at (5.5,-3) {购买权威持久保存回执，同时推进履约已接受并停止补发。\\原付款结果及付款时响应快照各保留自己的时间语义。};
+
+\end{tikzpicture}

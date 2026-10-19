@@ -1,0 +1,14 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4.8cm] (empty) at (3,0) {按 S 查询并要求行锁\\返回零行};
+\node[booknode,text width=4.8cm] (account) at (11,0) {按账户 1 查询并要求行锁\\找到已有账户行};
+\node[bookresult,text width=4.8cm] (none) at (3,-1.8) {没有 S 行可锁\\其他事务仍可尝试插入 S};
+\node[booknode,text width=4.8cm] (locked) at (11,-1.8) {锁住账户 1\\其他同账户修改等待};
+\draw[bookarrow] (empty)--(none);
+\draw[bookarrow] (account)--(locked);
+\node[booknote,text width=13cm] at (7,-3.1) {PostgreSQL 18 Read Committed\\锁住实际找到的行，与约束尚未出现的 S，是不同的协调对象};
+\end{tikzpicture}
+\caption{空查询没有取得一条身份行的锁，预锁账户则扩大了串行范围。}
+\label{fig:ch04-empty-lock}
+\end{figure}

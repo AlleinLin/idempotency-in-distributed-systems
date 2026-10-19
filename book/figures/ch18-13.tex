@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box] (c) at (0,0) {同一客户端连接\\先写入完整对象\\记录写位置 w};
+\node[box] (wait) at (4,1.3) {WAIT\\副本处理位置\\offset $\ge w$\\返回副本数};
+\node[good] (aof) at (4,-1.3) {WAITAOF\\本地或副本\\同步位置 $\ge w$\\返回两类数量};
+\node[warn] (timeout) at (8,0) {超时返回当前数量\\原写入可能已经生效\\原 S 查询／重试};
+\draw[arr] (c)--(wait);\draw[arr] (c)--(aof);\draw[arr] (wait)--(timeout);\draw[arr] (aof)--(timeout);
+
+\end{tikzpicture}

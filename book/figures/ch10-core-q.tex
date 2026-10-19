@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.3cm] (i) at (0,0) {接收身份 I1\\保存完整 EV1\\唯一键决定首次处理};
+\node[box,text width=3.8cm] (b) at (4.5,0) {效果身份 B1\\O1 的初次履约授权\\比较原效果输入};
+\node[good,text width=3.6cm] (f) at (9,0) {实际履约单 F1\\RETURNING 得到 501\\B 唯一约束限制建单};
+\draw[arr] (i)--(b);
+\draw[arr] (b)--(f);
+\draw[arr] (f.south)--(9,-1.6)--(0,-1.6)--(i.south);
+\node[note,text width=12.3cm] at (4.5,-2.4) {I1 保存引用 501 的 created 原结果\\另一 I2 可保存引用同一 F 的 existing 结果};
+\node[note,text width=12.3cm] at (4.5,-3.6) {这些写入共同进入 Q；回报待办与隔离责任在完整过程加入同一提交边界};
+\end{tikzpicture}

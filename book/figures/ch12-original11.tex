@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=12cm] (s) at (5,4.6) {共同初态：S1/序号 1 尚无绑定；ACCEPT 与 SKIP 进入同一受理域};
+\node[good,text width=5.2cm] (a) at (1,2.6) {SKIP 先胜出\\保存 U、原 V/X 与跳过结果\\P 为空，不建立 P/C/T};
+\node[warn,text width=5.2cm] (b) at (9,2.6) {ACCEPT 先胜出\\保存原 P1/C1/T1\\C1 可以继续未决};
+\draw[arr] (s.south)--++(0,-.3)-|(a.north);
+\draw[arr] (s.south)--++(0,-.3)-|(b.north);
+\node[good,text width=5.2cm] (c) at (1,.2) {迟到 ACCEPT 恢复 skipped\\客户端持久取得跳过结果\\序号 1 才可确认};
+\node[warn,text width=5.2cm] (d) at (9,.2) {SKIP 返回 already\_accepted\\T1 沿原身份继续恢复\\未决槽位继续阻塞确认};
+\draw[arr] (a)--(c);\draw[arr] (b)--(d);
+\end{tikzpicture}

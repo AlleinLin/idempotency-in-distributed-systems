@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/调用方,4.5/Actor 方法,9/持久效果域}{
+\node at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-5);}
+\draw[arr] (0,-1)--node[above,note]{原 S／原 C} (4.5,-1);
+\draw[arr] (4.5,-2)--node[above,note]{提交业务效果} (9,-2);
+\draw[arr] (9,-2.8)--node[above,note]{成功} (4.5,-2.8);
+\node[warn,text width=2.4cm] at (4.5,-3.6) {回复前退出};
+\draw[arr] (0,-4.7)--node[below,note]{重试原身份 → 读取原结果} (9,-4.7);
+
+\end{tikzpicture}

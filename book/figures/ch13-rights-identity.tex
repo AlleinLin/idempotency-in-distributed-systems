@@ -1,0 +1,6 @@
+\begin{tikzpicture}
+\node[note,text width=12cm] at (5,5.6) {两条历史共同初态：A 权利 3000，S1 未受理，金额 1000};
+\node[warn,text width=5.2cm] (a) at (1,3.3) {每次到达都消耗\\第一次：$D_A=1000$，余权 2000\\S1 重试：$D_A=2000$，余权 1000\\两次消费，总量依然非负};
+\node[good,text width=5.2cm] (b) at (9,3.3) {首次消费与 S1 共同保存\\第一次：绑定原购买、消费 1000\\S1 重试：核对输入，恢复原记录\\$D_A=1000$，余权保持 2000};
+\node[box,text width=11.5cm] at (5,.5) {本地仲裁同时检查两项条件：\\新消费金额不超过余权；已有 S1 回到原绑定与原结果};
+\end{tikzpicture}

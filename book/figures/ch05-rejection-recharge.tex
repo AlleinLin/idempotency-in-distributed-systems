@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3cm] (a) at (0,0) {余额 2000\\S1 需扣 3000};
+\node[bookresult,text width=3cm] (b) at (4,0) {S1 拒绝提交\\无订单与扣款};
+\node[booknode,text width=3cm] (c) at (8,0) {之后充值 4000\\余额变为 6000};
+\draw[bookarrow] (a)--(b);
+\draw[bookarrow] (b)--(c);
+\node[booknode,text width=4cm] (d) at (2,-2) {恢复原 S1：仍返回原拒绝};
+\node[booknode,text width=4cm] (e) at (8,-2) {新购买 S2：重新判断\\扣 3000 后余额 3000};
+\draw[bookalert] (b)--(d);
+\draw[bookarrow] (c)--(e);
+\end{tikzpicture}
+\caption{本例充值发生在拒绝提交之后；新增购买使用新身份重新判断业务条件。}
+\label{fig:ch05-rejection-recharge}
+\end{figure}

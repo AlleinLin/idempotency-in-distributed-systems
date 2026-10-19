@@ -1,0 +1,35 @@
+\begin{tikzpicture}[
+  x=1mm,y=1mm,
+  cell/.style={draw=Ink!35,fill=Paper,rounded corners=1.5pt,
+    text width=43mm,minimum height=15mm,align=center,inner sep=2mm,
+    font=\footnotesize\sffamily},
+  fact/.style={cell,draw=Accent!65,fill=Accent!6},
+  head/.style={font=\small\sffamily\bfseries,text=Ink,align=center},
+  closingflow/.style={-{Stealth[length=1.6mm]},draw=Ink!60,line width=.6pt}
+]
+\node[head] at (0,5) {已经保存的事实};
+\node[head] at (53,5) {接续责任};
+\node[head] at (106,5) {查询所报告的含义};
+\node[fact] (a1) at (0,-11) {原购买已受理\\P1/C1/T1 已保存};
+\node[cell] (b1) at (53,-11) {已满足付款资格\\按原平台关联推进};
+\node[cell] (c1) at (106,-11) {已受理，付款尚待确认};
+\node[fact] (a2) at (0,-33) {平台 X1 已收款 3000 分\\本地尚缺确定证据};
+\node[cell] (b2) at (53,-33) {沿原 C1 查询、回调或对账\\继续核对 X1};
+\node[cell] (c2) at (106,-33) {本地报告付款未知\\平台收款事实已经存在};
+\node[fact] (a3) at (0,-55) {原结果、O1 与 EV1\\已在权威共同保存};
+\node[cell] (b3) at (53,-55) {付款责任结束\\原 EV1 进入传播};
+\node[cell] (c3) at (106,-55) {原购买成功\\履约进度另查};
+\node[fact] (a4) at (0,-77) {消费者已提交 F1\\并保存交接与发运意图};
+\node[cell] (b4) at (53,-77) {交接证据返回上游\\发运沿原身份接续};
+\node[cell] (c4) at (106,-77) {履约已接受\\实际发运按其证据报告};
+\node[fact] (a5) at (0,-99) {新 RF 关联原 X1\\保存退款及相应占额};
+\node[cell] (b5) at (53,-99) {退款从原 RF 继续\\取得确定证据后更新};
+\node[cell] (c5) at (106,-99) {原购买结果保持\\当前退款进度继续变化};
+\foreach \r in {1,2,3,4,5}{
+  \draw[closingflow] (a\r.east)--(b\r.west);
+  \draw[closingflow] (b\r.east)--(c\r.west);
+}
+\foreach \old/\new in {1/2,2/3,3/4,4/5}{
+  \draw[closingflow] (a\old.south)--(a\new.north);
+}
+\end{tikzpicture}

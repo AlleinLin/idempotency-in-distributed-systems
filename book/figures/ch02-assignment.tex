@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=7cm] (a) at (3.5,0) {初始余额};
+\node[booknode,text width=2cm] (v1) at (10,0) {10000};
+\node[booknode,text width=7cm] (b) at (3.5,-1.3) {原请求：设置为 7000};
+\node[booknode,text width=2cm] (v2) at (10,-1.3) {7000};
+\node[booknode,text width=7cm] (c) at (3.5,-2.6) {另一项合法操作：扣除 1000};
+\node[booknode,text width=2cm] (v3) at (10,-2.6) {6000};
+\node[bookresult,text width=7cm] (d) at (3.5,-3.9) {旧请求重试：再次设置为 7000};
+\node[bookresult,text width=2cm] (v4) at (10,-3.9) {7000};
+\foreach \n/\v in {a/v1,b/v2,c/v3,d/v4} {\draw[bookarrow] (\n)--(\v);}
+\foreach \u/\v in {a/b,b/c,c/d} {\draw[bookarrow] (\u)--(\v);}
+\node[booknote,text width=11cm] at (5.2,-5.1)
+ {单看连续赋值：$g(g(b))=g(b)$\\另一项扣款插入后，迟到的赋值覆盖了它对余额的改变};
+\end{tikzpicture}
+\caption{固定赋值具有连续重复的幂等性。交错执行还需要保护其他操作已经产生的变化。}
+\label{fig:ch02-assignment}
+\end{figure}

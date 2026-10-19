@@ -1,0 +1,23 @@
+\newcommand{\CSeventeenFigure}[3]{%
+  \begin{figure}[!htbp]\centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=2.8cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=Gold,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    ctl/.style={arr,dashed},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!30,densely dashed},
+    cell/.style={draw=Blue,minimum width=1.7cm,minimum height=.68cm,
+      fill=blue!3,inner sep=4pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}\end{figure}}
+
+购买服务的入口、支付工作者和消息发布器可以分别扩容，受理事实却必须有确定的保存位置。Alice 的一次购买已经取得 \code{C:b1:1}，入口换了一台机器，原平台调用可能还在途中，新的工作者也可能开始扫描。系统把这些活动接到同一份事实，先要确定哪一个逻辑分区保存这次购买，以及当前由哪一个副本组代表这个分区接收修改。
+
+业务分区保存身份和结果，复制组保存这个分区的连续历史，协调控制面发布归属与配置。本章从分区的数据结构进入内部实现，依次展开复制、读取、配置、资源资格和迁移的实际处理路径。副本或承载位置改变以后，已有购买沿原身份恢复，不受影响的分区则沿各自的历史继续前进。

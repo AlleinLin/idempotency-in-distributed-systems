@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[box,text width=5.1cm] (input) at (0,3.2)
+  {processed\_events\\主键 I：处理范围／来源／种类／消息号\\完整 message\_input 与稳定 result\\成功终态引用真实 fulfillment\_id};
+\node[box,text width=5.7cm] (auth) at (7.1,6.4)
+  {authorizations\\主键 B=(O,initial,initial:O)\\保存 effect\_input\\disposition：allowed／rejected／hold};
+\node[good,text width=5.7cm] (effect) at (7.1,3.2)
+  {fulfillments\\主键 F，唯一 B，保存 effect\_input\\当前 state\\来源 origin／origin\_evidence\\B 的联合外键指向授权行};
+\node[box,text width=5.7cm] (report) at (7.1,-.2)
+  {fulfillment\_reports\\主键 report\_id，F 非空且唯一\\fulfillment.accepted 回报待办\\phase：ready／accepted};
+\node[warn,text width=5.1cm] (case) at (0,-1.8)
+  {consumption\_cases\\保存来件 I、原绑定、原因与完整输入\\负责角色、open／resolved 与决定\\核查项可以独立于接收终态存在};
+\draw[arr] (input.east)--node[note,above]{F 外键}(effect.west);
+\draw[arr] (effect.north)--node[note,right]{B 联合外键}(auth.south);
+\draw[arr] (report.north)--node[note,right]{F 外键}(effect.south);
+\draw[arr,densely dashed] (input.south)--node[note,left,text width=2.6cm]{按来件 I 定位\\逻辑关联}(case.north);
+\node[note,text width=12.5cm] at (3.5,-4.5)
+  {实线标明本节 DDL 的外键，虚线标明核查定位；核查表没有指向 I 的外键\\购买库 O 是受信外部标识，同库约束连接授权、F、接收记录与回报};
+\end{tikzpicture}

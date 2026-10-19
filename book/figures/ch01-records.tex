@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.6cm,minimum height=1.6cm] (a) at (0,0)
+  {账户 1\\[3pt]当前余额\\10000 $\to$ 7000};
+\node[booknode,text width=2.6cm,minimum height=1.6cm] (p) at (4.1,0)
+  {购买 P1\\[3pt]相纸，3000 分\\结果：成功};
+\node[booknode,text width=2.6cm,minimum height=1.6cm] (o) at (8.2,0)
+  {订单 O1\\[3pt]相纸，3000 分\\状态：已付款};
+\node[bookresult,text width=2.6cm,minimum height=1.6cm] (d) at (12.3,0)
+  {流水 D1\\[3pt]扣除 3000 分\\扣后余额 7000};
+\draw[bookarrow] (p.west)--node[above,font=\scriptsize]{账户编号}(a.east);
+\draw[bookarrow] (o.west)--node[above,font=\scriptsize]{购买编号}(p.east);
+\draw[bookarrow] (d.west)--node[above,font=\scriptsize]{订单编号}(o.east);
+\draw[bookarrow] (d.south)--++(0,-.85)-|node[below,pos=.25,font=\scriptsize]{流水同时保存付款账户编号}(a.south);
+\begin{scope}[on background layer]
+\node[draw=Ink!35,dashed,rounded corners=4pt,fit=(a)(p)(o)(d),inner sep=9pt] {};
+\end{scope}
+\node[booknote] at (6.15,1.5) {四类记录在同一笔事务中保存；箭头表示记录中的引用关系};
+\end{tikzpicture}
+\caption{购买成功后，订单引用购买，流水引用订单与账户。沿编号即可查明 3000 分的用途。}
+\label{fig:ch01-records}
+\end{figure}

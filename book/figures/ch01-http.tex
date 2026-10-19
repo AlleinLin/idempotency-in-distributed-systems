@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\foreach \x/\name in {0/客户端,6/购买服务,12/主数据库}{
+  \node[booknode,minimum width=2.2cm] at (\x,0) {\name};
+  \draw[draw=Muted!60,dashed] (\x,-.45)--(\x,-8.1);
+}
+\draw[bookarrow] (0,-1)--node[above,font=\footnotesize]{POST：购买相纸}(6,-1);
+\draw[bookarrow] (6,-2)--node[above,font=\footnotesize]{开始事务，执行购买与扣款}(12,-2);
+\node[booknode,text width=3.5cm] at (12,-3.25) {账户与购买\\订单与扣款流水\\在同一事务内写入};
+\draw[bookarrow] (6,-4.4)--node[above,font=\footnotesize]{COMMIT}(12,-4.4);
+\draw[bookalert] (12,-5.1)--node[above,font=\footnotesize]{提交确认}(6,-5.1);
+\draw[bookalert] (6,-5.8)--node[above,font=\footnotesize]{201，返回购买与关联编号}(0,-5.8);
+\draw[bookarrow] (0,-6.8)--node[above,font=\footnotesize]{GET：按购买编号查询}(6,-6.8);
+\draw[bookarrow] (6,-7.45)--node[above,font=\footnotesize]{读取已提交记录}(12,-7.45);
+\draw[bookarrow] (12,-8.1)--(6,-8.1);
+\draw[bookarrow] (6,-8.7)--node[above,font=\footnotesize]{200，返回购买详情}(0,-8.7);
+\draw[draw=Muted!60,dashed] (0,-8.1)--(0,-9) (6,-8.1)--(6,-9) (12,-8.1)--(12,-9);
+\end{tikzpicture}
+\caption{正常路径先确认事务提交，再发送成功响应。后续查询按购买编号读取持久记录。}
+\label{fig:ch01-http}
+\end{figure}

@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=10cm] (lost) at (7,0) {COMMIT 发出后连接中断\\本次尝试暂时无法确认结果};
+\node[booknode,text width=3.7cm] (committed) at (2,-1.8) {原事务已提交\\S 有原终态};
+\node[booknode,text width=3.7cm] (aborted) at (7,-1.8) {原事务已回滚\\S 尚无原终态};
+\node[booknode,text width=3.7cm] (running) at (12,-1.8) {原事务仍进行\\S 存在竞争};
+\draw[bookarrow] (lost.south west)--(committed.north);
+\draw[bookarrow] (lost.south)--(aborted.north);
+\draw[bookarrow] (lost.south east)--(running.north);
+\node[booknode,text width=3.7cm] (r1) at (2,-3.4) {按原 S 读取\\核对并返回原结果};
+\node[booknode,text width=3.7cm] (r2) at (7,-3.4) {按原 S 再次竞争\\可能接着完成};
+\node[booknode,text width=3.7cm] (r3) at (12,-3.4) {按原 S 尝试插入\\等待或暂时结束尝试};
+\draw[bookarrow] (committed)--(r1);\draw[bookarrow] (aborted)--(r2);\draw[bookarrow] (running)--(r3);
+\node[booknote,text width=13cm] at (7,-4.6) {三个分支都沿用原账户、动作、E1、K 与输入；连接错误没有创建新购买授权};
+\end{tikzpicture}
+\caption{提交确认丢失以后，以原身份恢复才能分辨尚未确定的事务结局。}
+\label{fig:ch04-recovery-outcomes}
+\end{figure}

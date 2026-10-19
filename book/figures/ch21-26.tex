@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=3.3cm](api) at (0,0){put(C1,X1)\\返回 WriteHandle};
+\node[box,text width=3.3cm](mem) at (5,0){计算进程\\内存 WAL＋MemTable};
+\draw[arr](api)--(mem);
+\node[good,text width=3.3cm](wal) at (5,-2.1){对象存储 WAL\\完成后 await\_durable 返回};
+\draw[arr](mem)--(wal);
+\node[box,text width=3.3cm](sst) at (0,-4.4){不可变 SST\\后台 flush／compaction};
+\node[good,text width=3.3cm](man) at (5,-4.4){manifest 有效集合\\writer\_epoch};
+\node[box,text width=3.3cm](cache) at (10,-4.4){读取缓存／本地 SST\\丢失后可重热};
+\draw[arr](wal.west)-|node[near start,above,note]{按持久前缀刷表}(sst.north);
+\draw[arr](sst)--(man);\draw[ctl](man)--(cache);
+\node[warn,text width=3.3cm](old) at (10,0){旧计算写者\\发现更高 epoch：Fenced};
+\draw[ctl](man.north east)--(old.south);
+\draw[dashed,gray](-2,-1.1)--(12,-1.1);
+\node[note,text width=12cm] at (5,-6){虚线上方首先完成内存受理；对象持久边界与有效文件发布分别确认。};
+\end{tikzpicture}

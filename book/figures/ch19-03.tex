@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[cell] at (0,0) {完整 EV1};
+\node[cell,fill=orange!7] at (2.6,0) {片段／填充};
+\node[cell] at (5.2,0) {完整 EV1};
+\node[cell] at (7.8,0) {完整 EV2};
+\node[note] at (0,1.1) {第一次写成\\回复丢失};
+\node[note] at (5.2,1.1) {原记录重试\\新追加位置};
+\node[good,text width=9.4cm] (r) at (3.9,-2) {读取者校验记录 → 按 EV1／原 payload 核对重复\\消费事务保存原 I／业务 guard／F／dispatch 身份};
+\draw[arr] (0,-.4)--(0,-.8)--(r.north west);
+\draw[arr] (5.2,-.4)--(r.north);
+
+\end{tikzpicture}

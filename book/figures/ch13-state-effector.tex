@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[note,text width=12cm] at (5,5.6) {共同初态：A 的第 7 项已持久生成，B 已计至 7；处理响应丢失};
+\node[box,text width=3.4cm] (s) at (0,3.7) {累计状态重传\\$(A,total=7)$};
+\node[good,text width=4.5cm] (sout) at (8.7,3.7) {B 保存 A 分量 7\\$\max(7,7)=7$\\直接合并保持};
+\draw[arr] (s)--node[note,above]{重复发送原状态}(sout);
+\node[box,text width=3.4cm] (o) at (0,1.2) {效应器重传\\身份 $(A,7)$，效果 $+1$};
+\node[warn,text width=4.5cm] (raw) at (8.7,1.2) {裸应用：$7+1=8$\\按 $(A,7)$ 查到已应用\\跳过重复，保持 7};
+\draw[arr] (o)--node[note,above]{重复发送原效应器}(raw);
+\node[note,text width=12cm] at (5,-.7) {新事件才生成累计值 8，或新效应器身份 $(A,8)$；重启从持久计数 7 继续};
+\end{tikzpicture}

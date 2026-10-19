@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+\node[good,text width=4cm] (g) at (8,2.4) {GCS\\节点／Actor／集群控制元数据};
+\node[box,text width=3cm] (dr) at (1.3,2.4) {driver\\提交任务／持有引用};
+\node[draw=Blue,rounded corners,minimum width=5.6cm,minimum height=3.5cm] at (2.1,-.5) {};
+\node[draw=Blue,rounded corners,minimum width=5.6cm,minimum height=3.5cm] at (8.5,-.5) {};
+\node[note] at (2.1,.9) {节点 A};
+\node[note] at (8.5,.9) {节点 B};
+\node[box,text width=1.8cm] (ra) at (.7,0) {raylet\\本地调度};
+\node[box,text width=1.8cm] (wa) at (3.5,0) {worker\\普通任务};
+\node[box,text width=4.2cm] (oa) at (2.1,-1.3) {共享对象存储：对象值};
+\node[box,text width=1.8cm] (rb) at (7.1,0) {raylet\\本地调度};
+\node[box,text width=1.8cm] (ab) at (9.9,0) {Actor\\实例状态};
+\node[box,text width=4.2cm] (ob) at (8.5,-1.3) {共享对象存储：对象值};
+\node[good,text width=9.8cm] (auth) at (5.3,-3.5)
+ {外部持久权威：原 $S/P/C/T$、资格与原结果};
+\draw[ctl] (dr)--(ra);
+\draw[ctl] (g)--(ra);
+\draw[ctl] (g)--(rb);
+\draw[ctl] (ra)--(wa);\draw[ctl] (rb)--(ab);
+\draw[arr] (oa.south) -- (2.1,-2.55) --node[below,note,fill=white,inner sep=2pt]{对象字节} (8.5,-2.55) -- (ob.south);
+\draw[arr] (wa.south)--(3.5,-.75)--(5.3,-.75)--(5.3,-2.05)--(11.6,-2.05)--(11.6,-3.5)--(auth.east);
+\draw[arr] (ab.south)--(9.9,-.75)--(11.6,-.75)--(11.6,-3.5)--(auth.east);
+\end{tikzpicture}

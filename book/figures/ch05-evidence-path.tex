@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode] (s) at (0,0) {完整 S};
+\node[booknode] (a) at (3,0) {正确权威数据};
+\node[booknode] (r) at (6.5,0) {仍保留的完成记录};
+\node[bookresult] (v) at (10,0) {正确版本解释};
+\draw[bookarrow] (s)--(a);
+\draw[bookarrow] (a)--(r);
+\draw[bookarrow] (r)--(v);
+\node[booknode,text width=3cm] (f) at (3,-2) {旧副本读空};
+\node[booknode,text width=3cm] (g) at (6.5,-2) {按现状过滤\\或提前清理};
+\draw[bookalert,dashed] (a)--(f);
+\draw[bookalert,dashed] (r)--(g);
+\node[booknote,text width=10cm] at (5,-3.1) {这些假空都不能证明原购买没有提交，因而不能据此重新扣款};
+\end{tikzpicture}
+\caption{记录存在与恢复路径能够找到并解释记录，是两个需要同时满足的条件。}
+\label{fig:ch05-evidence-path}
+\end{figure}

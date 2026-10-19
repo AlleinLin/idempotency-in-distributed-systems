@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\draw[arr] (-.3,3.8)--(13.7,3.8) node[right,note] {身份时间};
+\foreach \x/\lab in {0/过去,5/关闭排序点,11.5/未来} {\node[note,above] at (\x,3.95) {\lab};}
+\draw[Gold,thick,dashed] (5,1.45)--(5,4);
+\node[box,text width=3.2cm] at (1.3,2.5) {原账本覆盖\\核对过去无成功};
+\node[warn,text width=3.8cm] at (6.6,2.5) {已受理与在途终结\\取得以后也无法成功的依据};
+\node[good,text width=3cm] at (11.5,2.5) {身份持久封闭\\拒绝未来首次受理};
+\draw[Blue,thick] (-.3,1.15)--(13.4,1.15);
+\draw[Blue,thick] (-.3,1.15)--(-.3,1.4);
+\draw[Blue,thick] (13.4,1.15)--(13.4,1.4);
+\node[note,text width=13cm] at (6.5,.65) {三段共同支持 closed\_without\_success；任何一段未有依据，C1/T1 继续核查};
+\node[note,text width=13cm] at (6.5,-.4) {普通查询为空，只说明该查询当前没有返回记录，尚未给出这三段的共同结论};
+\end{tikzpicture}

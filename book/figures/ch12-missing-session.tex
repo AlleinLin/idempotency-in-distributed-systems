@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=5cm] (a) at (1,5) {历史 A：K1 已完成\\响应丢失，E1 已关闭并回收};
+\node[box,text width=5cm] (b) at (9,5) {历史 B：K1 从未到达\\E1 同样已关闭并回收};
+\node[warn,text width=11cm] (e) at (5,2.8) {旧 E1/K1 重连：找不到 E1 → operation\_expired\\登记器保留旧代次已发出的历史，禁止补建 E1};
+\draw[arr] (a)--(e);\draw[arr] (b)--(e);
+\node[good,text width=5cm] (q) at (1,.4) {原事实查询\\按原 S/P/C 与证据核查\\A 可找到原购买};
+\node[box,text width=5cm] (n) at (9,.4) {另一项购买确认\\只登记新 E2 与新 K2\\按新 S2 首次仲裁};
+\draw[arr] (e.south)--++(0,-.35)-|(q.north);
+\draw[arr] (e.south)--++(0,-.35)-|(n.north);
+\end{tikzpicture}

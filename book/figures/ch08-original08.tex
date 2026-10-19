@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\foreach \x/\lab in {0/A,2.5/B,5/C,7.5/D,10/E} {
+\node[circle,draw=Blue,fill=Pale,minimum size=1cm,font=\large] at (\x,1.5) {\lab};}
+\draw[Blue,very thick,rounded corners] (-.75,.6) rectangle (5.75,2.4);
+\node[note,text=Blue] at (2.5,3) {W1 的三个节点：A、B、C};
+\draw[Gold,very thick,rounded corners] (4.25,-.4) rectangle (10.75,2.7);
+\node[note,text=Gold] at (7.5,-.9) {W2 的三个节点：C、D、E};
+\node[warn,text width=5cm] at (5,-2.2) {C 提前遗忘或提前到期\\交集存在，旧键的拒绝依据已经丢失};
+\node[note,text width=11cm] at (5,-3.8) {两个集合各有多数；有效旧记录的保留与时间条件仍决定它们能否同时成立};
+
+\end{tikzpicture}

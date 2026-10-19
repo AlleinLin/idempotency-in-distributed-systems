@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.7cm] (a) at (2,0) {历史 A\\K1 已执行，随后删掉\\全部身份与恢复证据};
+\node[booknode,text width=3.7cm] (b) at (2,-2.2) {历史 B\\K1 从未执行\\也无身份记录};
+\node[bookresult,text width=3.5cm] (v) at (7,-1.1) {恢复入口都查到\\无记录};
+\node[bookresult,text width=3.6cm] (r) at (11.8,-1.1) {一概执行：A 重复\\一概拒绝：B 无法首次完成};
+\draw[bookarrow] (a)--(v);
+\draw[bookarrow] (b)--(v);
+\draw[bookalert] (v)--(r);
+\node[booknote,text width=12cm] at (6.6,-3.6)
+ {还需要旧身份拒绝证据、有效恢复期限，或保留足够的历史；单独延长保存天数只推迟同一问题};
+\end{tikzpicture}
+\caption{完全遗忘以后，无记录无法同时证明尚未执行与允许重新执行。}
+\label{fig:ch03-forgetting}
+\end{figure}

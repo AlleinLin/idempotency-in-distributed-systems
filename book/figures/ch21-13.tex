@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[good] (a) at (0,0) {步骤1已完成\\P1／C1／T1已存};
+\node[warn] (b) at (4,0) {付款步骤\\平台提交 X1};
+\node[warn] (x) at (8,0) {步骤输出未存\\进程退出};
+\node[box] (r) at (0,-2.7) {工作流恢复\\步骤1读检查点};
+\node[good] (p) at (4,-2.7) {付款步骤再执行\\原 scope／pay-C1};
+\node[good] (f) at (8,-2.7) {平台返回原 X1\\存输出并继续};
+\draw[arr] (a)--(b);\draw[arr] (b)--(x);\draw[arr] (r)--(p);\draw[arr] (p)--(f);
+\draw[ctl] (x.south)--(8,-1.4)--(0,-1.4)--(r.north);
+
+\end{tikzpicture}

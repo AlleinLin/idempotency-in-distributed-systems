@@ -1,0 +1,202 @@
+\subsection*{把完整身份写成数据库约束}
+
+本章把受理字段放在 \code{purchases} 中。一行既表示一次购买处理，也保存它的完整操作身份。独立建立操作表同样可行，不过需要把两张表的关联纳入共同事务；这里先少引入一组关系。身份列采用非空值，使每次插入都明确给出账户、动作、会话和键。
+
+第一章在进入事务前就已经取得商品与价格，所以购买表的成交快照列全部非空。现在先争得 S：已有身份直接核对原输入、恢复原结果，首次取得身份的事务才验证报价。这样，Q7 后来到期也不会使已经成交的 P1 在恢复时遭到拒绝。为了容许这段事务内部的构造过程，本章改变三列的非空要求，并给出从第一章结构继续执行的演进：
+
+\begin{BookCode}
+ALTER TABLE purchases
+  ALTER COLUMN product_id DROP NOT NULL,
+  ALTER COLUMN amount_minor DROP NOT NULL,
+  ALTER COLUMN currency DROP NOT NULL,
+  ADD COLUMN action text NOT NULL,
+  ADD COLUMN session_id text NOT NULL,
+  ADD COLUMN idempotency_key text NOT NULL,
+  ADD COLUMN normalization_version text NOT NULL,
+  ADD COLUMN canonical_input jsonb NOT NULL,
+  ADD COLUMN quantity integer,
+  ADD COLUMN quote_id text,
+  ADD COLUMN result_version text,
+  ADD COLUMN result_payload jsonb,
+  ADD CONSTRAINT purchase_operation_unique
+    UNIQUE (account_id, action, session_id, idempotency_key),
+  ADD CONSTRAINT purchase_terminal_complete CHECK (
+    status = 'pending' OR (
+      product_id IS NOT NULL AND amount_minor IS NOT NULL
+      AND currency IS NOT NULL AND quantity IS NOT NULL
+      AND quantity = 1 AND quote_id IS NOT NULL
+      AND result_version IS NOT NULL AND result_payload IS NOT NULL
+    )
+  );
+\end{BookCode}
+
+新增的 \code{normalization\_version} 与 \code{canonical\_input} 保存输入解释版本及按该版本整理的字段，后者用 PostgreSQL 的 JSONB 类型保存可读取的 JSON 结构。\code{quantity} 和 \code{quote\_id} 保存数量与本次验证的报价号；\code{result\_version} 说明结果按哪版字段含义解释，\code{result\_payload} 保存这组业务结果。服务在首次处理时写入这些值，恢复时按原版本读取与比较。
+
+这份演进用于本章空购买表。已有历史行的系统应先增加可空列，按可核实的旧事实回填身份、输入与结果，再设置非空和唯一约束；缺少证据的历史不能靠任意默认值补成可重试购买。原有金额正数和人民币检查继续生效。终态完整性检查逐列写出 IS NOT NULL，是因为 SQL 的 CHECK 对未知值也可能放行，单写 \code{quantity=1} 并不能拒绝空值。
+
+新身份刚插入时，商品、金额和币种可以暂缺；取得身份并验证 Q7 后，事务把商品、数量、报价、金额、币种与结果一起填齐。结构容许内部 \code{pending}，执行协议仍只提交完整终态。CHECK 检查本行字段，不能独自阻止程序提交 \code{pending}；因此所有正常出口都检查终态再提交，异常出口回滚，独立连接最终只能读到完整终态或无记录。
+
+另一种可行设计是在事务内先读取本地报价，准备候选行的全部快照，再尝试插入；冲突分支仍须优先恢复原结果，不能因为当前报价失效就提前返回。这里选择先仲裁身份，把首次成交校验限制在插入成功分支，减少恢复时不必要的报价读取。将来若把扣款移到外部系统，已经提交的处理中记录还需要执行权、接管和恢复协议；本章的事务内部占位只随同一事务提交或回滚。
+
+第一章的流水通过订单间接找到购买。本章把这条已有关系显式保存在流水中，便于按购买核对；订单上的原引用保持不变：
+
+\begin{BookCode}
+ALTER TABLE debits
+  ADD COLUMN purchase_id uuid,
+  ADD COLUMN currency text;
+UPDATE debits AS d
+SET purchase_id = o.purchase_id, currency = o.currency
+FROM orders AS o WHERE o.order_id = d.order_id;
+ALTER TABLE debits
+  ALTER COLUMN purchase_id SET NOT NULL,
+  ALTER COLUMN currency SET NOT NULL,
+  ADD CONSTRAINT debit_currency CHECK (currency = 'CNY'),
+  ADD CONSTRAINT debit_purchase_fk
+    FOREIGN KEY (purchase_id) REFERENCES purchases;
+\end{BookCode}
+
+回填的购买号与币种取自流水已经引用的订单，后续新流水在同一事务内同时写订单号、购买号与币种。第五章再把这两个编号作为组合外键检查，限制它们共同指向同一笔成交。
+
+\code{account\_id} 取自已认证账户，\code{action} 固定为本入口的 \code{purchase.create.v1}，\code{session\_id} 保存 E1，\code{idempotency\_key} 保存 K1。这四列都设为 NOT NULL，即每条记录都必须给出值。对于组合唯一键，数据库比较完整组合；账户 2 的 K1、账户 1 的退款 K1、E2 内的 K1，分别属于不同组合。服务还要在相应入口核对账户权限和操作许可，例如账户 1 的调用者若只获准创建购买，就不能借另一个动作值提交退款。
+
+\input{figures/ch04-unique-scope.tex}
+
+唯一约束表达数据库中的记录关系，权限检查决定调用者可以申请哪种变化。二者接在同一条处理路径上：先从认证与入口确定账户和动作，再核验 E1 与 K1 的许可，最后用确定下来的四列竞争记录。若直接把请求体中的账户或动作当成已经授权的数据，完整唯一键仍能正常工作，服务却可能在错误的账户或动作范围里受理一项购买。
+
+对已有数据增加约束以前，需要核查是否已经有重复 S。数据库不会自动判断两条旧购买哪条应该保留，重复扣款也需要按业务事实修正。下面从空购买表开始演算，假定约束已经建立、所有写入都接受它检查。
+
+身份还要绑定输入。\code{normalization\_version} 与 \code{canonical\_input} 沿用第三章的规范化规则，保存版本和可比较的业务字段。保存版本使重试能按原规则核对，防止升级后同一份原输入被解释成另一笔购买；保存规范化内容则可在摘要之外逐字段核对。
+
+本章输入包含 \code{paper-001}、数量 1、币种 CNY 和报价 Q7。金额 3000 来自验证后的 Q7 成交依据，保存为购买快照。服务把 S 唯一占住时，也把规范化版本和输入写进同一行。取得 S 的事务同时保存这次操作绑定的输入，后来拿相同 S 的请求先读取这项绑定，再决定返回原结果或输入冲突。
+
+\input{figures/ch04-binding.tex}
+
+\subsection*{用一次受约束插入决定是否继续}
+
+PostgreSQL 18 提供 INSERT ... ON CONFLICT DO NOTHING。INSERT 尝试插入一行；ON CONFLICT 指定发生目标唯一冲突时的处理；DO NOTHING 让这条候选行不被插入，语句本身正常结束。RETURNING 返回本语句实际插入的行，本例只取 \code{purchase\_id}\cite{pg}。下面保留 SQL 片段，把数据库真正执行的检查顺序写清楚。返回的行数决定后续步骤，服务必须检查它，再选择执行购买或读取原结果。
+
+\begin{BookCode}
+BEGIN;
+INSERT INTO purchases (
+  purchase_id, account_id, action, session_id,
+  idempotency_key, normalization_version,
+  canonical_input, status
+) VALUES (
+  :candidate_purchase, 1, 'purchase.create.v1', 'E1',
+  'K1', :normalization_version, :canonical_input, 'pending'
+)
+ON CONFLICT (account_id, action, session_id, idempotency_key)
+DO NOTHING
+RETURNING purchase_id;
+\end{BookCode}
+
+冒号开头的名称是参数占位，执行时由服务安全绑定具体值。\code{candidate\_purchase} 是本次事务准备使用的新购买编号，它尚未说明购买已经成立。\code{pending} 表示事务内部还在填写购买结果；其他连接的普通查询看不到这条未提交行。整个流程只允许把 \code{succeeded}（购买成功）或 \code{insufficient\_funds}（余额不足）这样的终态提交出去，未完成分支退出时回滚。
+
+返回一行，例如 P1，表示本事务确实插入了这条候选记录，可以沿 P1 继续验证报价和执行购买。返回零行，表示这次插入没有取得目标身份。服务转向读取已存在的身份记录、核对输入和读取终态，扣款分支留给实际插入成功者。两个请求都可以生成候选编号，只有真正插入者的编号会进入后续业务记录。
+
+\input{figures/ch04-insert-branches.tex}
+
+这里明确写出四个冲突列，使 DO NOTHING 只接住目标身份的唯一冲突。候选购买编号记在 \code{purchase\_id} 中。若 S 没有冲突、只有候选购买编号违反主键约束，数据库仍报告错误；若 S 与候选编号同时冲突，整条候选行可能因目标 S 冲突直接被放弃，返回零行。指定冲突目标决定哪些冲突可以进入替代动作，并不承诺逐项报告已丢弃候选的所有冲突。服务按 S 读取原记录，只有实际插入的候选编号才能进入购买。
+
+若遗漏一个要求非空的会话字段，NOT NULL 约束会报告缺值；若某条错误更新把余额写为负数，非负检查会拒绝它；若订单引用了不存在的购买，外键约束会拒绝这条关联。这些错误分别暴露输入、金额计算或记录关系的问题，应回滚并按相应原因处理。
+
+因此，这条插入有三类出口：成功插入一行，进入购买；目标身份冲突而插入零行，读取原记录；其他约束或执行错误，结束失败事务并处理错误。若把所有数据库错误都记为重复请求，原记录查询可能一直为空，真正的数据问题也会被隐藏。
+
+数据库实现这项约束时通常借助唯一索引。索引是按选定列组织的查找结构，让数据库能较快找到相同键的候选记录；唯一索引还参与插入时的重复检查。本章的唯一索引按四列组合组织。是否存在冲突最终还要结合记录所属事务的可见性判断，所以一次索引命中可能引出等待，检查会继续读取那条候选记录所属事务的状态。
+
+约束默认采用立即检查的普通唯一约束，本例不把检查延迟到事务最后。延迟检查允许事务中暂时存在需要在稍后统一判断的重复候选，适用于某些批量调整；这里需要先知道是否取得 S，再决定能否扣款，因此采用与 ON CONFLICT 受理方式兼容的即时约束。列定义、约束定义和行数分支共同规定这条路径的执行方式。
+
+\subsection*{插入、扣款、结果共同提交}
+
+取得 S 以后，事务验证 Q7，并用验证所得的商品、数量、报价号、3000 和 CNY 填入 P1 的成交快照列；这些值来自成交依据，未使用常量默认值替代验证。余额更新沿用条件更新：用同一条 UPDATE 同时检查余额足够和减去金额。它返回账户行时，服务得到扣后余额；返回零行，说明在该语句实际处理账户版本时没有满足条件的账户行。账户存在且授权关系已核实的前提下，本例把余额条件不满足保存为 \code{insufficient\_funds}。
+
+\begin{BookCode}
+UPDATE accounts
+SET balance_minor = balance_minor - 3000
+WHERE account_id = 1 AND balance_minor >= 3000
+RETURNING balance_minor;
+\end{BookCode}
+
+成功分支取得扣后余额 7000，接着建立订单 O1 和扣款 D1。下面的 \code{:actual\_purchase\_id} 绑定身份插入实际返回的 P1；\code{:order\_id}、\code{:debit\_id} 绑定本分支准备的 O1、D1。\code{:balance\_after\_minor} 绑定刚才条件更新返回的余额，后续不会重新查询当前余额来替代它。商品、数量、报价、金额和币种都取自已经验证的 Q7：
+
+\begin{BookCode}
+INSERT INTO orders (
+  order_id, purchase_id, product_id, amount_minor, currency, status
+) VALUES (
+  :order_id, :actual_purchase_id, 'paper-001', 3000, 'CNY', 'paid'
+);
+INSERT INTO debits (
+  debit_id, order_id, purchase_id, account_id,
+  amount_minor, currency, balance_after_minor
+) VALUES (
+  :debit_id, :order_id, :actual_purchase_id, 1,
+  3000, 'CNY', :balance_after_minor
+);
+UPDATE purchases
+SET product_id = 'paper-001', quantity = 1, quote_id = 'Q7',
+    amount_minor = 3000, currency = 'CNY', status = 'succeeded',
+    result_version = 'purchase-result-v1',
+    result_payload = jsonb_build_object(
+      'result_version', 'purchase-result-v1',
+      'purchase_id', purchase_id, 'status', 'succeeded',
+      'order_id', CAST(:order_id AS uuid),
+      'debit_id', CAST(:debit_id AS uuid),
+      'product_id', 'paper-001', 'quantity', 1,
+      'quote_id', 'Q7', 'amount_minor', 3000, 'currency', 'CNY',
+      'balance_after_minor', CAST(:balance_after_minor AS bigint))
+WHERE purchase_id = :actual_purchase_id AND status = 'pending'
+RETURNING purchase_id, status, result_version, result_payload;
+\end{BookCode}
+
+两次 INSERT 应各写入一行，最后的 UPDATE 也必须返回一行。返回零行说明这条处理路径没有更新到预期的内部购买，服务应回滚并检查原因。更新同时填齐成交快照与原结果，使终态满足前面的完整性约束。
+
+余额不足分支从另一个独立的初始状态演算：账户有 2000 分，S 尚无记录，Q7 仍有效。身份插入成功，条件扣款返回零行，账户保持 2000；这个分支跳过订单与流水，只保存完整拒绝：
+
+\begin{BookCode}
+UPDATE purchases
+SET product_id = 'paper-001', quantity = 1, quote_id = 'Q7',
+    amount_minor = 3000, currency = 'CNY',
+    status = 'insufficient_funds',
+    result_version = 'purchase-result-v1',
+    result_payload = jsonb_build_object(
+      'result_version', 'purchase-result-v1',
+      'purchase_id', purchase_id, 'status', 'rejected',
+      'reason', 'insufficient_funds',
+      'product_id', 'paper-001', 'quantity', 1,
+      'quote_id', 'Q7', 'required_amount_minor', 3000,
+      'currency', 'CNY')
+WHERE purchase_id = :actual_purchase_id AND status = 'pending'
+RETURNING purchase_id, status, result_version, result_payload;
+\end{BookCode}
+
+这个 UPDATE 同样应返回一行。表内状态记录余额不足，原结果按本版拒绝表示保存 \code{status=rejected}、\code{reason=insufficient\_funds} 和所需金额；它没有订单号、扣款号或成功扣款的当次余额。第五章将沿用这份表示说明首次响应与恢复响应。两条分支都在插入 S 的同一事务内完成，检查写入结果后才 COMMIT，再等待提交成功确认。任何一步出错，都回滚此前的占位、余额变化和业务记录。
+
+\begin{BookCode}
+开始 Read Committed 事务
+尝试插入完整身份 S、原输入和内部 pending
+若实际插入成功：
+    验证首次成交所需的报价依据
+    执行带余额条件的 UPDATE
+    若扣款成功：建立订单与流水，保存 succeeded 原结果
+    若余额不足：保存 insufficient_funds 原结果
+    提交事务，确认成功后返回该结果
+若实际插入零行：
+    用下一条语句读取 S
+    按记录保存的规范化版本核对本次输入
+    同参则读取终态，结束事务，返回原结果
+    异参则结束事务，返回输入冲突
+    未读到行则重新执行受约束受理流程或结束后恢复
+其他数据库错误：
+    回滚失败事务，按错误原因决定是否以原 S 恢复
+\end{BookCode}
+
+这里的报价验证属于首次成交判断。若 S 已有终态，后来目录涨价或 Q7 自然到期，都不重新决定 P1 的价格和结论。服务仍先校验账户、请求格式和本次引用资格，再按保存的输入关系恢复结果。报价无效怎样保存终态取决于入口约定；本章核心分支只演算 Q7 有效时的成功与余额不足，不把报价服务的外部调用纳入本地事务的原子范围。
+
+\input{figures/ch04-atomic-boundary.tex}
+
+为什么把插入也放进业务事务，可以考察反过来的安排。若先单独提交一条 \code{pending}，占住 S 后进程退出，后续请求都看到已有 \code{pending}，却没有人完成购买。需要持久化任务、执行权和接管规则，才能推动它终结。若先扣款提交、再单独保存 S，两个提交之间的故障又会留下已扣款而无身份记录的窗口。本章保留一个事务，让未完成的占用和未完成的扣款共同回滚。
+
+成功事务提交时，S、P1 及其终态和业务记录共同成为已提交事实。其他连接随后开始的普通查询可以按其快照读取这组数据；提交前已经开始的语句仍按原快照读取。已提交 S 的同参重试读回 P1；此前未提交的 S，则需要让数据库判断其事务究竟提交还是回滚，再决定等待者能做什么。
+
+这组步骤也给出了同一 S 的效果上限所需的关系。唯一约束先限制已提交的身份记录至多一条；只有实际插入者进入扣款分支；该分支的身份与效果共同提交。若有两次属于 S 的成功扣款，就必须有两个进入该分支并提交的事务。它们各自提交时都要保留 S 的身份记录，与完整 S 唯一发生矛盾。这个推导还要求记录在恢复期间保留、终态不被覆盖、每个成功分支只生成一份扣款，以及所有资金路径都遵守入口规则。唯一约束保护的是第一项关系，其余条件由事务安排、业务检查与写入权限兑现。
+\FloatBarrier

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box] (r) at (0,0) {Range 全目录\\图像与修订 $r$};
+\node[good] (w) at (4.4,0) {Watch 从 $r+1$\\完整处理每个修订\\保存最近位置};
+\node[box] (d) at (8.8,0) {连接中断\\从最后完整处理\\修订之后续接};
+\node[warn] (c) at (8.8,-2.8) {旧历史已压缩\\watch 取消\\compact\_revision};
+\node[good,text width=4.1cm] (n) at (2.2,-2.8) {重新 Range 替换全目录\\从新修订 $r'+1$ 建 watch};
+\draw[arr] (r)--(w);\draw[arr] (w)--(d);
+\draw[ctl] (d.north)--++(0,.7)-|node[above,note,pos=.5]{历史可用时续接} (w.north);
+\draw[arr] (d)--(c);\draw[arr] (c)--(n);\draw[arr] (n.north)--(w.south);
+\end{tikzpicture}

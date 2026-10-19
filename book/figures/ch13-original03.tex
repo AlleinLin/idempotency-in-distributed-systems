@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[cell] (bottom) at (5,0) {$\emptyset$};
+\node[cell] (left) at (1.5,1.9) {$\{\mathrm{gift}\}$};
+\node[cell] (right) at (8.5,1.9) {$\{\mathrm{priority}\}$};
+\node[cell,minimum width=5cm] (top) at (5,3.8) {$\{\mathrm{gift},\mathrm{priority}\}$};
+\draw[arr] (bottom)--(left);\draw[arr] (bottom)--(right);
+\draw[arr] (left)--(top);\draw[arr] (right)--(top);
+\node[note,text width=12cm] at (5,-1.1) {$x\preceq y$ 在这里表示 $x\subseteq y$；中间两项互不可比，合并结果为上方并集};
+
+\end{tikzpicture}

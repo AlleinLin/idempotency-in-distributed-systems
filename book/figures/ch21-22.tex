@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+\node[font=\bfseries] at (0,1.2){DBOS：应用内执行＋系统数据库};
+\node[font=\bfseries] at (7.5,1.2){Restate：独立日志＋processor};
+\node[box,text width=4.4cm](d) at (0,0){应用进程\\workflow／bind-pay-finish};
+\node[good,text width=4.4cm](s) at (0,-2.1){SQLite 或 Postgres 系统库\\工作流输入、步骤输出、错误};
+\draw[arr,<->](d)--node[right,note]{检查点／重放}(s);
+\node[box](in) at (7.5,0){Ingress\\按键定位分区};
+\node[good](log) at (7.5,-2.1){Bifrost 日志\\sequencer＋多数副本};
+\node[box](proc) at (7.5,-4.2){Partition processor\\RocksDB\\物化＋快照};
+\node[box](handler) at (11.5,-4.2){应用 handler\\SDK 重放 journal};
+\draw[arr](in)--(log);\draw[arr](log)--(proc);
+\draw[arr,<->](proc)--(handler);
+\node[good,text width=4.4cm](auth) at (0,-5){购买权威：$A_J/R_J$\\完整 S、原输入、C/T、资格};
+\draw[arr,<->](d.west)--++(-1,0)|-(auth.west);
+\node[warn,text width=6cm](pay) at (5.4,-7){外部支付：原 scope／pay-C\\效果 X 先于步骤记录时，按原键恢复};
+\draw[ctl](auth)--node[below left,note]{原 C 关联}(pay);
+\draw[arr](d.east)--++(2,0)|-node[near end,above,note]{pay 步骤}(pay.north);
+\draw[arr](handler.south)|-(pay.east);
+\end{tikzpicture}

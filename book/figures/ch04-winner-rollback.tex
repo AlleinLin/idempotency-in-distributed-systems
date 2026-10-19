@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (2,0.5) {A：先插入 S};
+\node[booknote] at (9,0.5) {B：尝试同一 S};
+\node[booknode,text width=4.2cm] (a1) at (2.5,-.3) {S → P1\\事务内部可能已经扣款};
+\node[bookresult,text width=4.8cm] (b1) at (10,-.3) {等待 A 结束\\尚未取得身份};
+\node[booknode,text width=4.2cm] (a2) at (2.5,-1.9) {A 出错，整笔回滚\\S 占用与扣款一起撤销};
+\node[booknode,text width=4.8cm] (b2) at (10,-1.9) {重新检查，插入 P2 成功\\RETURNING 返回 P2};
+\node[booknode,text width=4.8cm] (b3) at (10,-3.5) {继续报价与条件扣款\\完成终态后提交};
+\draw[bookarrow] (a1)--(a2);
+\draw[bookarrow] (b1)--(b2);
+\draw[bookarrow] (a2.east)--node[above,font=\footnotesize]{回滚后唤醒}(b2.west);
+\draw[bookarrow] (b2)--(b3);
+\node[booknote,text width=5cm] at (3,-3.5) {P1 没有已提交终态\\B 在自己的事务内能看到 P2 的 pending};
+\node[booknote,text width=13cm] at (7,-4.8) {若 B 成功，最终 S → P2、O2、D2，余额 7000；用户操作仍为同一 S};
+\end{tikzpicture}
+\caption{原事务回滚以后，等待者才有机会接着完成原操作。}
+\label{fig:ch04-winner-rollback}
+\end{figure}

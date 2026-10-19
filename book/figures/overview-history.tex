@@ -1,0 +1,36 @@
+\begin{tikzpicture}[
+  box/.style={draw=Ink!45,fill=Paper,rounded corners=2pt,
+    text width=3.5cm,minimum height=1.1cm,align=center,inner sep=5pt,
+    font=\sffamily\fontsize{9}{12}\selectfont},
+  original/.style={box,draw=Accent!75,fill=Accent!7},
+  arr/.style={-{Stealth[length=1.8mm]},draw=Ink,line width=.7pt},
+  tag/.style={font=\sffamily\fontsize{8}{10}\selectfont,
+    text=Muted,fill=white,inner sep=2pt,align=center}
+]
+\node[original,minimum height=2.0cm] (facts) at (0,0)
+  {已受理业务的完整状态\\身份、输入与原结果\\未决责任、会话与编号};
+\node[box] (replica) at (5,1.65) {副本接班\\保留已确认的提交历史};
+\node[box] (snapshot) at (5,0) {快照与压缩\\保存完整状态及应用位置};
+\node[box] (migration) at (5,-1.65) {在线迁移\\原事实与执行资格交接};
+\node[original,minimum height=2.0cm] (continue) at (10,0)
+  {后继位置继续原业务\\取得原关联与结果\\接续尚未完成的工作};
+\draw[arr] (facts.north east)--(replica.west);
+\draw[arr] (facts)--(snapshot);
+\draw[arr] (facts.south east)--(migration.west);
+\draw[arr] (replica.east)--(continue.north west);
+\draw[arr] (snapshot)--(continue);
+\draw[arr] (migration.east)--(continue.south west);
+\node[box] (gc) at (5,-3.5)
+  {回收逐项历史\\关闭旧准入，保留拒绝依据\\未决责任继续保存};
+\draw[arr] (facts.south) |- (gc.west);
+\draw[arr] (gc.east) -| (continue.south);
+\node[box] (old) at (0,-6.0)
+  {旧备份重新出现\\外部可能保留较新效果};
+\node[original] (reconcile) at (5,-6.0)
+  {恢复原关联与外部证据\\或持久关闭歧义范围};
+\node[box] (admission) at (10,-6.0)
+  {按已核准范围开放\\旧工作沿原身份恢复};
+\draw[arr] (old)--(reconcile);
+\draw[arr] (reconcile)--(admission);
+\node[tag] at (5,-4.75) {灾难回退按各保存域的实际历史重新安排恢复与准入};
+\end{tikzpicture}

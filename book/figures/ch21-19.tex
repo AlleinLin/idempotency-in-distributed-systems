@@ -1,0 +1,13 @@
+\begin{tikzpicture}[x=.014cm,y=.055cm]
+\draw[arr](0,0)--(900,0)node[right,note]{恢复后秒数};
+\draw[arr](0,0)--(0,135)node[above,note]{积压份数};
+\foreach \x in {0,200,400,600,800}{\draw(\x,0)--(\x,-3)node[below,note]{\x};}
+\foreach \y/\s in {60/6万,120/12万}{\draw(0,\y)--(-12,\y)node[left,note]{\s};\draw[gray!25](0,\y)--(820,\y);}
+\draw[Blue,very thick](0,120)--(400,0);
+\draw[orange!80!black,very thick](0,0)--(400,60)--(800,0);
+\node[note,text=Blue] at (180,100){T：净降 300 份／秒};
+\node[note,text=orange!80!black] at (600,60){消费积压};
+\draw[dashed](400,0)--(400,120);
+\node[note,text width=5cm] at (470,103){400 秒：T 排空\\消费侧已积压 6 万份};
+\node[note,text width=11cm] at (400,-28){稳定速率：新流 200／秒，付款完成 500／秒，消费 350／秒。\\400 秒后事件流回到 200／秒，消费以净 150／秒排空。};
+\end{tikzpicture}

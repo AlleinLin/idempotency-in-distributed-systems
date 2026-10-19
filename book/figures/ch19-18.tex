@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[cell] at (0,0) {头：v12／未锁};
+\node[cell] at (3.2,0) {缓存行1：v12};
+\node[cell,fill=orange!8] at (6.4,0) {缓存行2：v13};
+\node[warn,text width=9cm] (bad) at (3.2,-1.8) {版本不匹配 → 丢弃这次混合对象 → 重读};
+\node[good,text width=9cm] at (3.2,-3.5) {成功读取：头部未锁且缓存行版本满足一致检查\\对象 incarnation 再核对地址是否被释放后复用};
+\draw[arr] (6.4,-.4)--(bad.north east);
+
+\end{tikzpicture}

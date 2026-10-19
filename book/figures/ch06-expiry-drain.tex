@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\draw[bookarrow] (0,1) -- (11.8,1);
+\draw[draw=Accent,line width=1pt] (5.4,0) -- (5.4,2);
+\node[booknote] at (2,1.6) {恢复开始 \(t\)};
+\node[booknote] at (5.4,2.4) {固定截止 \(T\)};
+\draw[bookarrow] (2,.3) -- node[booknote,below] {剩余窗口 \(T-t\)} (5.4,.3);
+\node[booknode,text width=3cm] (stop) at (1.7,-1.4) {持久关闭会话\\停止新的受理};
+\node[booknode,text width=3cm] (drain) at (5.7,-1.4) {截止前在途事务\\安全提交或回滚};
+\node[booknode,text width=3cm] (gc) at (9.7,-1.4) {随后按规则回收\\另行验证回收协议};
+\draw[bookarrow] (stop) -- (drain);
+\draw[bookarrow] (drain) -- (gc);
+\node[booknote,text width=10.5cm] at (5.7,-2.8) {长期断网可能越过窗口；到期后保留原购买资料，经业务事实核查原结论};
+\end{tikzpicture}
+\caption{有限许可限制恢复窗口，截止后仍须让在途事务安全终结}
+\label{fig:ch06-expiry-drain}
+\end{figure}

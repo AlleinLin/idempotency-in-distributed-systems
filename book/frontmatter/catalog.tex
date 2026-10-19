@@ -1,0 +1,47 @@
+% 每个部分的目录独立一页。
+\noindent{\sffamily\color{Ink}前言\hfill\pageref{front:preface}\quad\textbar\quad 引入：记录还停在从前\hfill\pageref{front:introduction}}\par\vspace{2mm}
+\noindent{\sffamily\color{Ink}概论：从业务语义看分布式系统\hfill\pageref{front:overview}}\par\vspace{4mm}
+\newcounter{catalogchapter}
+\newcounter{catalogsection}
+\newcounter{catalogpart}
+\newcommand{\BookPart}[2]{%
+  \ifnum\value{catalogpart}>0\clearpage\fi
+  \stepcounter{catalogpart}
+  \pdfbookmark[0]{#1：#2}{part-\arabic{catalogpart}}
+  {\sffamily\color{Muted}\fontsize{10}{14}\selectfont 目\quad 录\par}
+  \vspace{6mm}
+  {\sffamily\color{Accent}\fontsize{11}{16}\selectfont #1\par}
+  \vspace{1mm}
+  {\sffamily\bfseries\color{Ink}\fontsize{17}{25}\selectfont #2\par}
+  \vspace{4mm}
+  {\color{Ink!25}\hrule height .5pt}
+  \vspace{3mm}
+}
+\newcommand{\BookChapter}[3]{%
+  \stepcounter{catalogchapter}\setcounter{catalogsection}{0}
+  \pdfbookmark[1]{第\arabic{catalogchapter}章 #2}{chapter-#1}
+  \ifnum\value{catalogpart}=4\relax\vspace{1mm}\else\vspace{2.5mm}\fi
+  {\sffamily\bfseries\color{Ink}\fontsize{11}{16}\selectfont
+  \hangindent=16mm\hangafter=1\makebox[16mm][l]{第\arabic{catalogchapter}章}#2%
+  \ifnum\value{catalogchapter}>\LastReadyChapter\relax\else\hfill\pageref{chapter:#1}\fi\par}
+  \edef\CatalogChapterId{#1}
+  \vspace{1mm}
+  {\linespread{1}\fontsize{10}{14.5}\selectfont\color{Ink}#3}
+  \ifnum#1=21\relax
+    \vspace{2.5mm}
+    {\sffamily\color{Ink}\fontsize{10}{14.5}\selectfont
+      \hspace*{16mm}第四部分结语\hfill\pageref{part:04-closing}\par}
+  \fi
+}
+\newcommand{\BookSection}[1]{%
+  \stepcounter{catalogsection}
+  {\leftskip=16mm\hangindent=9mm\hangafter=1
+  \makebox[9mm][l]{\color{Muted}\arabic{catalogchapter}.\arabic{catalogsection}}#1%
+  \ifnum\value{catalogchapter}>\LastReadyChapter\relax\else\hfill\pageref{section:\CatalogChapterId-\arabic{catalogsection}}\fi\par}
+}
+\input{data/structure.tex}
+\vspace{3mm}
+{\sffamily\bfseries\color{Ink}\fontsize{10}{14.5}\selectfont
+全书结语：从一次操作到可以延续的业务历史\hfill\pageref{book:closing}\par}
+
+

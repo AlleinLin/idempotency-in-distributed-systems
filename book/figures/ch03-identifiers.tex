@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.5cm] (r1) at (2,0) {R1、Trace A\\首次通信与诊断};
+\node[booknode,text width=3.5cm] (r2) at (10.4,0) {R2、Trace B\\恢复通信与诊断};
+\node[booknode,text width=4cm] (k) at (6.2,-1.6) {K1：购买操作身份\\随两次请求保持稳定};
+\node[booknode,text width=4cm] (p) at (6.2,-3.3) {P1：服务保存的购买};
+\node[booknode,text width=3.5cm] (o) at (2.4,-4.9) {O1：成交订单};
+\node[booknode,text width=3.5cm] (d) at (10,-4.9) {D1：扣款流水};
+\draw[bookarrow] (r1)--(k);
+\draw[bookarrow] (r2)--(k);
+\draw[bookarrow] (k)--(p);
+\draw[bookarrow] (p)--(o);
+\draw[bookarrow] (p)--(d);
+\end{tikzpicture}
+\caption{通信 ID 分别保存，稳定身份共同关联到原购买及其订单和扣款。}
+\label{fig:ch03-identifiers}
+\end{figure}

@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=5cm] (u) at (5,0) {\mbox{业务操作 $u$}\\\mbox{Alice 决定买一包相纸}};
+\node[booknode,text width=2.5cm] (r1) at (1.5,-1.8) {请求尝试 R1};
+\node[booknode,text width=2.5cm] (r2) at (8.5,-1.8) {请求尝试 R2};
+\draw[bookarrow,dashed] (u)--node[left,font=\scriptsize]{首次发送}(r1);
+\draw[bookarrow,dashed] (u)--node[right,font=\scriptsize]{为完成原购买重发}(r2);
+\node[booknode,text width=3.7cm] (p1) at (1.5,-3.5) {当前入口创建 P1\\提交一笔 3000 扣款};
+\node[bookresult,text width=3.7cm] (p2) at (8.5,-3.5) {当前入口创建 P2\\再提交一笔 3000 扣款};
+\draw[bookarrow] (r1)--(p1);
+\draw[bookalert] (r2)--(p2);
+\node[bookresult,text width=7.8cm] at (5,-5.1)
+ {按同一业务操作统计：$E(u)=2$\\所需上限：$E(u)\leq 1$};
+\node[booknote,text width=11cm] at (5,-6.1)
+ {虚线按 Alice 的购买目的归类；当前数据库尚未保存这项跨请求关系};
+\end{tikzpicture}
+\caption{一次操作可以经历多次通信尝试。效果数量应围绕业务操作统计。}
+\label{fig:ch02-operation-model}
+\end{figure}

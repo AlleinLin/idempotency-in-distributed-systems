@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (0,.5) {客户端};
+\node[booknote] at (8,.5) {服务与权威数据库};
+\draw[draw=Muted] (0,0)--(0,-4.8);
+\draw[draw=Muted] (8,0)--(8,-4.8);
+\draw[bookarrow] (0,-.3)--(4,-.3)--(4,-3.3)--(8,-3.3);
+\node[booknote,anchor=south] at (2,-.3) {R1：原 POST 已发出};
+\node[booknote,anchor=west] at (4.2,-2.7) {网络延迟};
+\draw[bookarrow] (0,-1)--node[above,font=\small,fill=white] {Q1 查询完整 S} (8,-1.3);
+\draw[bookalert] (8,-1.8)--node[above,font=\small,fill=white] {404：此刻未找到} (0,-2.1);
+\node[booknote,anchor=south] at (6,-3.3) {R1 此时才到达};
+\node[bookresult] at (8,-4.3) {提交 P1 / O1 / D1};
+\node[booknote,text width=5cm] at (1,-4.1) {Q1 没有撤销在途请求\\客户端继续保存原 S};
+\end{tikzpicture}
+\caption{一次查空之后，在途购买仍可能提交。}
+\label{fig:ch05-query-before-post}
+\end{figure}

@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[box,text width=4.5cm] (p) at (0,1.1) {Region R1：事务primary键kP\\旧版本：20\\prewrite：start\_ts=50\\提交记录：commit\_ts=60};
+\node[warn,text width=4.5cm] (s) at (6.4,1.1) {Region R2：secondary键kS\\旧版本：20\\锁：start\_ts=50，primary=kP\\新值等待解析};
+\draw[ctl] (s.south)--(6.4,-1)--node[above,note]{遇锁后查询原primary} (0,-1)--(p.south);
+\node[good,text width=10.7cm] (c) at (3.2,-2.9) {primary已提交60 $\Rightarrow$ secondary按60形成同一事务版本\\primary明确回滚 $\Rightarrow$ 按原事务回滚准备\\事务尚未终结 $\Rightarrow$ 按锁和事务状态协议继续恢复};
+\node[note,text width=10.5cm] at (3.2,-4.6) {示意基础2PC。每个Region复制自身记录，跨Region关联由原事务身份与primary完成。};
+\end{tikzpicture}

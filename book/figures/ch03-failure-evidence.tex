@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.5cm] (a) at (1.7,0) {语法校验失败\\明确尚未受理};
+\node[booknode,text width=3.5cm] (b) at (6.2,0) {余额不足\\已提交拒绝终态};
+\node[bookresult,text width=3.5cm] (c) at (10.7,0) {执行中失联\\尚未确认提交结果};
+\node[booknode,text width=3.5cm] (ar) at (1.7,-1.9) {按规则修正输入\\再提交原身份};
+\node[booknode,text width=3.5cm] (br) at (6.2,-1.9) {同身份返回原拒绝\\充值后新确认用新键};
+\node[bookresult,text width=3.5cm] (cr) at (10.7,-1.9) {保留原身份与输入\\查询或重试查明事实};
+\draw[bookarrow] (a)--(ar);
+\draw[bookarrow] (b)--(br);
+\draw[bookalert] (c)--(cr);
+\end{tikzpicture}
+\caption{恢复动作依赖受理与提交证据。一个泛化的失败提示不足以选择下一步。}
+\label{fig:ch03-failure-evidence}
+\end{figure}

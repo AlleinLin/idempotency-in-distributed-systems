@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\draw[arr] (0,1)--(12,1);
+\foreach \x/\lab in {1/10:00:29,5.8/10:00:30,10.7/10:00:35} {
+\draw[Blue] (\x,.85)--(\x,1.15);\node[note,above] at (\x,1.2) {\lab};}
+\node[box,text width=3cm] at (1,2.85) {续期事务与语句开始\\记录起点时间};
+\node[warn,text width=2.4cm] at (5.8,2.85) {原租约到期};
+\node[box,text width=3cm] at (10.7,2.85) {取得 C1、T1 行锁\\重新采样时间};
+\draw[very thick,Gold] (1,.6)--node[note,below]{行锁等待}(10.7,.6);
+\node[warn,text width=4.6cm] at (2.6,-1) {current\_timestamp 仍为 10:00:29\\错误通过 10:00:30 ＞ 10:00:29};
+\node[good,text width=4.6cm] at (9,-1) {clock\_timestamp 采样 10:00:35\\已过期，原领取续期被拒绝};
+
+\end{tikzpicture}

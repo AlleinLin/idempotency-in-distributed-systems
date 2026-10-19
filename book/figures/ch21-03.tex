@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/旧工作者 A,4.5/平台,9/多数侧新工作者}{
+\node at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-5.5);}
+\draw[arr] (0,-1)--node[above,note]{原 pay-C1：请求滞留后到达} (4.5,-1);
+\node[good,text width=2.5cm] at (4.5,-2.1) {X1提交\\10000→7000};
+\draw[arr] (9,-3.3)--node[above,note]{同 scope／pay-C1 查询或重发} (4.5,-3.3);
+\draw[arr] (4.5,-4.3)--node[above,note]{原 X1 与完整结果} (9,-4.3);
+\node[note,text width=11cm] at (4.5,-6.2) {权威核验当前工作代次，拒绝旧代次回填；新工作者查询 X1，再提交同一平台结果。};
+
+\end{tikzpicture}

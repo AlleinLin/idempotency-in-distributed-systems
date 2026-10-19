@@ -1,0 +1,32 @@
+\newcommand{\CFourteenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=3.4cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=Gold,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!30,densely dashed},
+    cell/.style={draw=Blue,minimum width=2.2cm,minimum height=.7cm,
+      fill=blue!3,inner sep=3pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+第十一章把业务变化、完整身份绑定、原结果、会话资格和应用边界一起保存在可恢复历史中。第十二章允许在关闭 E1 以后回收一部分记录，前提是关闭决定和从未重用的登记进度继续存在。第十三章把某些重复传播吸收进集合或累计状态，也把来源身份及计数的持久性列入了前提。现在，运维人员取出一天以前的备份，恢复到另一地域，再把流量切过去。这几个前提会同时遇到同一个问题：当前数据库保存的过去，可能比系统已经向外部世界做出的事情更早。
+
+引入中的角色迁移有同样结构：甲地域恢复了迁移前的角色、材料和装备，乙地却保留材料已经消耗、装备已经交给 Alice 的后续历史。把甲地旧快照再次覆盖或合入乙地，会让旧材料和处置权重新出现。下面把甲地映射为购买库投影，把持续前进的乙地、交易与玩家活动映射为独立平台和履约历史，再核对恢复者怎样取回原操作的关联。
+
+取一条独立的外部购买历史。Alice 的平台账户初始有 CNY 10000 分，购买库和履约库都为空。她用
+\[
+S=(1,\text{\code{purchase.create.external.v2}},E1,K1)
+\]
+确认 \code{paper-001}、数量 1、报价 Q7、金额 3000 分。A 保存 P1/C1/T1，平台沿原范围和 \code{pay-C1} 建立 X1，余额变为 7000。R 保存原平台结果、完整支付结果、O1 与 EV1。履约消费者按 I/B 建立实际编号为 501 的 F1。这里每一笔提交都已经发生，随后才恢复旧备份。
+
+本章先移动路由，再移动历史。路由决定谁有资格受理，历史决定接班者能够恢复什么。最后把独立保存的受理记录、平台资金事实和消费效果接回同一条购买，给出恢复期间可以重试、可以查询和可以新建的具体条件。

@@ -1,0 +1,20 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[box,text width=4.7cm] (s) at (5,2.5)
+  {旧购买 E1/K1，原 P1/C1\\本例 E1 已关闭};
+\node[box,text width=3.6cm] (post) at (0,0)
+  {购买提交入口\\核对会话资格\\410 operation\_expired};
+\node[box,text width=3.6cm] (query) at (5,0)
+  {账户授权查询入口\\读原 S/回执/P1\\从 J 取得原关联与结果};
+\node[box,text width=3.6cm] (recover) at (10,0)
+  {服务端 C/T 恢复入口\\取原范围与 pay-C1\\核对外部保护和证据};
+\draw[arr] (s)--(post);\draw[arr] (s)--(query);\draw[arr] (s)--(recover);
+\node[note,text width=3.8cm] at (0,-2)
+  {提供授权查询位置\\资金结局由原购买证据说明};
+\node[good,text width=3.6cm] at (5,-2)
+  {原 payment\_result 固定\\当前 progress 单独展示\\投影未齐时标 restoring};
+\node[good,text width=3.6cm] at (10,-2)
+  {查询、安全原身份重试\\或 SealPayment/H1\\责任持续扫描};
+\draw[arr] (post.south)--(0,-1.35);
+\draw[arr] (query.south)--(5,-1.25);
+\draw[arr] (recover.south)--(10,-1.25);
+\end{tikzpicture}

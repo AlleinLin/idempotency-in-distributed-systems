@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[warn,text width=12cm] (e) at (5,5) {旧 E1/K1 返回 operation\_expired：这项入口资格已结束};
+\node[good] (a) at (0,2.7) {查询核验原成功\\保存 P1/O1 与原付款结果\\结束原购买任务};
+\node[warn] (b) at (5,2.7) {原 C1 未决或证据未齐\\保留原身份与关联\\继续受控核查};
+\node[box] (c) at (10,2.7) {明确确认另一项购买\\登记新 E2、持久保存 K2\\新 S2 首次仲裁};
+\draw[arr] (e.south)--++(0,-.4)-|(a.north);
+\draw[arr] (e)--(b);
+\draw[arr] (e.south)--++(0,-.4)-|(c.north);
+\node[note,text width=14cm] at (5,.2) {重连或超时不自动生成新业务意图；跨会话唯一的预约另有长期业务身份及其成本};
+\end{tikzpicture}

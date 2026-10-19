@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.4cm] (c) at (1.9,0) {调用方恢复记录\\保留原身份 S};
+\node[booknode,text width=3.4cm] (s) at (6.4,0) {恢复请求携带 S\\服务按 S 查找};
+\node[booknode,text width=3.4cm] (r) at (10.9,0) {完成记录\\S、业务结果、关联 P1};
+\draw[bookarrow] (c)--(s);
+\draw[bookarrow] (s)--(r);
+\node[booknode,text width=5.5cm] (e) at (10,-2) {与业务变化共同提交\\故障后仍能读取同一记录};
+\draw[bookarrow] (r)--(e);
+\draw[bookarrow] (e.west)--++(-5,0)-|node[pos=.55,below,font=\footnotesize]{原结果沿身份返回}(c.south);
+\node[booknote,text width=12cm] at (6.4,-3.2)
+ {身份保存、结果保存和恢复查找共同构成这条路径\\任一段丢失，都需要相应的恢复规则};
+\end{tikzpicture}
+\caption{稳定身份把重试指向原结果，持久性与查找路径仍须由系统兑现。}
+\label{fig:ch03-recovery-chain}
+\end{figure}

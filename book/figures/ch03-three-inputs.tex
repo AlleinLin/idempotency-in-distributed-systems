@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote,text width=12cm] at (6.2,.9) {三组各自从余额 10000、空记录开始，第一笔均以 K1 成交 3000};
+\node[booknode,text width=3.5cm] (a) at (1.7,-.3) {第二次：K1\\仍买 paper-001};
+\node[booknode,text width=3.5cm] (b) at (6.2,-.3) {第二次：K1\\改买 paper-002};
+\node[booknode,text width=3.5cm] (c) at (10.7,-.3) {第二次：K2\\仍买 paper-001};
+\node[booknode,text width=3.5cm] (ar) at (1.7,-2) {返回原 P1、O1、D1\\余额保持 7000};
+\node[bookresult,text width=3.5cm] (br) at (6.2,-2) {同身份输入冲突\\余额保持 7000};
+\node[booknode,text width=3.5cm] (cr) at (10.7,-2) {建立 P2、O2、D2\\余额变为 4000};
+\draw[bookarrow] (a)--(ar);
+\draw[bookalert] (b)--(br);
+\draw[bookarrow] (c)--(cr);
+\node[booknote,text width=12cm] at (6.2,-3.35)
+ {同键同参恢复原购买；同键异参保护原绑定；新键同参允许另一笔合法购买};
+\end{tikzpicture}
+\caption{身份与输入需要一起判断，三组情况产生不同处理结果。}
+\label{fig:ch03-three-inputs}
+\end{figure}

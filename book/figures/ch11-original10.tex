@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box,text width=5.5cm] (a) at (0,3) {完整 S1\\(1, purchase.create.v1, E1, K1)};
+\node[box,text width=5.5cm] (b) at (8,3) {协议编号\\(wallet:E1, seq=1)};
+\draw[arr] (a)--node[above,note]{适配 U}(b);
+\draw[arr] (b.south)--++(0,-.5)-|node[below,note,pos=.25]{原编码重试}(a.south);
+\node[good,text width=5.5cm] (m) at (0,.5) {M(S1)\\版本 V、原输入、真实 P1\\完整 R(S1)};
+\node[good,text width=5.5cm] (g) at (8,.5) {会话 Γ(E1)\\登记归属与原准入决定\\缺失或关闭返回过期};
+\draw[arr] (a)--(m);\draw[arr] (b)--(g);
+\node[note,text width=13cm] at (4,-1.2) {稳定编码保存于首次发送前；重启后 seq=1 保留原 K 归属，S1 沿原编码重试};
+
+\end{tikzpicture}

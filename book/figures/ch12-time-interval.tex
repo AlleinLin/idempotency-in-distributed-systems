@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\draw[arr] (0,0)--(12.8,0) node[right,note] {可信时刻};
+\draw[Gold,thick,dashed] (7,-.3)--(7,3.9);
+\node[note,above] at (7,3.9) {固定截止 $t_{\rm deadline}$};
+\draw[Blue,line width=3pt] (1,2.9)--(4.5,2.9);
+\node[note,anchor=west] at (7.4,2.9) {$t_{\mathrm{high}}<t_{\rm deadline}$：受理};
+\draw[Gold,line width=3pt] (5.5,1.9)--(8.5,1.9);
+\node[note,anchor=west] at (9,1.9) {跨越 $t_{\rm deadline}$：暂缓};
+\draw[Blue,line width=3pt] (8,.9)--(11.5,.9);
+\node[note,anchor=east] at (6.5,.9) {$t_{\mathrm{low}}\ge t_{\rm deadline}$：过期};
+\node[note,text width=13cm] at (6,-.9) {每条线表示实际当前时刻所在的可信区间；在取得会话锁或命令排序权以后取时};
+\end{tikzpicture}

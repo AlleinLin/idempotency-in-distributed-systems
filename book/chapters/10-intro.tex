@@ -1,0 +1,22 @@
+\newcommand{\CTenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Pale}{HTML}{F1F5F7}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=Pale,inner sep=7pt,text width=3.6cm,minimum height=1cm},
+    good/.style={box,fill=green!5!white,draw=green!35!black},
+    warn/.style={box,fill=orange!7,draw=Gold},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!35,densely dashed}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+履约系统收到了 EV1。它为 O1 建立履约单，数据库提交成功，进程随即退出。消息确认还没有送到代理。连接失效被发现以后，EV1 再次到达。第九章发布器重发形成的另一副本，也可能第一次到达。面对这些副本，消费者需要认出已经提交的工作。
+
+我们把这次工作具体限定为：在履约数据库中建立一张初次履约单，交给后续调度。履约单记为 F1，初态为 \code{awaiting\_dispatch}。仓库尚未出库，承运商尚未接单，购买数据库中的 \code{orders.fulfillment\_state} 此时可以为 \code{unfulfilled}。先把这一项本地效果与确认之间的恢复规则做实，再沿各自边界接回购买进度和实际发货。

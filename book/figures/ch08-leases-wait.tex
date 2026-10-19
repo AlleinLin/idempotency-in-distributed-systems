@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+\node[note,anchor=west] at (-1.5,6.0)
+  {初态：服务器保存 $v_0$，客户端在0秒取得数据与10秒租期};
+\foreach \x/\t in {0/0,4.5/5,9/10}
+  {\draw[lane] (\x,4.6)--(\x,-.1); \node[note] at (\x,4.9) {\t 秒};}
+\node[note,anchor=east] at (-.3,3.4) {客户端};
+\node[note,anchor=east] at (-.3,1.2) {服务器};
+\draw[arr] (0,3.4)--(11.2,3.4);
+\draw[Blue,line width=2pt] (0,3.4)--(9,3.4);
+\node[note,text width=6.2cm] at (4.5,4)
+  {有效租期内使用缓存 $v_0$};
+\draw[arr] (0,1.2)--(11.2,1.2);
+\draw[Gold,line width=2pt] (4.5,1.2)--(9,1.2);
+\node[note,text width=4.8cm] at (6.75,2)
+  {5秒请求写 $v_1$\\客户端不可达，等待旧租期结束};
+\node[good,text width=3.1cm] (publish) at (9.5,-1.1)
+  {旧租期结束后\\服务器按规则发布 $v_1$};
+\draw[arr] (9,1.2)--(9,-.4);
+\node[box,text width=6.5cm] (reread) at (2.6,-1.1)
+  {客户端再次读取\\先取得有效租期并核对数据，再使用 $v_1$};
+\draw[arr] (publish.south)--(9.5,-2.2)--node[note,below]{发布后再次读取}(2.6,-2.2)--(reread.south);
+\node[note,text width=12.2cm] at (4.5,-3.4)
+  {租期有效期间，服务器承担等待义务；到期以后，客户端重新取得读取资格\\时间判断采用正文说明的有界漂移与误差条件};
+\end{tikzpicture}

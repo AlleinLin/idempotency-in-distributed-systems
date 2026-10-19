@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.2cm] (a) at (0,0) {尚未发送 COMMIT\\服务退出};
+\node[bookresult,text width=3.2cm] (b) at (4.9,0) {已发送 COMMIT\\确认尚未取得时失联};
+\node[booknode,text width=3.2cm] (c) at (9.8,0) {已收到成功确认\\服务退出};
+\node[booknode,text width=3.2cm] (d) at (0,-2) {数据库检测断连\\回滚仍打开的事务};
+\node[bookresult,text width=3.2cm] (e) at (4.9,-2) {命令可能未处理\\也可能已完成提交};
+\node[booknode,text width=3.2cm] (f) at (9.8,-2) {数据库保留\\P1、O1、D1};
+\node[booknode,text width=3.2cm] (g) at (0,-4) {确认清理结束后\\按未生效路径恢复};
+\node[bookresult,text width=3.2cm] (h) at (4.9,-4) {借助操作身份\\查询或继续恢复};
+\node[booknode,text width=3.2cm] (i) at (9.8,-4) {读回持久结果\\重新提供给客户端};
+\foreach \u/\v in {a/d,b/e,c/f,d/g,e/h,f/i} {\draw[bookarrow] (\u)--(\v);}
+\node[booknote,text width=12.4cm] at (4.9,-5.3) {前提：数据库正常运行并保留已确认提交；新连接的 ROLLBACK 作用于新连接自身};
+\end{tikzpicture}
+\caption{服务退出的位置不同，恢复时可用的证据也不同。提交附近失联需要继续查明原事务的结果。}
+\label{fig:ch02-recovery}
+\end{figure}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\v in {0/900,1.8/1000,3.6/1100,5.4/1200,7.2/1300,9/1400}{
+ \node[cell] at (\x,0) {\v};}
+\node[box,text width=3.1cm] (a) at (1,-2) {相同 replid\\请求1001\\backlog 尚覆盖};
+\node[good,text width=3.1cm] (b) at (5,-2) {部分同步\\补发缺失后缀};
+\node[warn,text width=3.1cm] (c) at (9,-2) {历史不匹配或太旧\\转全量同步};
+\draw[arr] (a)--(b);
+\node[note] at (4.5,1.1) {示意 backlog 当前保留900至1400。数字为复制流字节位置。};
+
+\end{tikzpicture}

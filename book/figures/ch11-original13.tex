@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box,text width=12.5cm] (i) at (4,4.3) {共同快照边界：余额 4000，S1/S2 各成功 3000\\P1/O1/D1 原结果 7000；P2/O2/D2 原结果 4000};
+\node[warn,text width=5.5cm] (a) at (0,2) {错误恢复入口\\W 已恢复，M 遗漏\\收到 S1，按新购买处理};
+\node[good,text width=5.5cm] (b) at (8,2) {完整恢复入口\\W/M/Γ 来自同一边界\\收到 S1，取原绑定与结果};
+\draw[arr] (i.south)--++(0,-.4)-|(a);\draw[arr] (i.south)--++(0,-.4)-|(b);
+\node[warn,text width=5.5cm] (aa) at (0,-.1) {P3/O3/D3，余额 1000\\共有三条流水\\S1 关联两次扣款};
+\node[good,text width=5.5cm] (bb) at (8,-.1) {原 P1/O1/D1，响应原 7000\\当前余额 4000\\共有两条流水};
+\draw[arr] (a)--(aa);\draw[arr] (b)--(bb);
+\node[note,text width=13.1cm] at (4,-1.9) {W 中的流水可能保有 S 与原结果；入口若依赖重建，须在开放写入前完成重建及验证};
+
+\end{tikzpicture}

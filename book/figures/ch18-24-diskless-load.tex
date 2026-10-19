@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[note] at (0,0) {策略};
+\node[note] at (4.5,0) {接收与加载};
+\node[note] at (10,0) {旧数据和资源};
+\foreach \y/\name/\load/\effect in {
+  -1.2/disabled/先接收至文件，再加载/先落盘；加载按相应流程替换数据,
+  -3/swapdb/保留旧库，直接加载新库/成功后交换；内存容纳新旧两份,
+  -4.8/flushdb/先清空旧库，再直接加载/失败时旧库已经失去,
+  -6.6/on-empty-db/只在当前库为空时无盘加载/非空库选择落盘路径
+}{
+  \node[box,text width=2.5cm] (s) at (0,\y) {\name};
+  \node[box,text width=4.1cm] (l) at (4.5,\y) {\load};
+  \node[box,text width=4.3cm] (r) at (10,\y) {\effect};
+  \draw[arr] (s)--(l);\draw[arr] (l)--(r);
+}
+\node[note,text width=12cm] at (5,-8.2)
+  {主节点无盘发送和副本无盘加载分别选择。\\swapdb能否继续读旧库，还受复制历史等条件约束。};
+\end{tikzpicture}

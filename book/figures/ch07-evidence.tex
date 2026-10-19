@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=4.7cm] (u) at (0,2.5)
+  {unconfirmed\\本地尚无确定结论\\P 等待，无 O};
+\node[good,text width=4.7cm] (s) at (7,3.8)
+  {succeeded\\核对 X 与固定输入\\R 保存唯一 O、结果和 paid};
+\node[box,text width=4.7cm] (r) at (7,0.4)
+  {rejected\_final\\确认既往无成功，排除所有后续成功\\R 保存拒绝结果，无 O};
+\draw[arr] (u.north east)--node[note,above,sloped]{成功证据}(s.west);
+\draw[arr] (u.south east)--node[note,below,sloped]{完整拒绝证据}(r.west);
+\draw[arr] (u.south west) to[out=220,in=140,looseness=1.8]
+  node[note,left,text width=2.2cm]{处理中、查空\\仅未来关闭\\保留等待}(u.north west);
+\draw[arr] (s.north west) to[out=110,in=70,looseness=1.4]
+  node[note,above]{同 X 重复成功：恢复原 O}(s.north east);
+\node[warn,text width=11.6cm] at (3.5,-1.9)
+  {拒绝证据覆盖已受理、在途与未来路径；仅关闭未来而既往未明时继续核查\\旧 processing／单次尝试过期：记录观察，终态保持\\字段不匹配／矛盾终态：保存冲突并核查，原结论保持};
+\end{tikzpicture}

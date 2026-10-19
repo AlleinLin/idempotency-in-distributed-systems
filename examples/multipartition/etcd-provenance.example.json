@@ -1,0 +1,6 @@
+{
+  "url": "https://github.com/etcd-io/etcd/releases/download/v3.7.2/<your-platform-archive>",
+  "release": "v3.7.2",
+  "sha256": "<64 lowercase hexadecimal characters: downloaded archive>",
+  "official_digest": "sha256:<same digest from the official release>"
+}

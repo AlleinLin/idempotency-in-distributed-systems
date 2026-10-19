@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.2cm] (in) at (0,0) {商户范围＋pay-C1\\固定支付输入\\CNY 3000、付款关联};
+\node[box,text width=3.4cm] (arb) at (5.1,0) {平台身份仲裁\\首次取得／同参恢复\\异参冲突};
+\node[good,text width=4.0cm] (out) at (10.2,0) {同一平台事务\\键与输入绑定\\X1＋流水＋原结果};
+\draw[arr] (in)--(arb);\draw[arr] (arb)--(out);
+\node[note,text width=12cm] at (5.1,-1.6) {同键并发请求在仲裁处汇合；效果和可恢复结果共同保留，重试继续找到 X1};
+
+\end{tikzpicture}

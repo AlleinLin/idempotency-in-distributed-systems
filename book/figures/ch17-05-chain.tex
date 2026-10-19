@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=3.25cm] (h) at (0,0) {链头 H\\排列更新／计算结果\\保存42／Sent};
+\node[box,text width=3.25cm] (m) at (4.6,0) {中间 M\\保存并转发42\\Sent 保留待确认};
+\node[good,text width=3.25cm] (t) at (9.2,0) {链尾 T\\接收42后完成\\查询／更新响应};
+\draw[arr] (h)--(m);
+\draw[arr] (m)--(t);
+\draw[ctl] (t.south)--(9.2,-1.8)--node[below,note]{尾部完成确认逐跳返回，上游删除相应 Sent} (0,-1.8)--(h.south);
+\node[note,text width=12cm] at (4.6,-3.1) {$\mathrm{Hist(T)}\preceq\mathrm{Hist(M)}\preceq\mathrm{Hist(H)}$，$\preceq$ 表示前缀关系。\\业务 $S$ 与原结果保存在被复制的应用状态中。};
+\end{tikzpicture}

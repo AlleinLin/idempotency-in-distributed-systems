@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\node[box,text width=3.7cm] (a) at (0,3.7) {应用确定性命令 A\\保存 S/P/C/T\\固定平台范围与 pay-C1};
+\node[box,text width=3.7cm] (s) at (5.4,3.7) {状态机外发送者\\读取原 C1 待办\\沿 pay-C1 查询或发送};
+\node[good,text width=3.7cm] (e) at (10.8,3.7) {平台 E\\独立建立 X1\\平台账本余额 7000};
+\draw[arr] (a)--(s);\draw[arr] (s)--(e);
+\node[good,text width=3.7cm] (r) at (0,.7) {应用确定性命令 R\\保存成功证据与原结果\\O1 / EV1，P1.paid};
+\node[box,text width=3.7cm] (p) at (5.4,.7) {可信平台证据\\核对 C1 / X1\\作为命令输入提交};
+\draw[arr] (e.south)--++(0,-.65)-|(p.north);\draw[arr] (p)--(r);
+\draw[Blue,dashed,thick] (-2.25,-.4) rectangle (2.25,4.7);
+\node[note] at (0,-1) {复制域内：A / R 与后续责任};
+\node[note,text width=8.2cm] at (8.1,-1) {E 已发生而 R 尚未应用：继续未决\\重放应用函数不直接调用平台};
+
+\end{tikzpicture}

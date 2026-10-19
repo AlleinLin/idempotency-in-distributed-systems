@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\foreach \x/\lab in {0/事务 U1,4.5/事务 U2,9/扫描器}{
+\node[box,text width=2.7cm] at (\x,3.7) {\lab};\draw[lane] (\x,3.1)--(\x,-2.8);}
+\node[box,text width=2.5cm] at (0,2.4) {分配 id=100\\尚未提交};
+\node[good,text width=2.5cm] at (4.5,1.6) {分配 id=101\\先提交};
+\draw[arr] (4.5,.4)--node[note,above]{读取可见 101}(9,.4);
+\node[warn,text width=2.5cm] at (9,-.6) {永久游标推进 101};
+\node[good,text width=2.5cm] at (0,-1.8) {随后提交\\id=100};
+\draw[arr] (0,-2.9)--node[note,above]{只查 id＞101 会遗漏 100}(9,-2.9);
+\node[box,text width=10.6cm] at (4.5,-4.1) {主方案反复扫描 ready／到期 leased 及其到期条件\\临时分页不永久排除旧待办；编号和记录时刻均非提交顺序};
+
+\end{tikzpicture}

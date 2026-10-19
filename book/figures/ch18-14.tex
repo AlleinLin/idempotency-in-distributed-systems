@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (s) at (0,0) {本地超时\\SDOWN};
+\node[box] (o) at (4,0) {收集 quorum\\ODOWN};
+\node[good] (l) at (8,0) {转移领导者\\多数授权\\并满足 quorum};
+\node[box] (r) at (8,-2.7) {筛选副本并提升\\优先级／offset／run ID};
+\node[box] (n) at (4,-2.7) {发布新配置\\其余副本跟随};
+\node[warn] (old) at (0,-2.7) {旧主重连后降级\\分叉后缀可能被替换};
+\draw[arr] (s)--(o);\draw[arr] (o)--(l);\draw[arr] (l)--(r);\draw[arr] (r)--(n);\draw[arr] (n)--(old);
+
+\end{tikzpicture}

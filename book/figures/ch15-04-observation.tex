@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=5.5cm] (a) at (0,1.4) {固定 acceptance\\原 S／P1／C1\\商品／数量／报价／CNY 3000};
+\node[good,text width=5.5cm] (p) at (0,-1.1) {固定 payment\_result\\原 P1／C1／O1／成功\\平台范围／X1／CNY 3000};
+\node[box,text width=5.5cm] (g) at (7,1.4) {当前 progress\\paid／unfulfilled\\→ fulfillment\_accepted};
+\node[good,text width=5.5cm] (r) at (7,-1.1) {同一恢复边界上的查询\\原付款事实＋当前履约进度\\可信 F501 回报推进进度};
+\draw[arr] (a)--(r);\draw[arr] (p)--(r);\draw[arr] (g)--(r);
+\node[note,text width=12.5cm] at (3.5,-3.1) {$A_J$ 另存 T1 与恢复责任；$R_J$ 另存原 provider\_result 及 EV1 完整报文};
+\end{tikzpicture}

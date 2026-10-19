@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+\foreach \x/\name in {0/购买权威,4/消息域,8/消费数据库,12/发货平台} {
+ \node[font=\bfseries] at (\x,0) {\name};
+ \draw[lane] (\x,-.4)--(\x,-5.2);
+}
+\node[good,text width=3cm] at (0,-1) {$R_J$／O／EV\\Outbox 同次提交};
+\draw[arr] (0,-2)--node[above,note]{发布完整 EV} (4,-2);
+\draw[arr] (4,-2.6)--node[above,note]{可重复投递} (8,-2.6);
+\node[good,text width=3cm] at (8,-3.3) {I／B／F／意图\\同一事务提交};
+\draw[arr] (8,-4.8)--node[above,note]{扫描器以原键发送} (12,-4.8);
+\draw[ctl] (8,-4.1)--node[below,note]{提交后 ACK／offset} (4,-4.1);
+\node[note,text width=14cm] at (6,-5.9) {任一箭头响应丢失，都从箭头起点已经保存的原责任恢复。发货扫描器独立扫描意图，消息队列清空后也能继续。};
+
+\end{tikzpicture}

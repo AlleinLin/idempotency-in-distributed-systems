@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+\node[note] at (0,3.5) {路径一};
+\node[box] (a) at (3,3.5) {应用事务 A / R\\业务关系由数据库\\共同提交};
+\node[box] (b) at (8.3,3.5) {数据库 WAL\\主库到备库的恢复日志};
+\node[good] (c) at (13.6,3.5) {合格接班者恢复\\查询原 S / C / EV};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[note] at (0,.7) {路径二};
+\node[box] (d) at (3,.7) {应用定义命令\\完整 S 与可核验输入};
+\node[box] (e) at (8.3,.7) {共识日志形成共同前缀\\状态机按序应用};
+\node[good] (f) at (13.6,.7) {业务数据、身份绑定\\会话资格与原结果\\一起复制、快照和恢复};
+\draw[arr] (d)--(e);\draw[arr] (e)--(f);
+\node[note,text width=15cm] at (7.6,-1) {同样保存操作事实，复制单元分别是数据库恢复日志与应用命令；各外部提交域保持独立};
+
+\end{tikzpicture}

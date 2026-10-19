@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (r) at (0,0) {原付款 3000\\成功 C:b1:1／X1\\退款总额度 3000};
+\node[warn] (a) at (4.2,1.2) {RF:b1:4\\退款 2000 未知\\$R_{\rm pend}=2000$};
+\node[box] (b) at (8.4,1.2) {新退款 1200\\2000+1200>3000\\拒绝超额占用};
+\node[good,text width=3.3cm] (c) at (4.2,-1.4) {原 RF 恢复成功\\$R_{\rm succ}=2000$，$R_{\rm pend}=0$\\保留原平台退款键};
+\node[good,text width=3.3cm] (d) at (8.4,-1.4) {新 RF 退 1000\\$R_{\rm succ}=3000$，$R_{\rm pend}=0$\\之后可用额度为 0};
+\draw[arr] (r)--(a);\draw[arr] (a)--(b);\draw[arr] (a)--(c);\draw[arr] (c)--(d);
+\node[note,text width=12cm,anchor=north] at ([yshift=-.65cm]c.south)
+ {$R_{\rm succ}$ 表示已成功退款额，$R_{\rm pend}$ 表示尚未排除成功的退款占额。\\每次预占和终结都在原付款所属权威仲裁。};
+
+\end{tikzpicture}

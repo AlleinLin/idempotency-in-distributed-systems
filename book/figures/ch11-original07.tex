@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+
+\node at (0,4) {任期 4 的危险判定};
+\node at (7.2,4) {任期 4 的正确推进};
+\foreach \x/\a/\t in {0/A/2,1.3/B/2,2.6/C/2,3.9/D/1,5.2/E/3}{
+\node[note] at (\x-2.6,3.2) {\a};
+\node[cell,minimum width=1.1cm,fill=orange!8] at (\x-2.6,2.4) {\ifnum\t=2 x/2\else\ifnum\t=3 y/3\else 空\fi\fi};
+}
+\node[warn,text width=5.3cm] (a) at (0,.4) {x 的旧任期为 2，已在 A/B/C\\E 的末项任期 3 更高\\任期 5 可赢得 B/C/E 的票};
+\foreach \x/\a in {0/A,1.3/B,2.6/C}{
+\node[note] at (\x+5.9,3.2) {\a};
+\node[cell,minimum width=1.1cm] at (\x+5.9,2.4) {x/2};
+\node[cell,minimum width=1.1cm,fill=green!8] at (\x+5.9,1.65) {z/4};
+}
+\node[good,text width=5.3cm] (b) at (7.2,-.2) {当前任期 z 达到多数\\提交 z 及前缀 x\\E 的末项任期 3 无法胜过 4};
+\draw[arr] (0,1.9)--(a);\draw[arr] (7.2,1.15)--(b);
+\node[note,text width=13cm] at (3.6,-1.8) {共同位置 1 已一致；单元为“值/原任期”；z 可以是保持业务状态的空命令};
+
+\end{tikzpicture}

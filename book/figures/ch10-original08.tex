@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[good,text width=5cm] (k) at (0,4) {Kafka 事务域\\输出主题记录＋传统组消费 offset\\提交后由 read\_committed 读取};
+\node[good,text width=5cm] (f) at (6.8,4) {履约库事务 Q\\接收绑定＋F＋回报 Outbox\\共同提交后再推进代理进度};
+\node[box,text width=5cm] (p) at (0,1.1) {购买库独立消费回报\\按报告身份／F 恢复\\单独更新 O.fulfillment\_state};
+\node[warn,text width=5cm] (s) at (6.8,1.1) {仓储／承运商独立效果\\原 dispatch 操作身份和结果查询\\失联后恢复原操作};
+\draw[arr](f.south)--++(0,-.5)-|(p.north);
+\draw[arr](f)--(s);
+\node[note,text width=12.3cm] at (3.4,-1.2) {分区重派或 Kafka 事务 abort 无法撤销已经发出的外部动作\\abort 后还须重置应用状态与消费位置；本地 F 建立尚未表示实体包裹已发出};
+
+\end{tikzpicture}
+

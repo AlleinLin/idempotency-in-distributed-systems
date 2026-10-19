@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box,text width=5.2cm] (a) at (0,2) {唯一归属与资源资格\\g7→B，路由第 9 代，旧入口受控};
+\node[box,text width=5.2cm] (b) at (7,2) {完整身份与会话范围\\J 前缀完整，Γ 不回退，编号不重用};
+\node[box,text width=5.2cm] (c) at (0,-.5) {旧外部路径都有去向\\成功 / 最终拒绝 / 原 H 持久未决};
+\node[box,text width=5.2cm] (d) at (7,-.5) {本地与消费关系可恢复\\原 P/C/O/结果/EV，原 I/B/F/dispatch};
+\node[good,text width=8cm] (o) at (3.5,-3) {受限开放：旧 S 恢复原关联；独立新意图进入新会话与编号\\对未决责任持续扫描，容量按现有证据管理};
+\draw[arr] (a.south)--(c.north);\draw[arr] (b.south)--(d.north);
+\draw[arr] (c.south)--(o.north west);\draw[arr] (d.south)--(o.north east);
+
+\end{tikzpicture}

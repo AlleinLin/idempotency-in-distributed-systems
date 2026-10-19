@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[box] (c) at (0,1.5) {协调控制面\\目录／会话／配置\\当前角色};
+\node[good] (b) at (5,1.5) {业务副本组\\b1／归属代次\\$S$ 绑定／结果};
+\node[good] (r) at (10,-1.1) {独立资源端\\最高执行资格\\原子核验后写入};
+\node[box] (w) at (0,-1.5) {可替换工作者\\原业务身份\\当前执行资格};
+\draw[ctl] (c)--node[above,note]{配置} (b);
+\draw[ctl] (c)--(w);
+\draw[arr] (b.south west)--node[above,sloped,note]{持久待办} (w.north east);
+\draw[arr] (w.east)--node[below,note]{资格／原身份／原输入} (r.west);
+\node[note] at (5,-3.1) {定位、业务归属核验和资源写入各自在相应保存域生效。};
+\end{tikzpicture}

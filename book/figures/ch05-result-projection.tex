@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=10cm] (b) at (0,0) {共同业务投影：P1 / O1 / D1 / CNY 3000 / 当次余额 7000};
+\node[booknode,text width=4cm] (r1) at (-3,-1.8) {首次响应\\201 / R1 / 首次 Date};
+\node[booknode,text width=4cm] (r2) at (3,-1.8) {恢复响应\\200 / R2 / 本次 Date};
+\draw[bookarrow] (b)--(r1);
+\draw[bookarrow] (b)--(r2);
+\node[booknote,text width=10cm] at (0,-3.1) {通信投影随尝试变化\\把业务余额 7000 替换成当前 6000 则改变原结论};
+\end{tikzpicture}
+\caption{比较同参终态恢复的业务投影，无须要求整个响应逐字节相同。}
+\label{fig:ch05-result-projection}
+\end{figure}

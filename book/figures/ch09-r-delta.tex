@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (read) at (0,0) {先锁 C→T\\读取原支付结论\\区分本次证据分支};
+\node[good,text width=4.2cm] (first) at (5.2,1.7) {首次成功\\真实 O → 插入 EV\\核对实际返回的关联};
+\node[box,text width=4.2cm] (old) at (5.2,-.4) {已有成功\\按事实身份查原 EV\\逐字段恢复原快照};
+\node[warn,text width=4.2cm] (other) at (5.2,-2.5) {拒绝／未决\\保存对应证据与结果\\保持没有成功事件};
+\draw[arr] (read.east)--++(.5,0)|-(first.west);
+\draw[arr] (read.east)--++(.5,0)|-(old.west);
+\draw[arr] (read.east)--++(.5,0)|-(other.west);
+\node[note,text width=10.8cm] at (2.7,-3.8) {EV 与 O、C 中原结果、P 状态及 T 完成共同提交；任一新增写入失败则整笔回滚};
+\end{tikzpicture}

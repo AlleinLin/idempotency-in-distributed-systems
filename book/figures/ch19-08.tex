@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (m) at (0,0) {固定\mbox{manifest}\\确切版本\\核对来源与前缀};
+\node[box] (b) at (4,0) {按序下载块\\坏副本换有效副本\\核对块／整体摘要};
+\node[good] (v) at (8,0) {解码完整状态\\核对 S 与原输入\\结果及保存关系};
+\node[good,text width=7.5cm] (a) at (4,-2.6) {取得迁移或恢复流程授予的资格\\导入完成 → 目录交接 → 目标激活};
+\draw[arr] (m)--(b);\draw[arr] (b)--(v);
+\draw[arr] (v.south)--(8,-2.6)--(a.east);
+
+\end{tikzpicture}

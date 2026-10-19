@@ -1,0 +1,38 @@
+% !TEX program = xelatex
+\documentclass[UTF8,11pt,oneside,openany,fontset=none]{ctexbook}
+\newif\ifcatalogdraft
+\catalogdrafttrue % 使用自定义分页目录
+\newif\ifbodyready
+\bodyreadytrue % 排入正文
+\newcommand{\LastReadyChapter}{21}
+\input{styles/book.tex}
+\begin{document}
+\begingroup\setlength{\parindent}{0pt}\input{frontmatter/cover.tex}\endgroup
+\frontmatter
+\input{frontmatter/preface.tex}
+\clearpage
+\input{frontmatter/introduction.tex}
+\clearpage
+\ifcatalogdraft
+  \begingroup\setlength{\parindent}{0pt}\setlength{\parskip}{0pt}\linespread{1}\selectfont\input{frontmatter/catalog.tex}\clearpage\endgroup
+\else
+  \tableofcontents
+\fi
+\clearpage
+\input{frontmatter/overview.tex}
+\clearpage
+\ifbodyready
+  \renewcommand{\thefigure}{\thechapter.\arabic{figure}}
+  \linespread{1.25}\selectfont\setlength{\parskip}{.35em}
+  \mainmatter
+  \input{styles/body-interface.tex}
+  \input{data/structure.tex}
+  \backmatter
+  \input{backmatter/book-closing.tex}
+  \input{backmatter/references.tex}
+\fi
+\end{document}
+
+
+
+

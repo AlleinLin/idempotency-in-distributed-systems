@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[bookarrow] (.4,0)--(12.7,0);
+\fill[Ink] (2,0) circle (2pt);
+\fill[Accent] (6.3,0) circle (2pt);
+\fill[Ink] (10.8,0) circle (2pt);
+\node[booknote,text width=3.5cm,anchor=south] at (2,.25) {09:59:59\\截止前受理};
+\node[booknote,text width=3.5cm,anchor=south] at (6.3,.25) {10:00:00\\持久关闭会话};
+\node[booknote,text width=3.5cm,anchor=south] at (10.8,.25) {稍后\\旧执行安全终结};
+\draw[draw=Ink,line width=4pt] (2,-.7)--(10.8,-.7);
+\node[booknote,text width=8cm] at (6.4,-1.2) {已经受理的执行仍在途，身份与结果证据继续受保护};
+\node[bookresult,text width=3.8cm] (stop) at (6.3,-2.6) {到期后到达的新请求\\拒绝进入受理};
+\node[booknode,text width=3.8cm] (clean) at (11,-2.6) {全部在途执行已终结\\再按规则安全清理};
+\draw[bookalert] (6.3,-.1)--(.8,-.1)--(.8,-2.6)--(stop.west);
+\draw[bookarrow] (10.8,-.7)--(clean);
+\end{tikzpicture}
+\caption{截止时间阻止新的受理，清理还必须等待旧执行结束或可靠阻止其提交。}
+\label{fig:ch03-inflight-expiry}
+\end{figure}

@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box,text width=4cm] (keys) at (0,0) {accepted:\{b1\}:S1\\pending:\{b1\}:C1\\session:\{b1\}:E1};
+\node[good] (slot) at (5,0) {散列共同标签 b1\\同一槽};
+\node[box] (a) at (9,0) {当前主节点 A\\本地事务／脚本};
+\draw[arr] (keys)--(slot);\draw[arr] (slot)--(a);
+\node[warn,text width=10.5cm] at (4.5,-2.3) {同槽扩大共同执行范围，也集中该标签的容量与热点。\\其他槽的库存对象通过跨分区协议连接。};
+
+\end{tikzpicture}

@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknote,text width=11cm] at (5.6,4.4) {A0=(S1,Q7)，A1=(S1,Q7)，A2=(S2,Q7)，A3=(S1,Qm)};
+\node[booknode,text width=2.5cm] (ready) at (1.4,3) {尚可开始};
+\node[booknode,text width=2.5cm] (claim) at (5.4,3) {内部取得身份};
+\node[booknode,text width=2.5cm] (prepare) at (9.4,3) {准备业务\\占有账户};
+\node[bookresult,text width=2.5cm] (commit) at (9.4,.8) {已提交待交付};
+\node[bookresult,text width=2.5cm] (deliver) at (5.4,.8) {已交付结束};
+\node[booknode,text width=2.5cm] (drop) at (1.4,.8) {崩溃或丢失结束};
+\draw[bookarrow] (ready) -- (claim);
+\draw[bookarrow] (claim) -- (prepare);
+\draw[bookarrow] (prepare) -- (commit);
+\draw[bookarrow] (commit) -- (deliver);
+\draw[bookalert] (claim.south) -- (5.4,2.1) -- (1.4,2.1) -- (drop.north);
+\draw[bookalert] (prepare.south west) -- (7.4,1.6) -- (3.2,1.6) -- (drop.north east);
+\draw[bookalert] (commit.south) -- (9.4,-.6) -- (1.4,-.6) -- (drop.south);
+\node[booknote,fill=white] at (5.6,-.6) {提交后丢失响应：已提交事实保留};
+\node[booknote,text width=10.5cm] at (5.6,-1.5) {已有终态时，尚可开始的尝试可直接重放或冲突结束\\每次物理尝试最多处理一次};
+\end{tikzpicture}
+\caption{四次物理尝试的六个阶段分别记录内部进度与交付结果}
+\label{fig:ch06-model-phases}
+\end{figure}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,2.7) {本地合法更新\\$s\preceq m(s)$\\信息沿偏序膨胀};
+\node[good] (b) at (5,2.7) {接收状态并 join\\$s\sqcup u$\\保留双方已知信息};
+\node[good] (c) at (10,2.7) {持续传播\\每份更新最终到达\\同一组更新汇到同一 join};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[box,text width=12cm] at (5,.4) {半格的最小上界保证：交换处理重排，结合处理分组，幂等处理重复};
+\node[note,text width=13cm] at (5,-.9) {持久化保存未传播更新；恢复来源分配后再继续；最终可达路径承担传播进展};
+
+\end{tikzpicture}

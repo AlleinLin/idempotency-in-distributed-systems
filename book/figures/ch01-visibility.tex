@@ -1,0 +1,24 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,minimum width=4cm] at (2.2,0) {连接 A：正在处理购买};
+\node[booknode,minimum width=4cm] at (10.3,0) {连接 B：普通查询};
+\draw[draw=Muted!60,dashed] (2.2,-.4)--(2.2,-5.6);
+\draw[draw=Muted!60,dashed] (10.3,-.4)--(10.3,-5.6);
+\node[booknode,text width=4.2cm] (insert) at (2.2,-1.4)
+  {BEGIN，插入 P1\\A 自己可以查到 P1};
+\node[booknode,text width=4.2cm] (before) at (10.3,-1.4)
+  {查询 P1\\结果为空：P1 尚未提交};
+\draw[draw=Muted!60,dotted] (insert.east)--(before.west);
+\node[booknode,text width=4.2cm] (writes) at (2.2,-3)
+  {继续扣款、建立订单与流水\\更新购买结果};
+\draw[bookarrow] (insert)--(writes);
+\draw[bookalert] (0,-4.2)--(12.5,-4.2);
+\node[fill=white,font=\footnotesize\sffamily,text=Accent] at (6.3,-4.2)
+  {A 提交完成};
+\node[bookresult,text width=4.2cm] at (10.3,-5.1)
+  {提交后重新查询\\读到 P1、订单与流水};
+\end{tikzpicture}
+\caption{同一笔购买在提交前后的可见性。图中连接 B 使用 Read Committed 的普通查询。}
+\label{fig:ch01-visibility}
+\end{figure}

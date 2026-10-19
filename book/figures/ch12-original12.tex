@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=4cm] (a) at (0,3.4) {09:59 A 已提交\\原 S/P1/C1/T1\\平台结果可能未知};
+\node[warn,text width=4cm] (b) at (5.7,3.4) {10:00 E1 关闭\\旧购买入口过期\\不再取得首次资格};
+\node[good,text width=4cm] (c) at (11.4,3.4) {恢复者读取原 C1\\平台范围与 pay-C1 固定\\按能力查询或安全发送};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=12.8cm] (d) at (5.7,.9) {取得终态证据后提交 R：C1 原结果、P1 进度、成功 O1/EV1 与 T1 结束共同保存};
+\draw[arr] (c.south)--++(0,-.35)-|(d.north);
+\node[note,text width=14cm] at (5.7,-.7) {证据未知 → T1 保持核查；E1 截止没有撤销在途网络请求};
+\end{tikzpicture}

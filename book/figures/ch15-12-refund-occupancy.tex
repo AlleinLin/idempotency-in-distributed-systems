@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\draw[draw=Blue,fill=blue!3] (0,0) rectangle (12,1);
+\draw[draw=green!40!black,fill=green!15] (0,0) rectangle (4,1);
+\draw[draw=Gold,fill=orange!18] (4,0) rectangle (10,1);
+\node[note] at (2,.5) {成功 $R_{\rm succ}=1000$};
+\node[note] at (7,.5) {未决 $R_{\rm pend}=1500$};
+\node[note] at (11,.5) {可用 500};
+\node[note] at (6,1.7) {独立例子：原收款 A=3000，成功加未决占用 2500};
+\node[box,text width=4.5cm] (j) at (2.7,-1.6) {J 保存 RF／原输入／占用\\成功：未决金额转入成功金额\\最终拒绝：释放未决金额};
+\node[warn,text width=4.5cm] (w) at (9.3,-1.6) {本地 \code{w.refunds} 投影回退\\按原 RF／原决定重建\\额度仲裁读取 J};
+\draw[arr] (j)--(w);
+\end{tikzpicture}

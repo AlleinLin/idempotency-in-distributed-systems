@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\draw[Blue,rounded corners=4pt,fill=blue!1] (-1,-.7) rectangle (13,5.9);
+\node[font=\sffamily\bfseries] at (6,5.4) {$\Sigma^{\rm seq}_j=(W_j,M_j,\Gamma_j,U_j,j)$};
+\node[box,text width=5cm] at (2.5,3.9) {W：余额、P/O/D、原 C/T\\未完成工作和外部证据关系};
+\node[box,text width=5cm] at (9.5,3.9) {M：完整结果或 $M_{\min}$\\V/X/P、退休与跳过结论};
+\node[box,text width=5cm] at (2.5,1.8) {$\Gamma$：当前 E1 与分配进度\\固定 $t_{\rm deadline}$、关闭、水位 $h_{\rm ack}$、配额};
+\node[box,text width=5cm] at (9.5,1.8) {U：序号 → S，S → 序号\\活动任意键的双向身份依据};
+\node[note,text width=12.5cm] at (6,.15) {在同一已应用边界 j 捕获并发布；恢复时共同装载，再从 j 的后继继续应用};
+\end{tikzpicture}

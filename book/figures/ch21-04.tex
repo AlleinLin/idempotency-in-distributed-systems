@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\node[warn] (a) at (0,0) {b1协调组\\TX1暂不可达};
+\node[warn] (b) at (4,0) {b2／b3\\prepared与占用};
+\node[warn] (c) at (8,0) {付款 blocked\\迁移被阻塞};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=3.8cm] (r) at (0,-2.8) {协调组恢复\\读取／提交原决定};
+\node[good,text width=5cm] (f) at (6.5,-2.8) {全部必需参与者 finish\\协调组保存完成／ready};
+\node[good,text width=5cm] (p) at (6.5,-4.7) {原 C/T 可领取付款\\闭合责任允许迁移};
+\draw[arr] (r)--node[above,note]{原 commit}(f);\draw[arr] (f)--(p);
+\draw[ctl] (a)--(r);
+\node[note,text width=11cm] at (4,-6.2) {commit 后继续完成确认；abort 则终止付款，参与者按原终态结束。};
+
+\end{tikzpicture}

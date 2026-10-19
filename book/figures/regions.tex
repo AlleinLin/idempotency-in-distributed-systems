@@ -1,0 +1,14 @@
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[anchor=east] at (0,1.5) {甲地};\node[anchor=east] at (0,0) {乙地};\node[anchor=east] at (0,-1.5) {Alice};
+\foreach \y in {1.5,0,-1.5}{\draw[flow] (.3,\y)--(12,\y);}
+\node[event] at (1,1.5) {};\node[above] at (1,1.6) {备份};
+\draw[flow,draw=Accent] (3,1.5)--(3,0);\node[anchor=west] at (3.1,.8) {迁移};
+\node[event] at (5.7,0) {};\node[above] at (5.7,.1) {消耗材料};
+\draw[flow,draw=Accent] (8,0)--(8,-1.5);\node[anchor=west] at (8.1,-.8) {转交装备};
+\node[event] at (10.8,1.5) {};\node[above] at (10.8,1.6) {恢复};
+\draw[flow,draw=Accent,dashed] (10.8,1.6) to[bend right=28] node[above] {仅甲地回到旧快照} (1,1.6);
+\node[below] at (10,-1.6) {外部历史继续};
+\end{tikzpicture}
+\caption{恢复边界只覆盖甲地，迁移后的使用与交易留在边界之外。}\label{fig:regions}
+\end{figure}

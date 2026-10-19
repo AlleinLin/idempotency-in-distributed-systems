@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\node[box,text width=4.6cm] (a) at (1,3.4) {每活动每账户一份\\成员键 (1,V7,entitlement)\\重复授予合到一项};
+\node[box,text width=4.6cm] (b) at (9,3.4) {每购买发一张券\\成员键 (campaign,O1)\\O2 取得另一份权益};
+\node[good,text width=11cm] (c) at (5,1.1) {原 O1 的重试恢复原券号；两项合法购买保留不同成员\\每次投递新建券号会多发，只按账户合并会漏发};
+\draw[arr] (a.south)--++(0,-.25)-|(c.north);\draw[arr] (b.south)--++(0,-.25)-|(c.north);
+\node[warn,text width=11cm] at (5,-.7) {外部钱包发券沿稳定授予身份与持久任务恢复；核销另有排他条件};
+
+\end{tikzpicture}

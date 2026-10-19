@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node[warn] (m1) at (0,1.4) {M1\\隔离侧旧主};
+\node[good] (r1) at (0,-1.7) {R1\\候选接替M1};
+\node[box] (m2) at (4.8,1.4) {M2\\有槽主节点};
+\node[box] (m3) at (9.6,1.4) {M3\\有槽主节点};
+\node[box] (r2) at (4.8,-1.7) {R2\\M2的数据副本};
+\node[box] (r3) at (9.6,-1.7) {R3\\M3的数据副本};
+\draw[ctl] (m1)--node[left,note]{断连} (r1);
+\draw[arr] (m2)--node[right,note]{异步数据复制} (r2);
+\draw[arr] (m3)--node[right,note]{异步数据复制} (r3);
+\draw[ctl] (m2.south west)--node[above,sloped,note]{选举授权} (r1.north east);
+\draw[ctl] (m3.north)--(9.6,3)--node[above,note]{选举授权} (-2.2,3)|-(r1.west);
+\node[note,text width=12.5cm] at (4.8,-3.6)
+  {R1满足候选条件并取得有槽主节点多数后接替。\\授权使配置推进，R1的数据来自自己已接收的M1复制历史。};
+\end{tikzpicture}

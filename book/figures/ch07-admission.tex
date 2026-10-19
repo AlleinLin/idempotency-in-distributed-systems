@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+\node[box,text width=5.4cm] (lookup) at (3.6,5.7)
+  {认证、语法与会话准入保护\\按完整 S 读取};
+\node[good,text width=5.1cm] (old) at (0,3.3)
+  {已有 P/C\\按保存版本比较原输入\\同参恢复，异参冲突};
+\node[box,text width=5.1cm] (candidate) at (7.2,3.3)
+  {未命中：准备真实报价快照\\受约束插入候选 P\\RETURNING 决定实际归属};
+\node[box,text width=5.1cm] (zero) at (0,.8)
+  {插入零行\\下一条语句读取已提交 P/C\\暂不可读则回滚、原 S 恢复};
+\node[box,text width=5.1cm] (one) at (7.2,.8)
+  {插入一行\\首次业务校验、建立实际 C\\scope/key/输入/截止共同保存};
+\node[good,text width=5.1cm] (a) at (7.2,-2.4)
+  {全部写入成功，提交 A\\P/C 已持久，才取得发送依据};
+\node[warn,text width=5.1cm] (rollback) at (0,-2.4)
+  {整笔 A 回滚\\本次未受理，候选无发送资格};
+\draw[arr] (lookup)--node[note,left]{命中}(old);
+\draw[arr] (lookup)--node[note,right]{未命中}(candidate);
+\draw[arr] (candidate.south west)--node[note,above,sloped]{零行}(zero.north east);
+\draw[arr] (candidate)--node[note,right]{一行}(one);
+\draw[arr] (one)--(a);
+\draw[arr] (zero.north)--node[note,left]{可读}(old.south);
+\draw[arr,draw=Gold] (one.south)--(7.2,-.7)--(0,-.7)--(rollback.north);
+  \node[note,text width=4cm] at (3.6,-1.1)
+  {校验失败\\插 C 零行或异常};
+\end{tikzpicture}

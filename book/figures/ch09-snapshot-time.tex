@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=3.5cm] (r) at (0,3.5) {R 首次成功\\Q7，CNY 3000\\paper-001，数量 1};
+\node[good,text width=4cm] (snap) at (5,3.5) {EV1：版本 1＋原 payload\\P1/C1/O1/X1\\Q7，CNY 3000};
+\draw[arr] (r)--(snap);
+\node[box,text width=3.5cm] (now) at (0,.8) {数小时后当前报价\\改为 CNY 3500\\履约进度继续变化};
+\draw[arr] (r)--node[note,left]{时间推进}(now);
+\node[good,text width=4cm] (send) at (5,.8) {两次发布都读取 EV1\\都发送版本 1、3000 分\\下游据原成交处理};
+\draw[arr] (snap)--(send);
+\node[warn,text width=3.3cm] (bad) at (10,.8) {若拼接当前价格\\同一 EV1 变成 3500\\与已发副本矛盾};
+\draw[arr] (now.south)--++(0,-.7)-|(bad.south);
+\node[note,text width=3.4cm] at (10,3.5) {当前状态供新的查询使用\\原事件解释原成交};
+\end{tikzpicture}

@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm] (o) at (0,0) {归属代次\\对象：b1 的当前组\\G1/1 $\to$ G2/2\\业务组接收时核验};
+\node[box,text width=3.2cm] (w) at (4.8,0) {工作者代次／fence\\对象：本次执行资格\\旧17／新23\\相应资源原子核验};
+\node[good,text width=3.2cm] (s) at (9.6,0) {平台业务身份\\对象：原付款 C\\原 scope／pay-C\\平台绑定原输入与结果};
+\node[box,text width=11.4cm] at (4.8,-2.8) {同一 $S$ 的恢复保持原 C、平台范围与键\\搬迁更新归属资格，接管更新执行资格，各接收点按自己的对象检查};
+\draw[ctl] (o.south)--(0,-1.7)--(9.6,-1.7)--(s.south);
+\draw[ctl] (w.south)--(4.8,-1.7);
+\end{tikzpicture}

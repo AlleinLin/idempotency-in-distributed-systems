@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node[box,text width=3.3cm](plan) at (0,0){决定 d17 已保存\\纸书／Q7／3000分／原 S};
+\node[good,text width=3.3cm](auth) at (5,0){Alice 批准 d17\\账户／动作／金额／有效期};
+\node[good,text width=3.3cm](accept) at (10,0){权威受理原 S\\固定 $A_J$ 与 C/T};
+\draw[arr](plan)--(auth);\draw[arr](auth)--(accept);
+\node[warn,text width=3.3cm](unknown) at (10,-2.6){平台 X1 已提交\\图检查点尚未写回};
+\draw[arr](accept)--(unknown);
+\node[good,text width=3.3cm](recover) at (5,-2.6){工具重入查询原 S\\恢复 X1／O1 到图历史};
+\draw[arr](unknown)--(recover);
+\node[warn,text width=3.3cm](change) at (0,-2.6){模型提出 d18\\电子书／3500分};
+\draw[ctl](plan)--(change);
+\node[box,text width=6.6cm](new) at (2.5,-5){先查明原购买，再处理新业务意图\\保存新决定／身份／对应批准};
+\draw[arr](change)--(new);\draw[ctl](recover)--(new);
+\node[note,text width=12cm] at (5,-6.4){thread 与 tool\_call 关联图执行，S 与授权记录共同约束业务副作用。};
+\end{tikzpicture}

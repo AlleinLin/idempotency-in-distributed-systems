@@ -1,0 +1,23 @@
+name: Build book
+on:
+  push:
+    paths: ['book/**', '.github/workflows/book.yml']
+  pull_request:
+    paths: ['book/**', '.github/workflows/book.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XeLaTeX and Chinese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex texlive-lang-chinese texlive-latex-extra texlive-fonts-recommended fonts-texgyre
+      - run: bash book/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: idempotency-in-distributed-systems
+          path: book/build/main.pdf

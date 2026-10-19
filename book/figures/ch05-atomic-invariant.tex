@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[draw=Ink!50,dashed] (-2,-3.3) rectangle (9,1.25);
+\node[booknote] at (3.5,.95) {只观察已提交状态};
+\node[bookresult,text width=3.4cm] (a) at (0,-.5) {P1 成功完成记录\\声明 O1、D1\\金额 3000};
+\node[booknode,text width=3.8cm] (b) at (6,-.5) {对应订单、扣款与历史金额\\共同成立并关联同一 P1};
+\draw[bookarrow,<->] (a)--(b);
+\node[booknode,text width=8.5cm] at (3.5,-2.5) {P1 终态拒绝：保存原因与原输入；该购买没有订单和扣款};
+\end{tikzpicture}
+\caption{成功完成记录与其声明的业务事实双向对应；拒绝分支保留自身的完整结论。}
+\label{fig:ch05-atomic-invariant}
+\end{figure}

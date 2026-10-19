@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[box,text width=4.3cm] (a) at (0,3.6) {先提交数据库，再发通知};
+\node[box,text width=4.3cm] (b) at (6.5,3.6) {先发通知，再提交数据库};
+\node[good,text width=4.3cm] (a1) at (0,2) {R 已提交\\O1、原结果、T1.done};
+\node[warn,text width=4.3cm] (a2) at (0,.2) {进程退出，尚未发送\\代理无消息，内存待办消失};
+\node[good,text width=4.3cm] (b1) at (6.5,2) {代理已经受理\\消费者可能开始处理 O1};
+\node[warn,text width=4.3cm] (b2) at (6.5,.2) {R 约束失败后回滚\\数据库没有已提交 O1};
+\draw[arr] (a)--(a1);\draw[arr] (a1)--(a2);
+\draw[arr] (b)--(b1);\draw[arr] (b1)--(b2);
+\node[good,text width=10.8cm] (out) at (3.25,-1.8) {改进 R：O1、原结果、T1.done 与待发 EV1 共同提交\\代理稍后独立接收；发布器始终能从持久记录继续};
+\draw[arr] (a2.south)--++(0,-.5)-|(out.north);
+\draw[arr] (b2.south)--++(0,-.5)-|(out.north);
+
+\end{tikzpicture}

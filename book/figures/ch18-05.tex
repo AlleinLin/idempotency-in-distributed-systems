@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (b) at (0,0) {fork 时点\\P1＝版本1};
+\node[good] (p) at (4,1.3) {父进程继续写\\P1＝版本2\\新增 after-fork};
+\node[box] (c) at (4,-1.3) {子进程遍历旧页\\P1＝版本1\\无 after-fork};
+\node[good] (f) at (8,-1.3) {RDB\\fork 时点状态};
+\draw[arr] (b)--(p);\draw[arr] (b)--(c);\draw[arr] (c)--(f);
+\node[note,text width=10cm] at (4,-3) {初始共享页面。父进程修改时写时复制，子进程保留共同快照。};
+
+\end{tikzpicture}

@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[note] at (-.5,-.45) {事件顺序};
+\draw[arr] (0,0)--(12,0);
+\foreach \x/\t in {1/权威图像索引36,5/平台成功 $X_1$,9/平台账本导出}{
+ \draw[Blue] (\x,.15)--(\x,-.15);
+ \node[note,text width=3cm] at (\x,.65) {\t};}
+\node[box,text width=4cm] (a) at (2.2,-1.6)
+ {固定权威材料\\$C_1$ 的结果未知};
+\node[box,text width=4cm] (b) at (8.8,-1.6)
+ {固定平台材料\\原键已成功 $X_1$};
+\node[warn,text width=4cm] (gap) at (2.2,-3.6)
+ {差异：两份观察不齐\\保存各自截止位置};
+\node[good,text width=4cm] (now) at (8.8,-3.6)
+ {恢复时查询原键与当前权威\\核实后补回原 $C_1/T_1$};
+\draw[arr] (a)--(gap);
+\draw[arr] (b)--(gap);
+\draw[arr] (gap)--(now);
+\end{tikzpicture}

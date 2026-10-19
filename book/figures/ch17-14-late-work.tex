@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/旧入口与工作者,4.2/源 G1,8.4/目标 G2,12.6/支付平台}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.4)--(\x,-6.2);}
+\draw[arr] (0,-1)--node[above,note]{冻结前已发原 pay-C} (12.6,-1);
+\node[warn,text width=2.5cm] at (4.2,-2) {冻结／原图像};
+\draw[arr] (0,-3)--node[above,note]{迟到请求} (4.2,-3);
+\draw[arr] (4.2,-3.7)--node[above,note]{not\_active} (0,-3.7);
+\draw[arr] (0,-4.4)--node[above,note]{刷新路由后原 $S$／原输入} (8.4,-4.4);
+\draw[arr] (8.4,-5.1)--node[above,note]{原 scope／pay-C} (12.6,-5.1);
+\draw[arr] (12.6,-5.8)--node[above,note]{同一 X1 原证据} (8.4,-5.8);
+\end{tikzpicture}

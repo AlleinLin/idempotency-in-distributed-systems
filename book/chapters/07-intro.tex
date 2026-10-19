@@ -1,0 +1,24 @@
+\newcommand{\CSevenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Pale}{HTML}{F1F5F7}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=Pale,inner sep=7pt,text width=3.6cm,minimum height=1cm},
+    good/.style={box,fill=green!5!white,draw=green!35!black},
+    warn/.style={box,fill=orange!7,draw=Gold},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!35,densely dashed}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+Alice 确认购买一份 \code{paper-001}，报价 Q7 为 CNY 3000 分。购买服务已经保存 P1，也把支付请求发给平台。平台从 Alice 的付款账户扣去 3000 分，提交自己的账本。购买服务随后退出，来不及把这项成功写回本地。服务重新启动时，P1 仍在等待付款，Alice 的页面也只显示请求超时。
+
+第一部分里，订单、扣款与原结果属于同一笔数据库事务。进程在提交以前退出，整组修改撤销；提交以后退出，恢复者读回整组事实。现在，平台已经完成的扣款继续存在，本地事务却可以回滚。本地尚未确认付款和平台已经收到钱，是这次故障后同时存在的两项事实。
+
+本章把这一笔购买的付款路径改为外部支付。我们从稳定身份和已确认输入出发，先找出两个提交域之间缺失的关系，再讨论平台提供什么能力时可以继续发送原操作、什么证据足以确定支付结论，以及哪些历史要沿查询或对账继续核查。

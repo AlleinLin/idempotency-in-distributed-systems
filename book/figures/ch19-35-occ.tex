@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (read) at (0,1.1) {执行阶段读集\\报价Q7：v8\\库存A：v12\\库存B：v20};
+\node[box,text width=3.4cm] (write) at (4.8,1.1) {本地写集\\A：预期v12／新数量\\B：预期v20／新数量\\共享对象尚未改写};
+\node[good,text width=3.4cm] (validate) at (9.6,1.1) {提交阶段\\按预期版本锁A、B\\验证只读报价版本\\通过后进入复制提交};
+\draw[arr] (read)--node[above,note]{计算} (write);
+\draw[arr] (write)--(validate);
+\node[warn,text width=10.6cm] (conflict) at (4.8,-2) {报价已变v9，即使A、B锁定成功，也要放弃本次计算\\释放相应锁，重新读取；原S绑定与原输入沿业务规则保留};
+\draw[ctl] (validate.south)--(9.6,-.7)--(4.8,-.7)--(conflict.north);
+\end{tikzpicture}

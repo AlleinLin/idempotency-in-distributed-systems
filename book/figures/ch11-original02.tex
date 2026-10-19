@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box,text width=12.4cm] (r) at (5,4) {同一 R 事务：C1 原支付结果 + O1 + EV1 + P1.paid + T1 结束};
+\node[good,text width=5.2cm] (a) at (1.5,2) {同一读取状态\\固定 acceptance、当前 progress\\与 C1.payment\_result 相互对应};
+\node[warn,text width=5.2cm] (b) at (8.5,2) {分别路由再拼接\\新主 P1.paid + 落后备库 C1 空\\得到事务从未共同发布的组合};
+\draw[arr] (r.south)--++(0,-.35)-|(a.north);
+\draw[arr] (r.south)--++(0,-.35)-|(b.north);
+\node[note,text width=12.5cm] at (5,.15) {写入的共同边界还要由读取快照和副本路由保持；展示旧状态与决定新效果使用不同读取要求};
+
+\end{tikzpicture}

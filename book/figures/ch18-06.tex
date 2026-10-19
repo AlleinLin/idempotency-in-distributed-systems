@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (old) at (0,0) {旧完成文件\\dump.rdb};
+\node[box] (tmp) at (4,0) {新临时文件\\编码／校验信息};
+\node[good] (sync) at (8,0) {完整写出与同步\\关闭／重命名};
+\node[good] (new) at (8,-2.6) {新完成文件\\目录同步};
+\node[warn] (bad) at (4,-2.6) {写出失败／子退出\\旧完成文件保留};
+\draw[arr] (old)--(tmp);\draw[arr] (tmp)--(sync);\draw[arr] (sync)--(new);\draw[ctl] (tmp)--(bad);
+
+\end{tikzpicture}

@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+\node[note,anchor=east] at (0,3.8) {本地计时};
+\draw[arr] (.3,3.8)--(12,3.8);
+\draw[lane] (1,4.2)--(1,-1.1);
+\draw[lane] (3.5,4.2)--(3.5,-1.1);
+\draw[lane] (10.8,4.2)--(10.8,-1.1);
+\node[note,above] at (1,4.2) {$t_0$：开始申请};
+\node[note,above] at (3.5,4.2) {$t_1$：完成检查};
+\node[note,above] at (10.8,4.2) {保守结束};
+\node[note,anchor=east] at (.1,2.7) {键 A};
+\node[note,anchor=east] at (.1,1.7) {键 B};
+\node[note,anchor=east] at (.1,.7) {键 C};
+\draw[Blue,line width=6pt] (1,2.7)--(11.2,2.7);
+\draw[Blue,line width=6pt] (1.8,1.7)--(12,1.7);
+\draw[Blue,line width=6pt] (2.6,.7)--(12.8,.7);
+\draw[Gold,line width=2pt] (3.5,-.5)--node[note,below] {$V=\mathrm{TTL}-\Delta-\varepsilon=9.7$ 秒}(10.8,-.5);
+\draw[<->,Blue] (1,-1.4)--node[note,below] {$\Delta=0.2$ 秒}(3.5,-1.4);
+\node[note,text width=11cm] at (6,-2.5) {各键名义 TTL 为 10 秒，取误差余量 0.1 秒；图中长度为示意，判断还要求 $V>0$};
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\n/\t in {0/99/恢复基点,2.5/100/登记 E1,5/101/$A_J$,7.5/102/$R_J$,10/103/关闭 E1,12.5/104/冻结 g7}{
+  \node[cell,minimum width=1.9cm] (p\n) at (\x,1.3) {\n\\\t};
+}
+\draw[arr] (p99)--(p100);\draw[arr] (p100)--(p101);\draw[arr] (p101)--(p102);
+\draw[arr] (p102)--(p103);\draw[arr] (p103)--(p104);
+\node[warn,text width=5cm] at (2.5,-1.1) {物化中间：E1 active\\入口保持 recovering\\不能据中间状态提前准入};
+\node[good,text width=5cm] at (9.8,-1.1) {最终：E1 closed，原 C1 可恢复\\C1/X1/O1/EV1 与未决项均有责任\\连续覆盖到 104 后检查开放};
+
+\end{tikzpicture}

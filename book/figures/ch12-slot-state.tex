@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[box,text width=2.2cm] (empty) at (0,2) {未绑定\\次数 0};
+\node[good,text width=3.1cm] (skip) at (4.5,3.5) {skipped\\保留 V/X/U，P 为空\\次数 0};
+\node[warn,text width=3.1cm] (pending) at (4.5,.5) {accepted\\原 P/C/T 继续恢复\\次数 1};
+\node[good,text width=3cm] (done) at (9,.5) {已终结\\保存原结果\\次数 1};
+\node[box,text width=3cm] (retired) at (9,3.5) {已确认并退休\\保留 $M_{\min}$/U\\次数保持};
+\draw[arr] (empty)--node[note,above,sloped]{SKIP}(skip);
+\draw[arr] (empty)--node[note,below,sloped]{ACCEPT}(pending);
+\draw[arr] (pending)--node[note,below]{终态证据}(done);
+\draw[arr] (skip.north)--(4.5,4.8)--(9,4.8)--(retired.north);
+\node[note,above] at (6.75,4.8) {持久取得后 ACK};
+\draw[arr] (done)--node[note,right]{持久取得后 ACK}(retired);
+\node[note,text width=13cm] at (4.8,-1) {同 S 的后续请求读取已有状态；E1 关闭后先拒绝旧入口，未决 accepted 保留到终结};
+\end{tikzpicture}

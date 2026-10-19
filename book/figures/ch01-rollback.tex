@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (5.8,.65) {同一笔事务提交之前};
+\node[booknode,text width=5cm] (s1) at (2.6,-.3) {插入购买后\\余额 10000，购买 pending};
+\node[booknode,text width=5cm] (s2) at (2.6,-1.9) {条件扣款后\\余额 7000，购买 pending};
+\node[booknode,text width=5cm] (s3) at (2.6,-3.5) {插入订单后\\余额 7000，购买与订单已写入};
+\node[booknode,text width=5cm] (s4) at (2.6,-5.1) {插入流水后\\尚待更新购买结果并提交};
+\node[bookresult,text width=4.3cm,minimum height=3cm] (r) at (10,-2.7)
+  {任何一处中止并回滚\\[7pt]余额恢复为 10000\\本次购买、订单、流水\\全部撤回};
+\draw[bookarrow] (s1)--(s2);
+\draw[bookarrow] (s2)--(s3);
+\draw[bookarrow] (s3)--(s4);
+\foreach \s in {s1,s2,s3,s4}
+  \draw[bookalert] (\s.east)--(r.west);
+\end{tikzpicture}
+\caption{未提交的中间状态可以各不相同，回滚会撤销本次事务已经执行的整组写入。}
+\label{fig:ch01-rollback}
+\end{figure}

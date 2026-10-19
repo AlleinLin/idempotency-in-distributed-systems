@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {阶段 A\\原预留身份\\结果已保存};
+\node[warn] (b) at (4,0) {阶段 B 失败\\记录业务状态\\确定补偿责任};
+\node[good] (release) at (8,0) {释放操作 L1\\关联原预留\\原 L1 查询／重试};
+\node[box,text width=4cm] (paid) at (1,-2.8) {若原付款 C1 已成功 X1\\这份收款事实保留};
+\node[good,text width=4cm] (refund) at (7,-2.8) {新退款 RF1 关联 C1／X1\\未知退款计入占额\\按原 RF1 恢复};
+\draw[arr] (a)--(b);\draw[arr] (b)--(release);
+\draw[arr] (paid)--(refund);
+
+\end{tikzpicture}

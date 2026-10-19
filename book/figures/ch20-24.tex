@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+\node[box,text width=3cm] (a) at (0,1.2)
+ {split A：权威记录\\$C_1$／3000分／原输入};
+\node[box,text width=3cm] (b) at (0,-1.2)
+ {split B：平台记录\\$X_1$／3000分／原结果};
+\node[box,text width=3cm] (ma) at (4,1.2)
+ {map A\\键 $k=$ scope／pay-C1\\值：权威来源＋内容};
+\node[box,text width=3cm] (mb) at (4,-1.2)
+ {map B\\同一键 $k$\\值：平台来源＋内容};
+\node[good,text width=3.2cm] (r) at (8.4,0)
+ {分区后按键归并\\$k\mapsto$ 两份来源\\核对输入、金额和原结果};
+\node[good,text width=7.2cm] (o) at (4.2,-3.4)
+ {reduce 输出：匹配／待查询／冲突\\保留原 $S/C/T$ 与来源版本};
+\draw[arr] (a)--(ma);\draw[arr] (b)--(mb);
+\draw[arr] (ma)--(r);\draw[arr] (mb)--(r);
+\draw[arr] (r.south)|-(o.east);
+\end{tikzpicture}

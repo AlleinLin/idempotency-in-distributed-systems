@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote,text width=3.2cm] at (1.8,.7) {调用方发生的动作};
+\node[booknote,text width=4cm] at (6.2,.7) {服务收到的输入};
+\node[booknote,text width=3.2cm] at (11.1,.7) {期望的业务结果};
+\node[booknode,text width=3cm] (a) at (1.8,-.4) {A：确认一次\\响应丢失后重发};
+\node[booknode,text width=4cm] (ar) at (6.2,-.4) {账户 1、paper-001、1\\账户 1、paper-001、1};
+\node[booknode,text width=3cm] (ae) at (11.1,-.4) {保留一笔购买\\余额 7000};
+\node[booknode,text width=3cm] (b) at (1.8,-2) {B：明确确认两次\\两次各发一份请求};
+\node[booknode,text width=4cm] (br) at (6.2,-2) {账户 1、paper-001、1\\账户 1、paper-001、1};
+\node[bookresult,text width=3cm] (be) at (11.1,-2) {形成两笔购买\\余额 4000};
+\draw[bookarrow] (a)--(ar);
+\draw[bookarrow] (ar)--(ae);
+\draw[bookarrow] (b)--(br);
+\draw[bookalert] (br)--(be);
+\draw[draw=Accent,dashed] (4,-3.05) rectangle (8.4,.2);
+\node[booknote,text width=11.5cm] at (6.2,-3.5)
+ {第二次到达前，服务两边都已保存 P1，余额均为 7000；相同输入需要不同处理};
+\end{tikzpicture}
+\caption{缺少操作关系时，两条需要不同结果的历史可以给服务相同的观察。}
+\label{fig:ch03-indistinguishable}
+\end{figure}

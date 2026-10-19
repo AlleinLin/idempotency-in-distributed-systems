@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[warn] (a) at (0,3) {序号 1 结果未确定\\f=1，$h_{\rm ack}$=0\\后继不能连续确认};
+\node[box] (b) at (5.5,3) {序号 2 至 B 已取得结果\\完整响应暂时保留\\超过 $h_{\rm ack}$+B 暂停新序号};
+\node[good] (c) at (11,3) {1 补齐；或尚未受理时\\由同域 SKIP 终结\\持久取得终态后再确认};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[note,text width=14cm] at (5.5,.8) {未确认窗口控制响应；单会话键数配额与期限控制 $M_{\min}$/U；未完成 C/T 独立安排核查};
+\end{tikzpicture}

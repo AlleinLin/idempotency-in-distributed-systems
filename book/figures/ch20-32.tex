@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[good,text width=11.3cm] (cfg) at (5.5,2.1)
+ {部署配置：函数版本／代码与依赖／执行角色／内存、时限和并发};
+\node[box,text width=3cm] (src) at (0,0) {事件接入\\调用方／服务队列\\事件源 poller};
+\node[box,text width=3cm] (plat) at (4.3,0) {平台执行管理\\选择可用环境\\或建立新环境};
+\node[good,text width=3.2cm] (env) at (8.8,0)
+ {执行环境\\运行时＋handler\\局部内存与临时文件};
+\node[good,text width=4.2cm] (a) at (2.5,-2.6)
+ {业务权威\\原 $S/C/T$、资格、原结果};
+\node[box,text width=4.2cm] (p) at (8.6,-2.6)
+ {独立平台／履约域\\原键与已发生效果};
+\draw[ctl] (cfg)--(plat);\draw[ctl] (cfg)--(env);
+\draw[arr] (src)--(plat);\draw[arr] (plat)--(env);
+\draw[arr] (env.south)--(8.8,-1.4)--(a.north);
+\draw[arr] (env)--(p);
+\end{tikzpicture}

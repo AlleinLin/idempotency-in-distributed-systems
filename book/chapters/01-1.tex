@@ -1,0 +1,147 @@
+% 第一章第一节：以购买前后的数据变化引出四类记录。
+Alice 的账户里有 100.00 元。她选中一包价格为 30.00 元的相纸，点击购买。页面显示付款成功，她打开购买详情，看到商品、成交金额和订单号。账户里还剩 70.00 元。
+
+本章先做出这样一个服务：接收购买请求，检查余额，建立已付款订单，记下扣款流水，再提供购买详情查询。这些记录要能说明 30.00 元为了哪张订单被扣除，也要能说明余额不足的购买为何结束。
+
+\textbf{先只处理一件商品、数量为一的购买}，付款方式采用站内余额。商品可以重复购买。我们先讨论购买、订单和账户之间的数据关系，库存、优惠券与发货留待相应业务流程中处理。
+
+\subsection*{先看购买完成后应当有什么}
+
+在写表结构之前，先对 Alice 这次购买做一次书面整理。所有金额都换算成分：100.00 元写作 10000，30.00 元写作 3000。后面的字段名使用 \code{minor} 表示最小货币单位，本章的最小单位就是分。
+
+购买前，账户 1 的数据很简单：
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering\small\captionsetup{hypcap=false}
+\captionof{table}{购买前的记录}
+\begin{tabularx}{\linewidth}{p{.26\linewidth}X}
+\toprule
+\textbf{数据} & \textbf{购买前} \\
+\midrule
+账户 1 & 可用余额 10000 \\
+账户 1 的购买记录 & 空 \\
+账户 1 的订单 & 空 \\
+账户 1 的扣款流水 & 空 \\
+\bottomrule
+\end{tabularx}
+\end{minipage}
+\end{center}
+
+这次购买成功后，按这组输入演算，应当得到下面的记录。P1、O1、D1 是便于阅读的简称，实际程序会生成 UUID（Universally Unique Identifier，通用唯一标识符）。UUID 是一种 128 位编号格式，用来标记各自独立的记录；本章中的三个字母简称不直接作为数据库的 UUID 值。
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering\small\captionsetup{hypcap=false}
+\captionof{table}{购买成功后的记录}
+\begin{tabularx}{\linewidth}{p{.26\linewidth}X}
+\toprule
+\textbf{数据} & \textbf{购买后} \\
+\midrule
+账户 1 & 可用余额 7000 \\
+购买 P1 & 购买 paper-001，金额 3000，结果成功 \\
+订单 O1 & 属于 P1，商品 paper-001，金额 3000，已付款 \\
+扣款 D1 & 为 O1 从账户 1 扣除 3000，扣后余额 7000 \\
+\bottomrule
+\end{tabularx}
+\end{minipage}
+\end{center}
+
+假设数据库里只留下余额从 10000 变为 7000 这一项变化，Alice 就查不到对应的商品和订单，维护服务的人也难以判断这 3000 分用于购买还是人工调账。订单记录商品与成交金额，扣款流水记录扣款账户、扣款额及其对应的订单。把这些记录关联起来，才能查明这次余额变化的原因。
+
+购买记录还有另一个用途。假设 Alice 接着想买一包 80.00 元的另一款相纸，此时余额只有 70.00 元。服务受理这次购买后，会得到余额不足的结果，账户保持原值，订单和扣款流水也保持原样。将购买的受理结果单独保存，详情接口就能查询到这次失败的购买，并说明它为何结束。
+
+账户保存当前可用余额，购买记录保存当次受理的输入和结果，订单保存已经成交的商品与金额，流水保存每次扣款及其对应的订单。下面依次建立这四类记录，再沿着 Alice 的购买检查它们怎样配合。
+
+\subsection*{账户先保存余额}
+
+账户表从两个字段开始。下面用 SQL 描述关系数据库中的记录与操作；CREATE TABLE 建立表，括号中依次给出字段及其约束：
+
+\begin{BookCode}
+CREATE TABLE accounts (
+    account_id    bigint PRIMARY KEY,
+    balance_minor bigint NOT NULL
+        CHECK (balance_minor >= 0)
+);
+\end{BookCode}
+
+\code{account\_id} 是账户编号，示例中的 Alice 使用账户 1。\code{balance\_minor} 是当前可用余额，\code{NOT NULL} 要求每个账户都有明确数值，\code{CHECK} 拒绝负余额。数据库因此不会接受把账户余额直接更新成 \ensuremath{-}100 的语句。
+
+这个约束只检查要写入的数值。它没有解释应该扣哪笔钱，也不能代替购买事务。一次错误更新把 10000 改成 9000，仍然满足非负约束，所以还要把每次扣款和业务记录一起处理。
+
+下面的演算使用三个独立账户，每个账户的初始余额都是 10000 分，购买、订单与扣款流水均为空。账户 1 用于 Alice 的购买，账户 2 和账户 3 用于最后的推演练习。各账户的余额和交易记录独立计算。
+
+\subsection*{购买记录保留当次采用的输入}
+
+购买请求至少要说明买哪件商品，服务再确定使用哪个账户和什么价格。把这些信息与结果放在一起：
+
+\begin{BookCode}
+CREATE TABLE purchases (
+    purchase_id   uuid PRIMARY KEY,
+    account_id    bigint NOT NULL REFERENCES accounts,
+    product_id    text NOT NULL,
+    amount_minor  bigint NOT NULL CHECK (amount_minor > 0),
+    currency      text NOT NULL CHECK (currency = 'CNY'),
+    status        text NOT NULL CHECK (
+        status IN ('pending', 'succeeded', 'insufficient_funds')
+    ),
+    created_at    timestamptz NOT NULL DEFAULT now()
+);
+\end{BookCode}
+
+\code{purchase\_id} 标识服务受理的这笔购买，可以使用 UUID 作为编号。同一笔购买的各项记录通过这个编号关联。\code{account\_id} 指向付款账户，外键要求这个账户已经存在。\code{product\_id} 保存购买对象，本章用 \code{paper-001} 表示 30.00 元的相纸，用 \code{paper-002} 表示 80.00 元的另一款相纸。
+
+\code{amount\_minor} 和 \code{currency} 保存这次受理采用的金额与币种。即使以后商品涨价，P1 仍然是一笔 3000 分、人民币计价的购买。查询历史购买时读取这里的金额，就不会把今天的目录价格误当作昨天的成交价。
+
+状态有三个值。\code{pending} 表示当前事务正在组织购买；\code{succeeded} 表示订单和扣款已经成功；\code{insufficient\_funds} 表示当时余额不足。后两种状态会随事务提交保存下来。本章的程序不会把 \code{pending} 单独提交，再等待另一个进程继续处理。这个中间值只在同一笔事务内部使用。
+
+\code{created\_at} 的默认值 \code{now()} 取创建这条记录的事务开始时间，便于查看购买列表；同一事务晚些时候插入的记录仍取得这个时间。记录之间的关联则通过购买编号、订单编号等字段明确保存。同一时刻可能有多个用户购买，同一用户也可能连续购买两次；仅凭时间接近，容易把属于不同购买的记录配到一起。
+
+\subsection*{订单保留成交内容}
+
+成功购买需要一张已付款订单。本章采用付款成功后才建立订单的规则，因此订单表只允许 \code{paid} 状态：
+
+\begin{BookCode}
+CREATE TABLE orders (
+    order_id      uuid PRIMARY KEY,
+    purchase_id   uuid NOT NULL UNIQUE REFERENCES purchases,
+    product_id    text NOT NULL,
+    amount_minor  bigint NOT NULL CHECK (amount_minor > 0),
+    currency      text NOT NULL CHECK (currency = 'CNY'),
+    status        text NOT NULL CHECK (status = 'paid')
+);
+\end{BookCode}
+
+每张订单用 \code{order\_id} 标识，并通过 \code{purchase\_id} 引用所属购买。对于 P1，订单 O1 保存的购买编号就是 P1。购买编号上的 \code{UNIQUE} 约束要求同一笔购买最多对应一张订单。余额不足的购买则保留受理结果，订单为空。
+
+商品、金额和币种在订单中也各保存一份。购买记录需要描述受理输入，订单需要保留成交内容。程序创建 O1 时，从本次购买已经采用的数据复制这些值。这里先接受这点数据重复，换来每张订单都能直接读出成交内容。
+
+需要分清约束各自检查了什么。外键检查 P1 存在，唯一约束检查不会再为 P1 建第二张订单，正数约束检查订单金额大于零。它们没有逐字段比较订单和购买的商品、金额是否一致。这个版本由同一段事务代码保证两边使用同一份输入。
+
+如果业务允许先建立未付款订单，再让用户选择时间付款，订单还需要更多状态和后续入口。本章选用的规则比较短：余额付款成功时才创建订单。这样读到一张 \code{paid} 订单，就应当能找到它对应的扣款记录，不必同时追踪一个待付款流程。
+
+\subsection*{流水记录一次实际扣款}
+
+订单已经说明买了什么，还需要把账户减少和订单连起来：
+
+\begin{BookCode}
+CREATE TABLE debits (
+    debit_id      uuid PRIMARY KEY,
+    order_id      uuid NOT NULL UNIQUE REFERENCES orders,
+    account_id    bigint NOT NULL REFERENCES accounts,
+    amount_minor  bigint NOT NULL CHECK (amount_minor > 0),
+    balance_after_minor bigint NOT NULL
+        CHECK (balance_after_minor >= 0),
+    created_at    timestamptz NOT NULL DEFAULT now()
+);
+\end{BookCode}
+
+这条记录中的 \code{amount\_minor} 使用正数表示扣除额。例如 D1 写 3000，含义是扣除 3000 分。余额更新统一执行当前余额减去扣除额，流水则保存这个正的扣除额，两处对金额方向采用同一约定。
+
+\code{order\_id} 把 D1 连到 O1，\code{account\_id} 说明从哪个账户扣款。\code{balance\_after\_minor} 保存扣款完成时的余额。Alice 再买一包相纸后，账户当前余额还会变化，D1 中的 7000 保持原样。它描述这条流水对应的扣后时刻。
+
+从 D1 沿 \code{order\_id} 找到 O1，再沿 \code{purchase\_id} 找到 P1，就能查清这笔钱对应的购买。也可以从 P1 出发，依次查询订单与扣款。本章采用一笔成功购买、一张订单、一条扣款流水的对应关系，图~\ref{fig:ch01-records} 中的箭头标出了保存这些关系的编号。
+
+\input{figures/ch01-records.tex}
+
+这里的流水用于核对账户余额与购买扣款。本章账户中的资金变化只有初始余额和购买扣款，因此余额减少的金额应当与已提交的扣款流水合计相同。完整财务会计系统还涉及收入账户、手续费和会计分录，核对规则也会相应增加。

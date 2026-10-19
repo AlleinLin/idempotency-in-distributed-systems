@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[good] (x) at (0,0) {原成功收款\\C1／X1\\CNY 3000};
+\node[box] (a) at (5,1.5) {$S_{\rm RF1}$：ER1／RK1\\原输入 1000\\RF1／refund-RF1};
+\node[box] (b) at (5,-1.5) {$S_{\rm RF2}$：ER1／RK2\\另一合法退款 1000\\RF2／refund-RF2};
+\node[good] (p1) at (10,1.5) {原平台退款\\PX-RF1\\重试恢复同一结果};
+\node[good] (p2) at (10,-1.5) {另一平台退款\\PX-RF2\\两笔各退 1000};
+\draw[arr] (x)--(a);\draw[arr] (x)--(b);\draw[arr] (a)--(p1);\draw[arr] (b)--(p2);
+\node[note,text width=13cm] at (5,-3.1) {每项 $S_{\rm RF}$ 都包含账户 1、refund.create.v1、会话与键；X1 相同只说明共同来源。};
+\end{tikzpicture}

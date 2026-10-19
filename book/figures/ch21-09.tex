@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (s) at (0,0) {完整 S\\$A_J$／原输入};
+\node[box] (c) at (4,0) {P／C／T\\原 scope／pay-C};
+\node[good] (x) at (8,0) {平台 X／$R_J$\\O／EV};
+\node[good] (i) at (8,-2.5) {消费者 I／B／F};
+\node[box] (d) at (4,-2.5) {dispatch身份\\外部履约结果};
+\node[box] (tx) at (0,-2.5) {TX／参与者\\RF／原收款关联};
+\draw[arr] (s)--(c);\draw[arr] (c)--(x);\draw[arr] (x)--(i);\draw[arr] (i)--(d);\draw[ctl] (c)--(tx);
+\node[note,text width=11cm] at (4,-4.5) {持久身份跨越尝试；trace／request ID／attempt 定位某次局部执行。};
+
+\end{tikzpicture}

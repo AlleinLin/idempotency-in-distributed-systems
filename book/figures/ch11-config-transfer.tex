@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[note,anchor=east] at (-1.7,3.6) {Vertical Paxos I};
+\node[box,text width=3cm] (i1) at (0,2.5) {选定新配置\\先激活};
+\node[box,text width=3cm] (i2) at (4.7,2.5) {转移旧状态\\期间继续访问旧配置};
+\node[good,text width=3cm] (i3) at (9.4,2.5) {转移完成\\解除旧配置依赖};
+\draw[arr] (i1)--(i2);\draw[arr] (i2)--(i3);
+\node[note,anchor=east] at (-1.7,.3) {Vertical Paxos II};
+\node[box,text width=3cm] (ii1) at (0,-.8) {选定新配置\\等待状态转移};
+\node[box,text width=3cm] (ii2) at (4.7,-.8) {先完成旧状态转移\\形成可继续的依据};
+\node[good,text width=3cm] (ii3) at (9.4,-.8) {再激活新配置\\由新配置提供服务};
+\draw[arr] (ii1)--(ii2);\draw[arr] (ii2)--(ii3);
+\node[note,text width=14cm] at (4.7,-2.6) {辅助配置主控安排配置；旧事实从读仲裁集合取得，新值由写仲裁集合接受\\单个旧接受者作为读集合时，写集合覆盖全部接受者以保持交集};
+\end{tikzpicture}

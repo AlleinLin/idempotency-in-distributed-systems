@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=4.9cm] (rule) at (4.2,4) {比较候选者与投票者的末项\\先比较 term，再比较 index};
+\node[good,text width=5.3cm] (a) at (0,1.9) {候选者 (8,42)\\投票者 (7,100)\\末项任期 8 更高，可通过日志检查};
+\node[warn,text width=5.3cm] (b) at (8.4,1.9) {候选者 (7,40)\\投票者 (7,41)\\同任期且位置更短，拒绝};
+\draw[arr] (rule.south)--++(0,-.35)-|(a.north);
+\draw[arr] (rule.south)--++(0,-.35)-|(b.north);
+\node[note,text width=13cm] at (4.2,-.1) {单元为 (末项任期,末项位置)；通过日志检查后，还要满足本任期投票资格\\任期与投票决定先持久保存，再答复候选者};
+\end{tikzpicture}

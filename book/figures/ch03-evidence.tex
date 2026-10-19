@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=5.3cm] (s) at (2.8,0) {身份与输入证据\\账户、动作、E1、K1\\规范化版本、输入、恢复期限};
+\node[booknode,text width=5.3cm] (p) at (10,0) {购买记录 P1\\状态、首次受理时间\\稳定原结果与成交快照};
+\draw[bookarrow] (s)--node[above,font=\footnotesize]{定位}(p);
+\node[booknode,text width=3.6cm] (o) at (7.4,-1.8) {成功订单 O1\\引用 P1};
+\node[booknode,text width=3.6cm] (d) at (12.1,-1.8) {扣款流水 D1\\金额、当次扣后余额};
+\draw[bookarrow] (p)--(o);
+\draw[bookarrow] (p)--(d);
+\begin{scope}[on background layer]
+\node[draw=Accent!65,dashed,rounded corners=4pt,fit=(s)(p)(o)(d),inner sep=10pt] {};
+\end{scope}
+\node[booknote,text width=12cm] at (7,-3.25)
+ {共同提交范围：身份绑定、业务变化、终态与原结果\\拒绝终态也保留身份、输入及拒绝原因};
+\end{tikzpicture}
+\caption{身份事实需要与原购买的记录关系一起保留，恢复才能返回正确的业务结果。}
+\label{fig:ch03-evidence}
+\end{figure}

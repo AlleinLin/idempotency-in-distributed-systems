@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=12.5cm] at (4,4.5) {共同历史：10000 $\xrightarrow{S1:-3000}$ 7000 $\xrightarrow{S2:-3000}$ 4000};
+\node[good,text width=5.3cm] (a) at (0,2.3) {M(S1) 或完整成交证据\\P1 / O1 / D1\\原 balance\_after\_minor=7000};
+\node[good,text width=5.3cm] (b) at (8,2.3) {M(S2) 或完整成交证据\\P2 / O2 / D2\\原 balance\_after\_minor=4000};
+\node[box,text width=5.3cm] (c) at (0,0) {S1 同参重试\\返回 O1 与原 7000\\当前余额保持 4000};
+\node[box,text width=5.3cm] (d) at (8,0) {S2 同参重试\\返回 O2 与原 4000\\当前余额保持 4000};
+\draw[arr] (a)--(c);\draw[arr] (b)--(d);
+\node[note,text width=13cm] at (4,-1.7) {只记 seen\_keys 与当前余额，可以避免再次扣款，却会把 S1 原结果改成 4000\\重建方案先验证完整原输入、结果及身份关系，再开放重试入口};
+\end{tikzpicture}

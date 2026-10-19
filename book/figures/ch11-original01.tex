@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[note,text width=13.5cm] at (4.7,5.2) {共同初态：平台余额 10000，购买库空；S1 为外部购买，金额 3000};
+\node[box] (a) at (0,3.5) {DB-A 已保存 A 与 R\\P1/C1，O1/EV1\\平台已有 X1，余额 7000};
+\node[warn] (b) at (4.7,3.5) {DB-B 已保存原 R 日志\\已经持久，尚未应用\\查询只看到 A};
+\node[warn] (c) at (9.4,3.5) {另一历史：原 R 日志丢失\\DB-B 仅有 A\\平台继续保存 X1};
+\draw[arr] (a)--node[above,note,font=\scriptsize]{落后}(b);
+\node[good] (d) at (4.7,.8) {先重放已保存的原 R\\原 O1/EV1 与结果可见\\沿原 C1 核对 X1};
+\node[warn] (e) at (9.4,.8) {暂停分配新 O/EV\\先取独立原结果证据\\按原 O1/EV1 重建};
+\draw[arr] (b)--(d);\draw[arr] (c)--(e);
+\node[note,text width=13cm] at (4.7,-1) {原 EV1 若已形成 F501，另分 O2/EV2 会使 initial:O2 再形成 F502；X1 只证明原付款};
+
+\end{tikzpicture}

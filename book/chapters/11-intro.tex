@@ -1,0 +1,24 @@
+\newcommand{\CElevenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=3.5cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=Gold,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!30,densely dashed},
+    cell/.style={draw=Blue,minimum width=2.1cm,minimum height=.65cm,
+      fill=blue!3,inner sep=3pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+第十章结束时，一次购买已经有了完整的恢复关系。购买请求按 S 找到 P1/C1，支付调用沿原平台范围和 \code{pay-C1} 找到 X1，成功 R 保存 O1、原支付结果与 EV1，履约消费者再按 I/B 恢复真实编号为 501 的 F1。这些关系都要经过一次故障后的读取。假如读取者换到另一台机器，原来共同提交的事实是否已经到达那里，就会影响每一次恢复判断。
+
+本章从这个变化进入。先保留现有数据库事务，检查数据库切换所提供的历史，再建立一个独立的复制状态机简化模型，逐步说明日志怎样形成共同前缀，以及完整操作身份和结果怎样进入这个前缀。最后把业务状态与操作证据一起装入快照，观察日志删除以后，同一重试怎样继续找到原结果。

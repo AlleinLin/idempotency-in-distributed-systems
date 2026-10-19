@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box] (m) at (0,0) {原消息／原位置};
+\node[box] (t) at (4.2,1.4) {暂时失败\\退避后回原位置};
+\node[warn] (c) at (4.2,-1.3) {同 EV 异载荷\\保存阻断与原字节};
+\node[box] (dlx) at (8.4,-1.3) {死信交换机\\按绑定转交目标队列};
+\node[good] (dlq) at (12.6,-1.3) {死信队列\\持久隔离副本／来源};
+\node[good,text width=6cm] (op) at (10.5,-3.9) {核查原 I/B/F 与业务输入\\保存隔离／拒绝／修复证据\\原前缀经明确处置后推进};
+\draw[arr] (m)--(t);\draw[arr] (t) to[bend right=25] (m);
+\draw[arr] (m)--(c);\draw[arr] (c)--(dlx);\draw[arr] (dlx)--(dlq);
+\draw[arr] (dlq)--(op);
+\node[note,text width=7cm] at (2.5,-3.9) {转交的确认与保留政策需显式配置。\\默认死信转移存在丢失窗口。\\转交成功和业务完成分别记录。};
+\end{tikzpicture}

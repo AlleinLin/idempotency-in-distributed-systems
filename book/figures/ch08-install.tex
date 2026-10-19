@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[note,anchor=east] at (-.2,3.2) {时序};
+\draw[arr] (0,3.2)--(11.5,3.2);
+\node[box,text width=3cm] (a) at (1,1.7) {数据库授予候选 8\\资源当前水位 7};
+\node[good,text width=3cm] (b) at (5.4,1.7) {资源原子安装 8\\后续 7 被拒绝};
+\node[good,text width=3cm] (c) at (10,1.7) {安装确认到达\\报告 W2 可使用资源};
+\draw[arr] (a)--(b);
+\draw[arr] (b)--(c);
+\node[warn,text width=3cm] (d) at (1,-.5) {先于安装到达的旧 7\\按原水位可以通过};
+\node[box,text width=6.8cm] (e) at (7.6,-.5) {安装确认丢失：读取资源水位\\等于 8 恢复；小于 8 重试；大于 8 结束旧候选};
+\draw[arr] (a)--(d);
+\draw[arr] (b.south)--(e.north);
+\node[note,text width=11cm] at (5.5,-2) {每次业务写都带代次并原子核验；若要求从分配瞬间排旧，分配与准入要共享仲裁};
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.0cm] (entry) at (0,0) {授权来件\\完整 S／原输入};
+\node[good,text width=4cm] (old) at (5,1.8) {原受理恢复与查询\\S→P1/C1/T1\\原范围／pay-C1};
+\node[warn,text width=4cm] (new) at (5,-1.8) {新意图首次准入\\允许范围／完整历史\\会话资格／旧路径依据};
+\node[good,text width=3.6cm] (recover) at (10.5,1.8) {核对原结果\\或继续原持久任务\\已关闭会话用查询入口};
+\node[box,text width=3.6cm] (admit) at (10.5,-1.8) {权威序列核验通过\\登记新有效会话\\分配从未使用的新 C};
+\draw[arr] (entry)--(old);\draw[arr] (entry)--(new);
+\draw[arr] (old)--(recover);\draw[arr] (new)--(admit);
+\node[note,text width=13cm] at (5.3,-3.4) {纸面受限开放协议：目录在同一序列核验子集与依据；其余新意图等待恢复。};
+\end{tikzpicture}

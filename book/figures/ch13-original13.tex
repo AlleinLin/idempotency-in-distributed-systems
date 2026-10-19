@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5,4.3) {共同初始权利：A=2000，B=1000；总额度 3000};
+\node[box] (a) at (0,2.7) {B 消费 1000\\A=2000，B=0\\累计支出 1000};
+\node[box] (b) at (5,2.7) {A 持久转出 1000\\A=1000\\B 尚未取得时暂不可用};
+\node[good] (c) at (10,2.7) {B 取得转移依据\\A=1000，B=1000\\重复累计转移保持};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=12cm] at (5,.3) {B 再消费 1000，A 消费 1000：最终权利均为 0，累计支出 3000\\只写自己的消耗与转出；同步保存转入因果依据};
+
+\end{tikzpicture}

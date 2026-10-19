@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[box] (a) at (0,0) {部署兼容读取能力\\新旧格式都能读\\继续写旧格式};
+\node[box] (b) at (4.5,0) {全部可接流读取者兼容或隔离\\回退版本已验证能读新格式\\两项通过后启用新写入};
+\node[good] (c) at (9,0) {迁移与回放校验完成\\原结果逐字段一致\\退出旧格式读取分支};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[warn,text width=13cm] at (4.5,-2.4) {旧 C1 未知 → 读取原 provider\_scope／pay-C1／原输入\\用原适配器查询或安全重发 → 保存原证据};
+\end{tikzpicture}

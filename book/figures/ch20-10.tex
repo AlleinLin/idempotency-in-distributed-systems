@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (l) at (0,0) {对象值丢失};
+\node[box] (c) at (4,0) {寻找其他副本\\无副本则检查 lineage};
+\node[good] (r) at (8,0) {重执行原任务\\递归恢复依赖};
+\node[warn] (o) at (0,-2.8) {owner 已退出};
+\node[warn,text width=6.9cm] (e) at (6,-2.8) {OwnerDiedError 路径\\值副本不能自动补回 owner 元数据};
+\draw[arr] (l)--(c);\draw[arr] (c)--(r);\draw[arr] (o)--(e);
+\node[note,text width=11cm] at (4,-4.6) {重建还受任务来源、确定性／副作用条件与重试预算约束；ray.put 无同样的任务来源。};
+
+\end{tikzpicture}

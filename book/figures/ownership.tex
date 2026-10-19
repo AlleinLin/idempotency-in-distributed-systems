@@ -1,0 +1,13 @@
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[align=center] (old) at (0,1) {甲地旧快照\\装备归 Bob};
+\node[align=center] (new) at (5,1) {乙地迁移后\\Bob 持有装备};
+\node[align=center] (other) at (10,1) {后续交易\\Alice 持有装备};
+\draw[flow] (old)--node[above]{迁移}(new);\draw[flow] (new)--node[above]{转交}(other);
+\draw[Accent,dashed,line width=.8pt] (-1.5,0)--(1.5,0);
+\node[align=center,Accent] at (0,-.7) {恢复重新带回\\旧归属声明};
+\draw[flow,draw=Accent,dashed] (1.5,-.6)--(9,-.6)--(9,.25);
+\node[fill=white,align=center] at (5.4,-.6) {若重新授权，将影响已完成的交易};
+\end{tikzpicture}
+\caption{同一件装备的归属延伸到了第三方，旧声明不能只在甲地内部解释。}\label{fig:ownership}
+\end{figure}

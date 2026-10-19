@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=12cm] (s) at (5,5) {SealPayment(pay-C1)：与支付同域仲裁，封闭未来首次受理};
+\node[good] (a) at (0,2.7) {已有成功 X1\\返回原成功证据\\本地保存 R};
+\node[warn,text width=3.8cm] (b) at (5,2.7) {已受理未完成\\{\scriptsize\mbox{\texttt{accepted\_pending}}}\\查询编号 H1\\沿 H1 持久查询};
+\node[good] (c) at (10,2.7) {{\scriptsize\mbox{\texttt{closed\_without\_success}}}\\过去无成功且在途已终结\\未来也无法再成功};
+\draw[arr] (s.south)--++(0,-.4)-|(a.north);
+\draw[arr] (s)--(b);
+\draw[arr] (s.south)--++(0,-.4)-|(c.north);
+\node[warn,text width=12cm] at (5,.1) {关闭请求超时或普通查询为空：继续未决；查询空结果本身没有覆盖过去、在途与未来};
+\end{tikzpicture}

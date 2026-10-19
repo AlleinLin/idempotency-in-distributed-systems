@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\foreach \x/\lab in {0/W1:a,5/购买数据库,10/W2:b} {
+\node[box,text width=2.4cm] at (\x,4.3) {\lab};\draw[lane] (\x,3.7)--(\x,-2.8);}
+\draw[arr] (5,3.1)--node[note,above]{第 7 代，到期 10:00:30}(0,3.1);
+\node[warn,text width=2.5cm] at (0,1.7) {10:00:20 暂停\\10:00:40 才恢复};
+\draw[arr] (10,2.1)--node[note,above]{10:00:31 持锁检查到期}(5,2.1);
+\draw[arr] (5,1.2)--node[note,above]{提交第 8 代领取}(10,1.2);
+\draw[arr] (0,.1)--node[note,above]{携带第 7 代修改调度}(5,.1);
+\draw[arr] (5,-.7)--node[note,above]{当前为第 8 代，拒绝}(0,-.7);
+\draw[arr] (0,-1.7)--node[note,above]{另交可信 X1 观察}(5,-1.7);
+\node[good,text width=3.8cm] at (7,-2.6) {证据独立核验并进入 R\\旧调度资格仍已失效};
+
+\end{tikzpicture}

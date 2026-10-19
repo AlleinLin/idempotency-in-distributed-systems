@@ -1,0 +1,173 @@
+% 全书各部分、章和节标题的统一定义。
+\BookPart{第一部分}{在一个事务域中把保证做实}
+
+\BookChapter{01}{先实现一个正常工作的下单服务}{%
+  \BookSection{订单、账户、扣款流水与购买操作}
+  \BookSection{下单与本地扣款的事务}
+  \BookSection{购买流程、支付动作与 HTTP 请求}
+  \BookSection{单数据库、单付款路径与最小货币单位}
+}
+
+\BookChapter{02}{一次超时，为什么变成了两次扣款}{%
+  \BookSection{制造一次提交后的响应丢失}
+  \BookSection{客户端、服务端与数据库的时间线}
+  \BookSection{请求未到达、执行回滚与提交后失联}
+  \BookSection{业务效果、请求尝试与可观察结果}
+}
+
+\BookChapter{03}{系统怎样认出同一次购买}{%
+  \BookSection{为同一次业务意图分配稳定身份}
+  \BookSection{请求 ID、链路 ID、订单 ID 与幂等键}
+  \BookSection{命名空间、租户、动作与键的生成和传播}
+  \BookSection{同键异参与两次合法购买}
+  \BookSection{第一版 API 规则：有效期与身份假设}
+}
+
+\BookChapter{04}{两个请求同时到达，第一版防重失效了}{%
+  \BookSection{用并发屏障击穿“先查后写”}
+  \BookSection{唯一约束与事务中的仲裁}
+  \BookSection{冲突、等待、回滚与隔离级别}
+  \BookSection{重试之间插入另一笔合法交易}
+  \BookSection{数学幂等、交换律与业务正确性}
+}
+
+\BookChapter{05}{扣款已经成功，怎样把结果找回来}{%
+  \BookSection{稳定结果与当前状态查询}
+  \BookSection{把操作事实、流水与结果一起提交}
+  \BookSection{重放原结果，保留每次响应的链路信息}
+  \BookSection{终局失败、临时故障与同键异参}
+  \BookSection{投递、执行、提交与生效的次数}
+}
+
+\BookChapter{06}{在每一步杀死服务，检验第一版协议}{%
+  \BookSection{操作状态机与完整执行历史}
+  \BookSection{线性化点：提交与获知结果之间}
+  \BookSection{不重复生效、不错误合并与结果一致的证明}
+  \BookSection{进展需要哪些可用性与重试条件}
+  \BookSection{让错误协议在有界模型中留下反例}
+}
+
+\BookPart{第二部分}{走出本地事务，学会处理未知结果}
+
+\BookChapter{07}{接入支付平台，本地事务的保证到哪里结束}{%
+  \BookSection{换用外部支付后的提交边界}
+  \BookSection{下游的幂等键与结果查询能力}
+  \BookSection{查询暂未查到，旧请求却仍可能到达}
+  \BookSection{用固定操作身份串起回调、查询与对账}
+  \BookSection{不同下游能力下的保证边界}
+}
+
+\BookChapter{08}{支付一直停在处理中，谁来接着做}{%
+  \BookSection{把恢复任务保存为持久化工作流}
+  \BookSection{业务状态、工作者所有权与外部结果的确定性}
+  \BookSection{租约、版本与接管：旧工作者恢复之后}
+  \BookSection{资源端的 fencing token 检查与写入保护边界}
+  \BookSection{Leases、Chubby 与 Redlock 的系统假设}
+}
+
+\BookChapter{09}{支付成功以后，可靠地通知下游}{%
+  \BookSection{数据库与消息系统之间的双写缝隙}
+  \BookSection{将 Outbox 事件与业务结果一起提交}
+  \BookSection{发布成功、标记未完成时重启}
+  \BookSection{事件身份、发布顺序、重试与积压}
+}
+
+\BookChapter{10}{消费者处理完消息，却没来得及确认}{%
+  \BookSection{先 ACK、先修改还是先去重}
+  \BookSection{在消费者事务中提交去重记录与业务效果}
+  \BookSection{重复、乱序、重放与消费者升级}
+  \BookSection{消息事务与外部数据库、支付副作用的边界}
+  \BookSection{整条链路上的次数语义}
+}
+
+\BookPart{第三部分}{复制、遗忘和历史变化之后，承诺是否还在}
+
+\BookChapter{11}{切换到另一个副本，系统还记得做过什么吗}{%
+  \BookSection{数据库高可用与复制状态机的两条路径}
+  \BookSection{Raft 如何用日志、提交与应用保留操作事实}
+  \BookSection{状态机中的客户端会话、操作序列与去重结果}
+  \BookSection{重复日志项、重放、快照与日志截断}
+  \BookSection{回到 Paxos、Raft 与主备复制的原始资料}
+}
+
+\BookChapter{12}{去重记录越来越多，能不能删掉}{%
+  \BookSection{有限重试约定与记录保留策略}
+  \BookSection{结果回收、业务证据与最小拒绝证据}
+  \BookSection{序列号、水位线、会话与 epoch 的成立条件}
+  \BookSection{未完成请求、序列空洞与旧会话重连}
+  \BookSection{超期以后：拒绝、查询或开启新操作}
+}
+
+\BookChapter{13}{换一种业务表达，能少记住一些历史吗}{%
+  \BookSection{购买系统中的赋值、增量、集合合并与条件迁移}
+  \BookSection{分别检验幂等、交换律、单调性与业务不变量}
+  \BookSection{状态型 CRDT 的合并性质与操作型 CRDT 的传输条件}
+  \BookSection{标签与履约进度：何时可以少记一些历史}
+  \BookSection{扣款、发券与退款为何仍可能需要操作身份}
+}
+
+\BookChapter{14}{恢复旧备份，再把流量切到另一个地域}{%
+  \BookSection{分片路由与操作归属：同键在多个分片间的受理规则}
+  \BookSection{崩溃恢复、无损切换与旧历史回退}
+  \BookSection{外部支付账本、事件日志与本地操作证据}
+  \BookSection{单归属路由、跨地域仲裁与分区期间的受理条件}
+  \BookSection{恢复后的重试入口与对账完成前的行为}
+}
+
+\BookChapter{15}{给最终系统写下它能兑现的保证}{%
+  \BookSection{不同部署与下游能力下的最终保证}
+  \BookSection{退款协议、额度仲裁与跨版本重放}
+  \BookSection{业务不变量、进展前提与无法处理的历史}
+  \BookSection{把论证、测试、模型检查与恢复演练连起来}
+  \BookSection{沿核心保证查找保存来源与验证证据}
+}
+
+\BookPart{第四部分}{分布式购买系统的整体设计与工程架构}
+
+\BookChapter{16}{总体架构、服务协作与业务链路}{%
+  \BookSection{系统设计条件与全局视图}
+  \BookSection{数据所有权与跨域业务协议}
+  \BookSection{支付、事件与履约关键链路}
+  \BookSection{RabbitMQ 消息子系统}
+  \BookSection{Kafka 日志与消费子系统}
+}
+
+\BookChapter{17}{分区数据、复制与协调控制面}{%
+  \BookSection{逻辑分区与业务事实归属}
+  \BookSection{完整分区的 Raft 复制与 Chain Replication}
+  \BookSection{配置、会话与执行资格}
+  \BookSection{完整业务分区的在线迁移}
+  \BookSection{TiKV 的 Region、Peer 与事务边界}
+}
+
+\BookChapter{18}{Redis 节点、缓存与集群设计}{%
+  \BookSection{请求执行与查询缓存}
+  \BookSection{RDB 快照与恢复加载}
+  \BookSection{AOF、重写与启动选择}
+  \BookSection{复制、等待与 Sentinel}
+  \BookSection{Cluster 的槽、拓扑与迁移内部}
+}
+
+\BookChapter{19}{分布式存储与跨分区事务}{%
+  \BookSection{块、副本与元数据}
+  \BookSection{完整图像与发布结构}
+  \BookSection{跨分区资源与原子决定}
+  \BookSection{Spanner 与分布式 SQL 事务架构}
+  \BookSection{FaRM 的内存、RDMA 与事务路径}
+}
+
+\BookChapter{20}{批处理、任务、Actor 与函数执行}{%
+  \BookSection{固定输入与批量对账数据流}
+  \BookSection{重执行、推测与输出发布}
+  \BookSection{Ray 的任务、对象与调度}
+  \BookSection{Actor 状态与业务恢复}
+  \BookSection{Lambda 事件调用与执行环境}
+}
+
+\BookChapter{21}{多地域部署、容量运维与前沿架构}{%
+  \BookSection{地域部署与隔离恢复}
+  \BookSection{容量、热点与恢复预算}
+  \BookSection{可观测性、运维控制与恢复职责}
+  \BookSection{成熟工业实现}
+  \BookSection{近期前沿架构}
+}

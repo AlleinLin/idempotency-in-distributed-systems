@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {函数调用1\\读原 C／T\\查询或发送};
+\node[good] (p) at (4,0) {平台原操作\\scope／pay-C\\确定 X1};
+\node[warn] (x) at (8,0) {调用1结束\\结果可能未知};
+\node[box] (b) at (0,-2.8) {函数调用2\\取得原责任与资格};
+\node[good,text width=6.7cm] (d) at (6,-2.8) {权威保存原 C／T 及完整结果\\未决时继续查询，确定后关联 R(S)／O／EV};
+\draw[arr] (a)--(p);\draw[arr] (p)--(x);\draw[arr] (b)--(d);
+\draw[ctl] (p.south)--(d.north);
+\draw[ctl] (x.south)--(8,-1.5)--(0,-1.5)--(b.north);
+
+\end{tikzpicture}

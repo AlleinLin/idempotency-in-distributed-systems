@@ -1,0 +1,23 @@
+\begin{tikzpicture}[
+  x=1mm,y=1mm,
+  box/.style={draw=Ink!45,fill=Paper,rounded corners=2pt,
+    text width=42mm,minimum height=22mm,align=center,inner sep=2mm,
+    font=\small\sffamily},
+  chosen/.style={box,draw=Accent!70,fill=Accent!7},
+  next/.style={-{Stealth[length=1.8mm]},draw=Ink,line width=.7pt},
+  back/.style={-{Stealth[length=1.8mm]},draw=Accent,line width=.7pt}
+]
+\node[chosen] (meaning) at (0,0) {业务允许行为\\身份、授权、资源约束\\原结果与当前观察};
+\node[box] (decision) at (53,0) {事实与决定的归属\\共同提交范围\\跨域责任与证据};
+\node[box] (history) at (106,0) {后继者的恢复依据\\复制、回收、迁移\\版本与旧历史恢复};
+\node[box] (implementation) at (106,-35) {承载与实现选择\\存储、消息、计算\\资格与发布协议};
+\node[box] (validation) at (53,-35) {论证与历史检查\\不变量、交错与故障\\核对实际保存事实};
+\node[chosen] (operation) at (0,-35) {负载与长期运行\\准入、调度、排空\\观测与恢复预算};
+\draw[next] (meaning.east)--(decision.west);
+\draw[next] (decision.east)--(history.west);
+\draw[next] (history.south)--(implementation.north);
+\draw[next] (implementation.west)--(validation.east);
+\draw[next] (validation.west)--(operation.east);
+\draw[back] (operation.north)--node[left,font=\scriptsize\sffamily,text=Accent]
+  {条件变化} (meaning.south);
+\end{tikzpicture}

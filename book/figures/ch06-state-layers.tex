@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknote,anchor=west] at (0,3.7) {已提交数据库事实};
+\node[booknode] (abs) at (2,2.8) {未形成};
+\node[bookresult] (ok) at (7,3.4) {成功：P1、O1、D1、原结果};
+\node[booknode] (no) at (7,2.1) {拒绝：P1、原因、原结果};
+\draw[bookarrow] (abs) -- (ok);
+\draw[bookarrow] (abs) -- (no);
+\node[booknote] at (7,1.45) {两个终态分别保留，没有相互覆盖的迁移};
+\node[booknode,text width=10.7cm] at (5.5,.3) {事务内部：插入身份 → 修改余额 → 写订单与流水 → 填写终态\\完整提交后发布；任一异常撤销内部组};
+\node[booknode,text width=10.7cm] at (5.5,-1.3) {客户端观察：待发送 → 结果待确认 → 已保存结果\\超时所见的 unknown 属于此层，恢复继续携带原 S};
+\end{tikzpicture}
+\caption{数据库事实、事务内部位置与客户端观察分别变化}
+\label{fig:ch06-state-layers}
+\end{figure}

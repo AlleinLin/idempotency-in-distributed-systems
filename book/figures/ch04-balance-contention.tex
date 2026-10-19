@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote,text width=13cm] at (7,.45) {初始余额 5000；S1 与 S2 不同，各申请扣 3000};
+\node[booknode,text width=4.8cm] (a) at (3,-.6) {A 取得 S1\\账户更新为 2000，尚未提交};
+\node[booknode,text width=4.8cm] (b) at (11,-.6) {B 取得 S2\\UPDATE 等待账户行};
+\node[booknode,text width=4.8cm] (ac) at (3,-2.3) {A 提交成功\\余额 2000};
+\node[bookresult,text width=4.8cm] (bc) at (11,-2.3) {B 按新版本重查余额条件\\$2000<3000$，返回零行};
+\draw[bookarrow] (a)--(ac);\draw[bookarrow] (b)--(bc);
+\draw[bookarrow] (ac)--node[above,font=\footnotesize]{提交后继续}(bc);
+\node[booknode,text width=10cm] at (7,-4) {S1：成功，订单与扣款各一条\\S2：余额不足，保存原拒绝；最终余额 2000};
+\end{tikzpicture}
+\caption{不同身份分别受理，再通过账户条件更新决定哪笔资金变化成立。}
+\label{fig:ch04-balance-contention}
+\end{figure}

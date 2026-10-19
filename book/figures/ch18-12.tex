@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/主节点,4.5/副本加载,9/副本当前状态} {
+ \node[font=\bfseries] at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-4.3);}
+\draw[arr] (0,-1)--node[above,note]{RDB 快照：磁盘或无盘发送} (4.5,-1);
+\draw[arr] (0,-2.2)--node[above,note]{快照之后的增量流} (4.5,-2.2);
+\draw[arr] (4.5,-3.5)--node[above,note]{加载快照并应用增量} (9,-3.5);
+\node[note,text width=12cm] at (4.5,-5) {副本加载另选 disabled／swapdb／flushdb／on-empty-db，\\决定先落盘、保留旧数据或先清空等资源与失败行为。};
+
+\end{tikzpicture}

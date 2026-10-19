@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=3.2cm] (judge) at (1.8,1.2) {条件 UPDATE 判定\\余额 \(b<3000\)};
+\node[booknode,text width=3.2cm] (middle) at (5.8,1.2) {只有其他购买扣款\\余额保持或减少};
+\node[bookresult,text width=3.2cm] (commit) at (9.8,1.2) {拒绝终态提交\\此时仍小于 3000};
+\draw[bookarrow] (judge) -- (middle);
+\draw[bookarrow] (middle) -- (commit);
+\node[booknote,text width=10.5cm] at (5.8,-.2) {余额单调不增，使判断时成立的不足条件延续到提交点\\该理由使用了允许资金动作的范围};
+\end{tikzpicture}
+\caption{只有购买支出时，余额不足条件延续到拒绝提交}
+\label{fig:ch06-rejection-monotonic}
+\end{figure}

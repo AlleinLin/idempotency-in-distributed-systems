@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=3.1cm] (a) at (0,1.1)
+ {尝试 a1 私有输出\\对象 A／B};
+\node[box,text width=3.1cm] (b) at (0,-1.4)
+ {尝试 a2 私有输出\\对象 C／D};
+\node[good,text width=3.2cm] (v) at (4.4,-.1)
+ {提交者选择完整集合\\核对分区与摘要\\构造 $J_1$ 清单};
+\node[good,text width=3.2cm] (m) at (9,-.1)
+ {发布入口原子绑定\\$J_1\to$ manifest\\例如选中 C／D};
+\node[box,text width=9.1cm] (r) at (5,-2.8)
+ {读者先取 manifest，再取被引用对象\\发布回复丢失：按 $J_1$ 重读并比较完整清单};
+\draw[arr] (a)--(v);\draw[arr] (b)--(v);\draw[arr] (v)--(m);
+\draw[arr] (m.south)|-(r.east);
+\node[note,text width=11.5cm] at (4.8,-4.1)
+ {发布入口的原子绑定是明确前提；未被引用的私有对象按引用与保留规则回收。};
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/入口,3.6/Leader,7.2/Follower,10.8/业务状态机}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.4)--(\x,-5.7);}
+\draw[arr] (0,-1)--node[above,note]{原 $S$／原输入} (3.6,-1);
+\draw[arr] (3.6,-1.85)--node[above,note]{持久日志复制} (7.2,-1.85);
+\draw[arr] (7.2,-2.65)--node[above,note]{复制确认} (3.6,-2.65);
+\draw[arr] (3.6,-3.5)--node[above,note]{满足提交条件后应用} (10.8,-3.5);
+\draw[arr] (10.8,-4.35)--node[above,note]{保存实际 P/C/T 与原受理} (3.6,-4.35);
+\draw[arr] (3.6,-5.2)--node[above,note]{应用完成后回复} (0,-5.2);
+\end{tikzpicture}

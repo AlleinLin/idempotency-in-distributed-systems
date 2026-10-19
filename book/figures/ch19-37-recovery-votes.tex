@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=11.1cm] (logs) at (4.8,3.2) {排空日志、恢复写锁、补齐记录以后，各相关region投票\\commit-primary／commit-backup／lock／truncated／unknown或abort};
+\node[good,text width=3.3cm] (cp) at (0,0) {任一commit-primary\\$\Rightarrow$ commit};
+\node[good,text width=4.6cm] (cb) at (5,0) {全部票已到，至少一份\\\mbox{commit-backup}\\其余为lock／\mbox{commit-backup}\\／truncated\\$\Rightarrow$ commit};
+\node[warn,text width=2.5cm] (ab) at (9.7,0) {其余完整\\投票组合\\$\Rightarrow$ abort};
+\draw[arr] (logs.south -| cp.north)--(cp.north);
+\draw[arr] (logs.south -| cb.north)--(cb.north);
+\draw[arr] (logs.south -| ab.north)--(ab.north);
+\node[box,text width=11cm] (finish) at (4.8,-3.3) {恢复协调者把同一决定通知参与副本\\确认后截断恢复记录；后续故障继续维护已形成的结果};
+\draw[arr] (cp.south)--(0,-2)--(4.8,-2)--(finish.north);
+\draw[arr] (cb)--(finish);
+\draw[arr] (ab.south)--(9.7,-2)--(4.8,-2);
+\end{tikzpicture}

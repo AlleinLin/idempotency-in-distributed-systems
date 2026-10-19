@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\foreach \x/\lab in {0/先 ACK,4.5/先单独存记录,9/先单独建履约单}{
+\node[box,text width=3.5cm] at (\x,4) {\lab};}
+\node[good,text width=3.5cm] (a) at (0,2.2) {代理移除副本\\F 空，处理记录空};
+\node[good,text width=3.5cm] (b) at (4.5,2.2) {记录 EV1 已提交\\F 尚未建立};
+\node[good,text width=3.5cm] (c) at (9,2.2) {F1 已独立提交\\接收记录为空};
+\foreach \x in {0,4.5,9}{\draw[arr] (\x,3.45)--(\x,2.85);}
+\node[warn,text width=3.5cm] (aa) at (0,.2) {此处退出\\恢复后无待投消息\\O1 遗漏履约};
+\node[warn,text width=3.5cm] (bb) at (4.5,.2) {此处退出后重投\\见记录即跳过\\O1 缺少 F};
+\node[warn,text width=3.5cm] (cc) at (9,.2) {此处退出后重投\\未见记录，再建 F2\\同一 O1 重复建单};
+\draw[arr] (a)--(aa);\draw[arr] (b)--(bb);\draw[arr] (c)--(cc);
+\node[note,text width=12cm] at (4.5,-1.4) {三条历史共用：P1.paid、O1.unfulfilled、平台余额 7000；EV1 已在代理\\错误方案尚无业务唯一约束；图中退出点都在下一步之前};
+
+\end{tikzpicture}
+

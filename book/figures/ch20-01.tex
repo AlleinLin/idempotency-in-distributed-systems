@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (i) at (0,0) {固定权威图像\\平台／消费账本\\分别记录截止};
+\node[good] (b) at (4,0) {批量计算 J1\\读取原 S／C／T\\核对完整关联};
+\node[box] (d) at (8,0) {差异结果清单\\保留输入版本\\发布后可重读};
+\node[good,text width=7cm] (r) at (4,-2.8) {恢复者查询当前权威与原平台操作\\沿原 C／T 回填、查询或继续恢复};
+\draw[arr] (i)--(b);\draw[arr] (b)--(d);
+\draw[arr] (d.south)--(8,-2.8)--(r.east);
+
+\end{tikzpicture}

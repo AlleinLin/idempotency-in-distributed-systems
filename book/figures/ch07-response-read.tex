@@ -1,0 +1,22 @@
+\begin{tikzpicture}
+\node[box,text width=3.5cm] (fixed) at (0,3.8)
+  {P1/C1 固定受理\\S、商品、数量、Q7\\CNY 3000 与支付映射};
+\node[box,text width=3.5cm] (progress) at (4.4,3.8)
+  {P1 当前业务阶段\\A 后\\awaiting\_payment\\成功 R 后 paid};
+\node[good,text width=3.5cm] (result) at (8.8,3.8)
+  {C1 保存支付原结果\\A 后为 null\\成功 R 后含 O1、X1};
+\node[box,text width=12.2cm] (read) at (4.4,1.4)
+  {查询或同参恢复：在同一数据库读取快照内取得 P1/C1\\沿原映射读取，避免拼出 paid 配空支付结果};
+\draw[arr] (fixed.south)--(read.north west);
+\draw[arr] (progress.south)--(read.north);
+\draw[arr] (result.south)--(read.north east);
+\node[good,text width=3.5cm] (a) at (0,-1)
+  {acceptance\\固定受理内容\\以后恢复同一 P1/C1};
+\node[box,text width=3.5cm] (p) at (4.4,-1)
+  {progress\\本次读取的阶段\\后续可以继续推进};
+\node[good,text width=3.5cm] (r) at (8.8,-1)
+  {payment\_result\\C1 已保存的结论\\确定后恢复原结果};
+\draw[arr] (read.south west)--(a.north);
+\draw[arr] (read.south)--(p.north);
+\draw[arr] (read.south east)--(r.north);
+\end{tikzpicture}

@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\node at (0,4.4) {发送者};\node at (4.7,4.4) {恢复者};\node at (10.0,4.4) {支付平台};
+\foreach \x in {0,4.7,10.0}{\draw[lane] (\x,4.0)--(\x,-1.5);}
+\draw[arr,draw=Gold] (0,3.7)--(2.2,3.25);\node[note,above] at (1.0,3.65) {R1 原支付};
+\draw[draw=Gold,thick,densely dashed] (2.2,3.25)--(2.2,-.6);
+\node[note,fill=white,text width=2cm] at (2.2,1.45) {请求仍在途};
+\draw[arr] (4.7,2.9)--node[note,above]{Q1 强查询}(10,2.9);
+\draw[arr] (10,2.0)--node[note,above]{准确查空}(4.7,2.0);
+\draw[arr] (4.7,.9)--node[note,above]{R2：原键或新键}(10,.9);
+\draw[arr,draw=Gold] (2.2,-.6)--node[note,above]{R1 随后到达}(10,-.6);
+\node[warn,text width=11.6cm] at (5,-2.4) {原键：两次到达汇合到同一收款\\新键或仅查询接口：R1、R2 可各扣 3000，最终 4000};
+
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[good,text width=11.2cm] (f) at (5.3,2.7) {文件 /images/b1/snapshot\\第0块 $\mapsto$ 句柄 h10；第1块 $\mapsto$ 句柄 h11};
+\node[box,text width=4.6cm] (a) at (2,1) {chunk h10：文件的第0段字节};
+\node[box,text width=4.6cm] (b) at (8.6,1) {chunk h11：文件的第1段字节};
+\foreach \x/\n in {0/D1,2/D4,4/D7}
+  {\node[cell,minimum width=1.5cm] (a\n) at (\x,-.6) {\n\\h10副本};\draw[arr] (a)--(a\n);}
+\foreach \x/\n in {6.6/D2,8.6/D5,10.6/D8}
+  {\node[cell,minimum width=1.5cm] (b\n) at (\x,-.6) {\n\\h11副本};\draw[arr] (b)--(b\n);}
+\draw[arr] (f)--(a);\draw[arr] (f)--(b);
+\node[note,text width=12cm] at (5.3,-2) {文件映射决定拼接次序；副本地址决定去哪里取得同一块。\\节点更换可以更新位置，文件内序号和chunk句柄保持原关联。};
+\end{tikzpicture}

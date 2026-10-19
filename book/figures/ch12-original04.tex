@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box] (a) at (0,2.5) {客户端收到 R(S1)\\先持久保存 S1、输入\\与完整结果};
+\node[box] (b) at (5.5,2.5) {发送确认\\表示已持久取得\\并接受以后停止回放};
+\node[good] (c) at (11,2.5) {服务共同保存确认\\完整 M 缩为 $M_{\min}$\\可删除载荷才被回收};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=13cm] at (5.5,.3) {保留 S/V/X/P 与退休状态；选用适配时另存 U 双向映射；响应副本可删，业务证据按其责任保留};
+\node[note,text width=13cm] at (5.5,-1) {确认丢失可重发；未选择提前确认的原客户端，按固定期限保留回放};
+\end{tikzpicture}

@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[box,text width=4.0cm] (s) at (0,2)
+  {完整 S\\本地唯一约束};
+\node[good,text width=4.0cm] (p) at (5,2)
+  {至多一个 P\\P 对应固定 C};
+\node[box,text width=4.0cm] (k) at (10,2)
+  {固定 scope/key\\每个键至多一次};
+\draw[arr] (s)--(p);
+\draw[arr] (p)--(k);
+\node[good,text width=6cm] (single) at (2.3,-.4)
+  {映射固定且所有生效到达受保护\\C1 → 同一键 → 一个 X1\\$10000-3000=7000$};
+\node[warn,text width=6cm] (split) at (9.2,-.4)
+  {本地只有 P1，但 C1 被换键\\两键各成功一次，$E(C1)=2$\\$10000-3000-3000=4000$};
+\draw[arr] (p.south west)--(single.north);
+\draw[arr,draw=Gold] (p.south east)--(split.north);
+\node[note,text width=12cm] at (5.6,-2)
+  {余额与流水守恒在两分支都能成立\\限制同一次付款的效果数，还要沿 S → P → C → 平台身份核对};
+\end{tikzpicture}

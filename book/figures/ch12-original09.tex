@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[box,text width=5.2cm] (a) at (1,4.2) {A 先取得 E1 行锁\\锁内时间上界早于 $t_{\rm deadline}$\\保存受理并提交};
+\node[good,text width=5.2cm] (b) at (8.6,4.2) {关闭等待同一行锁\\A 先提交或回滚\\再关闭与清理};
+\draw[arr] (a)--(b);
+\node[warn,text width=5.2cm] (c) at (1,1.8) {时刻已过 $t_{\rm deadline}$，关闭任务迟到\\即使登记为 active\\每次 A 也在锁内检查截止};
+\node[good,text width=5.2cm] (d) at (8.6,1.8) {拒绝新准入\\不创建 P/C/T\\时间不确定时暂停准入};
+\draw[arr] (c)--(d);
+\node[note,text width=14cm] at (4.8,-.1) {资格时点为持锁取得决定的时刻；复制路径由有权排序者记录同一判期依据与次序};
+\end{tikzpicture}

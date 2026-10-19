@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box] (s) at (0,0) {完整 $S$\\账户1／原动作\\原会话／K1};
+\node[good] (b) at (4.1,0) {逻辑分区 b1\\稳定业务编号\\C:b1:1};
+\node[box] (g) at (8.4,1.2) {当前 G1／代次1\\三个持久副本};
+\node[box] (n) at (8.4,-1.2) {迁后 G2／代次2\\原 b1 图像};
+\draw[arr] (s)--(b);
+\draw[arr] (b)--(g);
+\draw[ctl] (b)--(n);
+\node[note] at (4.2,-2.6) {目录改变当前承载，重试继续保存原 $S$ 与原输入。};
+\end{tikzpicture}

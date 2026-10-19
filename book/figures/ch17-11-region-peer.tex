@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\foreach \x/\r in {0/{[a,m)},4.3/{[m,t)},8.6/{[t,z)}}{
+  \node[cell,text width=3.1cm] at (\x,2.3) {Region $\r$};}
+\foreach \y/\s in {1/Store A,-.4/Store B,-1.8/Store C}{
+  \node[note] at (-2.8,\y) {\s};
+  \foreach \x/\r in {0/R1,4.3/R2,8.6/R3}{
+    \node[box,text width=2.7cm,minimum height=.7cm] at (\x,\y) {\r 的 Peer};}}
+\node[good,text width=2.7cm,minimum height=.7cm] at (0,1) {R1 Leader};
+\node[good,text width=2.7cm,minimum height=.7cm] at (4.3,-.4) {R2 Leader};
+\node[good,text width=2.7cm,minimum height=.7cm] at (8.6,-1.8) {R3 Leader};
+\foreach \x in {0,4.3,8.6}{
+  \draw[<->,Blue,thick] (\x,.52)--(\x,.08);
+  \draw[<->,Blue,thick] (\x,-.88)--(\x,-1.32);}
+\node[note] at (4.3,-3.15) {列：一个 Region 的复制组。行：一个 Store 上的多个 Peer。};
+\end{tikzpicture}

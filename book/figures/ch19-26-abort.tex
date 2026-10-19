@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box] (a) at (0,1) {A初始可用4\\TX要求1件\\prepare后：3＋1};
+\node[warn] (b) at (4.3,1) {B初始可用0\\保存no\\协调者保存abort};
+\node[good] (r) at (8.6,1) {A应用原abort\\准备1移回可用\\可用4／准备0};
+\draw[arr] (a)--(b);\draw[arr] (b)--(r);
+\node[box,text width=6.8cm] (repeat) at (5.8,-1.8) {abort回复丢失后重发\\读取原终态：可用保持4；反向commit返回冲突};
+\draw[arr] (r.south)--(8.6,-.7)--(repeat.north east);
+\node[note,text width=3cm] at (0,-1.8) {释放量来自原占用\\终态使释放只发生一次};
+\node[box,text width=3cm] (late) at (0,-4.1) {另一历史：prepare滞留\\A无记录／可用4};
+\node[good,text width=3.3cm] (early) at (4.3,-4.1) {可信abort先到\\保存原输入与aborted\\可用4／准备0};
+\node[good,text width=3.3cm] (stop) at (8.6,-4.1) {迟到同参prepare\\返回aborted\\异参或反向决定冲突};
+\draw[arr] (late)--(early);\draw[arr] (early)--(stop);
+\end{tikzpicture}

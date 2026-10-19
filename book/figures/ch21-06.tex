@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (s) at (0,0) {完整 S／输入};
+\node[box] (g) at (4,0) {认证授权／会话活动\\可信时间早于固定截止};
+\node[good] (o) at (8,1.5) {已有绑定\\核对输入／回原结果};
+\node[box] (n) at (8,-1.5) {从未受理\\业务与责任额度检查};
+\node[good,text width=6cm] (a) at (6,-3.7) {同一权威提交：占额度＋建 $A_J$/C/T\\额度耗尽：明确未受理的忙响应};
+\node[warn] (x) at (0,-2.5) {资格已过期\\operation\_expired};
+\draw[arr] (s)--(g);\draw[arr] (g)--(o);\draw[arr] (g)--(n);\draw[arr] (g.south west)--(x.north east);\draw[arr] (n)--(a);
+\node[note,text width=11cm] at (4,-5.3) {授权查询和后台恢复从原 S/C/T 接续已受理责任，使用独立入口与预算。};
+
+\end{tikzpicture}

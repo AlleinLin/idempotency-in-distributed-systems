@@ -1,0 +1,21 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (1.6,.7) {购买前};
+\node[booknote] at (6.5,.7) {第一次付款后};
+\node[booknote] at (11.5,.7) {后来又付款一次};
+\node[booknode,minimum width=2.7cm] (b0) at (1.6,0) {余额 10000};
+\node[booknode,minimum width=2.7cm] (b1) at (6.5,0) {余额 7000};
+\node[bookresult,minimum width=2.7cm] (b2) at (11.5,0) {余额 4000};
+\draw[bookarrow] (b0)--node[above,font=\scriptsize]{扣除 3000}(b1);
+\draw[bookarrow] (b1)--node[above,font=\scriptsize]{再扣除 3000}(b2);
+\node[booknode,text width=3.7cm] (d1) at (6.5,-2.2)
+  {第一次流水 D1\\扣款额 3000\\当次扣后余额 7000};
+\node[booknode,text width=3.7cm] (saved) at (11.5,-2.2)
+  {再次查看 D1\\扣款额仍为 3000\\当次扣后余额仍为 7000};
+\draw[bookarrow] (b1)--(d1);
+\draw[bookarrow,dashed] (d1)--node[above,font=\scriptsize]{历史值保留}(saved);
+\end{tikzpicture}
+\caption{当前余额随新交易变化，原流水保存的金额与扣后余额仍对应第一次付款。中间余额不足的购买没有改变这些数值。}
+\label{fig:ch01-money-time}
+\end{figure}

@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=4.8cm] (s1) at (3,0) {执行一次后的完整状态 $s_1$\\余额 7000；扣款 1 条};
+\node[bookresult,text width=4.8cm] (s2) at (11,0) {执行两次后的完整状态 $s_2$\\余额 7000；扣款 2 条};
+\node[booknode,text width=4.8cm] (b1) at (3,-2) {只取余额：$\pi_b(s_1)=7000$};
+\node[booknode,text width=4.8cm] (b2) at (11,-2) {只取余额：$\pi_b(s_2)=7000$};
+\draw[bookarrow] (s1)--node[left,font=\footnotesize]{投影}(b1);
+\draw[bookarrow] (s2)--node[right,font=\footnotesize]{投影}(b2);
+\draw[bookalert] (s1)--node[above,font=\footnotesize]{$s_1\ne s_2$}(s2);
+\draw[bookarrow] (b1)--node[above,font=\footnotesize]{相等}(b2);
+\node[booknote,text width=13cm] at (7,-3.4) {投影舍弃流水条数；余额相等只说明这一项观察相同};
+\end{tikzpicture}
+\caption{观察余额会隐藏新增流水，投影上的相等不足以推出完整状态相等。}
+\label{fig:ch04-state-projection}
+\end{figure}

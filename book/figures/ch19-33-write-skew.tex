@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[good,text width=10.6cm] (start) at (3.3,2.4) {同一初始快照：A=1，B=1；规则：A+B至少为1};
+\node[box,text width=4.3cm] (a) at (0,0) {事务$\alpha$读A=1、B=1\\判断可预留一件\\只写A=0};
+\node[box,text width=4.3cm] (b) at (6.6,0) {事务$\beta$读A=1、B=1\\判断可预留一件\\只写B=0};
+\draw[arr] (start)--(a);\draw[arr] (start)--(b);
+\node[warn,text width=10.6cm] (end) at (3.3,-2.6) {两份写集不相交，逐行写冲突检查可能都通过\\最终A=0、B=0，合计约束被破坏};
+\draw[arr] (a)--(end);\draw[arr] (b)--(end);
+\node[note,text width=11cm] at (3.3,-4.1) {共同保护记录或显式协调共同依赖行，使并发转移在相同对象上仲裁。};
+\end{tikzpicture}

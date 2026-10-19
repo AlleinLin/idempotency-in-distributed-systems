@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\foreach \y/\p in {1.3/0,0/1,-1.3/2} {
+ \node[font=\bfseries] at (-2.1,\y) {分区 \p};
+ \foreach \x/\o in {0/0,2.1/1,4.2/2,6.3/3} {\node[cell] at (\x,\y) {offset \o};}
+}
+\draw[thick,draw=Blue] (7.5,1.3)--(7.5,-1.3);
+\foreach \y in {1.3,0,-1.3} {\draw[thick,draw=Blue] (7.2,\y)--(7.5,\y);}
+\node[box,text width=3.4cm] (a) at (11,1) {消费组 fulfill\\分区 0／1 → A\\分区 2 → B};
+\node[box,text width=3.4cm] (b) at (11,-1.5) {另一个消费组 audit\\读取同一组三个分区\\独立保存自己的位移};
+\draw[arr] (7.5,.65)--(a.west);\draw[arr] (7.5,-.65)--(b.west);
+\node[note,text width=14cm] at (4.5,-3) {业务 EV 可以出现在两个 offset。offset 定位一次日志追加；同组分区分配定位当前读取者；业务 Inbox 以完整 EV 约束实际效果。};
+
+\end{tikzpicture}

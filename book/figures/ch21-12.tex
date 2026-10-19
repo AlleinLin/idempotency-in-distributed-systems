@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[good,text width=10.6cm] (a) at (4,1.5) {一份业务权威：分区复制状态机或替代的分布式 SQL 实现};
+\node[box] (m) at (0,-.7) {消息\\Kafka 或 RabbitMQ};
+\node[box] (c) at (4,-.7) {缓存／投影\\Redis};
+\node[box] (s) at (8,-.7) {片段／快照\\HDFS／对象存储};
+\node[box,text width=10.6cm] (r) at (4,-3) {执行：MapReduce／Spark／Ray／事件函数\\各自重试和调度；原 S／C／T 连接业务责任};
+\draw[arr] (a)--(m);\draw[arr] (a)--(c);\draw[arr] (a)--(s);
+\draw[ctl] (r.north) -- (6,-2.15) -- (6,.65) -- (a.south);
+
+\end{tikzpicture}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/网络与解析,3.8/主线程,7.6/传播路径,11.4/客户端} {
+ \node[font=\bfseries] at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-4.6);}
+\draw[arr] (0,-1)--node[above,note]{完整命令／参数} (3.8,-1);
+\node[good,text width=2.6cm] at (3.8,-2) {检查条件\\读取／修改内存};
+\draw[arr] (3.8,-3.2)--node[above,note]{AOF／复制流} (7.6,-3.2);
+\draw[arr] (3.8,-4)--node[above,note]{回复缓冲 → 套接字发送} (11.4,-4);
+\node[note] at (5.7,-5.1) {执行与回复形成后，同步策略进一步约束发送及可恢复位置。};
+
+\end{tikzpicture}

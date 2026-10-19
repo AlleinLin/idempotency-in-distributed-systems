@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (2,0.35) {连接 A：R1};
+\node[booknote] at (7,0.35) {共同调度};
+\node[booknote] at (12,0.35) {连接 B：R2};
+\node[booknode,text width=3.5cm] (a) at (2,-.45) {查找 S：零行};
+\node[booknode,text width=3.5cm] (b) at (12,-.45) {查找 S：零行};
+\node[bookresult,text width=3.2cm] (barrier) at (7,-1.5) {两侧到齐\\屏障放行};
+\draw[bookarrow] (a.south)--++(0,-.4)-|(barrier.west);
+\draw[bookarrow] (b.south)--++(0,-.4)-|(barrier.east);
+\node[booknode,text width=3.5cm] (p1) at (2,-2.8) {P1、O1、D1 提交\\余额 10000 → 7000};
+\node[booknode,text width=3.5cm] (p2) at (12,-2.8) {P2、O2、D2 提交\\余额 7000 → 4000};
+\draw[bookarrow] (barrier.west)--(p1.north);
+\draw[bookarrow] (p1.east)--node[above,font=\footnotesize]{B 随后继续扣款}(p2.west);
+\node[booknote,text width=13cm] at (7,-4) {两次查询都在写入以前结束；放行以后，两条路径各自完成购买};
+\end{tikzpicture}
+\caption{并发屏障使两个相同身份的请求都先取得空查询结果。}
+\label{fig:ch04-barrier}
+\end{figure}

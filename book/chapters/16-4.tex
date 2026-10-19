@@ -1,0 +1,55 @@
+购买服务与履约服务之间可以选用 RabbitMQ 队列路径。本节把它放在前述 Outbox 和消费事务之间，说明路由、复制、确认、流控和并发分别负责什么。以下采用 RabbitMQ 4.3.6、AMQP 0-9-1 和三成员 quorum queue。AMQP 是消息客户端与 broker 交互的协议，本节中的 channel、publish、ack 等对象都属于这一协议层。
+
+\subsection{从 exchange 到队列副本}
+
+RabbitMQ 的一条 TCP 连接可以复用多个 channel，channel 提供发布与消费方法的逻辑交互通道。发布器把消息送到 exchange，exchange 依据类型和绑定规则把它路由到队列。direct exchange 按 routing key 的匹配选择绑定，本章使用 exchange \code{purchases}、routing key \code{purchase.paid} 和对应业务队列。
+
+\CSixteenFigure{ch16-08-rabbit}{RabbitMQ 的路由与两条确认路径，发布确认和消费 ACK 各连接一个保存责任}{fig:ch16-rabbit}
+
+exchange 负责路由，队列负责积压消息和消费交付。\code{durable} 声明使相应元数据能随 broker 恢复，消息的 \code{delivery\_mode=2} 表示持久消息。复制队列采用 quorum 类型，三名成员通过 Raft 维护队列状态，选举出的 leader 处理相关队列操作，另外成员复制。队列的复制组与购买权威复制组分别保存消息和业务事实~\cite{rabbitmq-queues,rabbitmq-quorum-queues}。
+
+quorum queue 本身把消息持久保存，本章发布时也显式设置持久属性，保持事件经过后续路由时的保存意图。三成员中有两名可用才能形成多数，leader 退出后存活多数可以继续。应用的发布确认与这份队列的复制保存责任连接，系统扩容时要分别观察队列成员、leader 分布、磁盘空间与未确认量~\cite{rabbitmq-quorum-queues}。
+
+队列的长期积压消耗磁盘、复制带宽和恢复时间，TTL 与长度限制可以据保存预算清理消息。关键履约因此采用第~\ref{sec:ch16-handoff}~节的公共交接闭环：publisher confirm 先形成持久 \code{published}，经核验的消费回执再形成 \code{handoff\_confirmed}。消费者停机超过 TTL 时，没有回执的原 EV 会由购买权威重新发布；已有 I 的重投返回原 F501 和原回执。RabbitMQ 的消费 ACK 释放本次队列投递，购买侧根据持久业务回执停止补发，两条完成条件分别保存。
+
+\subsection{publisher confirms 和路由失败}
+
+发布器在 channel 上发送 \code{confirm.select} 进入确认模式。此后发布消息按该 channel 内的序号跟踪，broker 通过 \code{basic.ack} 或 \code{basic.nack} 返回发布结果，\code{multiple} 标志可以覆盖一个序号前缀。发布确认序号属于这条 channel 的发布记录，EV 继续标识业务事件。连接恢复后创建的新 channel 重新维护自己的协议序号~\cite{rabbitmq-confirms}。
+
+对可路由消息，broker 在相关队列接受以后产生确认。持久消息送到 durable 队列时，确认与持久保存相连；quorum queue 的确认等待多数副本接受并确认该消息。具体磁盘与复制配置决定相应故障模型下的耐久边界，发布器以确认完成自己的传播步骤。队列随后把消息交给消费者，是下一条独立路径~\cite{rabbitmq-confirms,rabbitmq-quorum-queues}。
+
+无路由消息也可能得到 publisher confirm。exchange 已经确定没有匹配队列，便完成了它的路由处理。发布器设置 \code{mandatory} 以后，broker 通过 \code{basic.return} 退回无路由消息，再发送相应确认。发布器同时跟踪退回与确认，只有消息成功进入目标保存路径，才标记 Outbox 已发布。本例无匹配绑定时可观察到 \code{reply\_code 312}~\cite{rabbitmq-confirms,amqp091}。
+
+连接中断留下两类可达状态：消息可能尚未进入队列，也可能已经由多数保存而确认未到达发布器。发布器保存原 EV 和未完成标记，连接恢复后重发原报文。新的 channel 无法从旧确认序号恢复消息是否已保存的结论，消费者的 I/B 约束接住可能形成的重复。
+
+例如队列多数保存 \code{EV:b1:1} 并发出 \code{basic.ack}，确认帧在客户端收到以前丢失，随后连接断开。发布器得到未知，恢复后重新发送同 EV，队列可以有两份相同消息。第一份消费事务创建 F501，第二份查到 I 并比较完整原事件，返回原 F501。这条历史同时使用队列的保存和消费库的业务仲裁。
+
+确认返回与 Outbox 标记之间还有本地窗口。发布器已经收到确认，尚未把 \code{published} 写回购买权威便退出，恢复同样会重发。这与线上确认真正丢失具有不同故障位置，二者都以原 EV 恢复。日志中的 \code{confirmed} 因而要注明观察位置：broker 已经产生确认，还是应用已经消费了该确认。
+
+\subsection{消费 ACK 和重投}
+
+推送消费者通过 \code{basic.consume} 注册，broker 以 \code{basic.deliver} 交付消息。每次交付带 \code{delivery\_tag}，它在当前 channel 内单调分配，定位这次协议投递。消费者在同一 channel 确认该 tag。换 channel 以后相同数值可以定位另一条投递，业务数据库使用 \code{event\_id} 和 B 取得稳定关联~\cite{rabbitmq-confirms}。
+
+本章使用手工 ACK。消费者先提交 I/B/F 和 dispatch 意图，再发送 \code{basic.ack}。若提交成功以后进程退出，broker 在发现 channel 关闭后重入队未确认消息，新的消费者取得 \code{redelivered} 投递。它读取原 Inbox，比较原报文，取得相同 F 和回执，然后确认自己的新投递。
+
+\code{redelivered} 表示 broker 知道这条消息经历过交付与重入队，是排查线索。发布器重新发布的另一份相同 EV 也可能第一次交付，\code{redelivered=false}。因此业务端对每一份事件都执行相同的 I/B 核验。自动 ACK 则在协议交付阶段就释放 broker 责任，消费者在业务提交以前退出时，队列已经无法据这次投递继续恢复~\cite{rabbitmq-confirms}。
+
+批量 ACK 的 \code{multiple} 也要求连续完成前缀。消费者处理了 tag 8 却尚未提交 tag 7，确认到 8 的全部投递会越过尚未完成的 7。多线程处理把已完成集合与连续可确认水位分开维护，消息事务提交以后再推进水位。图~\ref{fig:ch16-prefix} 同时表示队列批量确认和日志位移的这项要求。单消息 ACK 更易表达独立完成，代价是更多确认流量。
+
+\CSixteenFigure{ch16-19-prefix}{并发完成集合包含空洞时，确认水位只能推进已完成的连续前缀}{fig:ch16-prefix}
+
+\subsection{prefetch、消费并发与顺序}
+
+prefetch 限制尚未确认的投递数量。RabbitMQ 在常用的非 global QoS 设置下，把 \code{prefetch\_count} 分别应用于随后注册的各消费者。\code{prefetch=1} 意味着一个消费者持有一条尚未 ACK 的消息时，broker 暂停向它继续推送。另一个消费者拥有自己的信用，可以取得下一条消息~\cite{rabbitmq-consumer-flow}。
+
+\CSixteenFigure{ch16-09-prefetch}{两个 prefetch 为 1 的消费者拥有各自信用，完成顺序受业务处理时间影响}{fig:ch16-prefetch}
+
+图~\ref{fig:ch16-prefetch} 的共同初态为同优先级 EV1 至 EV4 依次入队。A 持有 EV1 未确认，B 持有 EV2。B 提交并确认 EV2 以后取得 EV3，再取得 EV4，A 最后完成 EV1。prefetch 约束每个消费者的在途量，外部效果的观察次序成为 2、3、4、1。队列按出队顺序分配，与并发业务的完成顺序可以同时成立。
+
+同一 channel 的发布序列在路由到相同队列时有相应入队顺序，多 channel 发布可以交错。重入队、优先级与多个活跃消费者又会影响观察顺序。要求每张订单串行处理的业务，可以把订单按稳定分区映射到多条队列，每条队列采用单活消费者，并在消费者内部保持该实体的提交顺序~\cite{rabbitmq-queues,rabbitmq-consumer-flow}。
+
+RabbitMQ 4.3 的 quorum queue 支持严格消息优先级，不同优先级事件可以改变原入队次序。业务若依赖同类事件的先后，把消息设为一致优先级只是其中一项条件，重投和消费者内部并发也要共同处理。要求付款、取消等不同事件之间存在因果时，事件版本或业务状态迁移规则在消费域检查，按允许迁移推进当前状态~\cite{rabbitmq-quorum-queues}。
+
+\code{basic.get} 是主动逐条拉取，和 \code{basic.consume} 的持续推送拥有不同交互方式。给 \code{basic.get} 所在 channel 设置 \code{basic\_qos}，并不能产生上述推送信用的交付过程。生产推送路径按消费者处理时间、事务并发与内存预算调整 prefetch，在途量较大能提高管道利用率，也会增加进程退出后的重投规模和未确认占用~\cite{rabbitmq-consumer-flow}。
+
+消费冲突采用本章前述持久阻断规则。\code{basic.nack} 配 \code{requeue} 可以让暂时失败重试，反复立即重入队会形成热循环。确定的同 EV 异载荷先保存证据并停止受影响消费，再由受控处置恢复。若使用死信路由，队列保存策略与原业务冲突记录一起纳入运维观察。

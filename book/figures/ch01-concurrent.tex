@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (6,1.45) {初始余额 10000 分；两笔不同购买各需 7000 分};
+\node[booknode,text width=4cm] (a1) at (2.5,0) {购买 A 先更新账户\\条件成立，余额改为 3000};
+\node[booknode,text width=4cm] (b1) at (9.5,0) {购买 B 也请求更新\\等待账户行上的更新冲突解除};
+\node[bookresult,text width=4cm] (a2) at (2.5,-2) {A 补齐订单与流水\\提交，余额 3000 分生效};
+\node[booknode,text width=4cm] (b2) at (9.5,-2) {A 提交后，B 继续\\按新行版本重查条件};
+\node[bookresult,text width=4cm] (b3) at (9.5,-4) {3000 小于 7000\\更新零行\\B 保存余额不足};
+\draw[bookarrow] (a1)--(a2);
+\draw[bookarrow] (b1)--(b2);
+\draw[bookalert] (a2.east)--node[above,font=\footnotesize]{提交后继续}(b2.west);
+\draw[bookarrow] (b2)--(b3);
+\node[booknote,text width=4cm] at (2.5,-4) {最终：仅 A 扣款 7000 分\\账户余额 3000 分};
+\end{tikzpicture}
+\caption{在 PostgreSQL 的 Read Committed 隔离级别下，等待更新的事务会基于已经提交的新行版本重新判断条件。}
+\label{fig:ch01-concurrent}
+\end{figure}

@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[cell,text width=2.3cm] (a) at (0,0) {$A_J$\\唯一 S／原输入};
+\node[cell,text width=2.3cm] (e) at (3,0) {平台 E\\固定 C／原键};
+\node[cell,text width=2.3cm] (r) at (6,0) {$R_J$\\原结果／O EV};
+\node[cell,text width=2.3cm] (m) at (9,0) {本地物化\\全字段核对};
+\node[cell,text width=2.3cm] (q) at (12,0) {Q\\I／B／实际 F};
+\foreach \x/\y in {a/e,e/r,r/m,m/q}{\draw[arr](\x)--(\y);}
+\node[note,text width=13cm] at (6,-1.5) {空初态 → 允许迁移保持关联；同参恢复与异参冲突保持原绑定；投影恢复按原决定补写。};
+\end{tikzpicture}

@@ -1,0 +1,57 @@
+\subsection*{把购买、支付与订单的关系写成 DDL}
+
+第二部分的 P/C/O 是一套独立的外部支付模型。为直接容纳本地示意编号与平台字符串编号，这里的业务编号列采用 \code{text}，第一部分本地支付模型使用的 \code{uuid} 列继续属于原模型。生产系统也可以保留本地 UUID、只把平台编号定义为文本。选择列类型以后，所有主外键列保持兼容；已有数据库升级还要另外完成数据映射、外键调整和切换验证。
+
+下面给出后续任务与事件表所引用的三张核心表。金额与报价从 A 固定，证据与结果从 R 写入。表内的主键、唯一约束与外键提供身份和归属仲裁，跨表状态与 JSON 字段含义由受控写入口核对。
+
+\begin{BookCode}
+CREATE TABLE purchases (
+  purchase_id text PRIMARY KEY,
+  account_id bigint NOT NULL, action text NOT NULL,
+  session_id text NOT NULL, idempotency_key text NOT NULL,
+  normalization_version text NOT NULL, canonical_input jsonb NOT NULL,
+  quote_id text NOT NULL,
+  amount_minor bigint NOT NULL CHECK (amount_minor > 0),
+  currency text NOT NULL CHECK (currency = 'CNY'),
+  business_state text NOT NULL
+    CHECK (business_state IN ('awaiting_payment','paid','payment_rejected')),
+  UNIQUE (account_id,action,session_id,idempotency_key)
+);
+\end{BookCode}
+
+\code{provider\_retry\_before} 在这组时间线中采用平台模拟时钟的整数刻度，例如第 7.2 节的截止 100。实际适配器保存平台定义的固定截止及本地换算依据，时间单位与误差沿原规则解释，领取任务用的数据库时间则在第八章单独定义。
+
+\begin{BookCode}
+CREATE TABLE external_payments (
+  charge_id text PRIMARY KEY,
+  purchase_id text NOT NULL UNIQUE REFERENCES purchases(purchase_id),
+  provider_scope text NOT NULL, provider_key text NOT NULL,
+  payment_input_version text NOT NULL, payment_input jsonb NOT NULL,
+  provider_retry_before bigint NOT NULL,
+  evidence_state text NOT NULL
+    CHECK (evidence_state IN ('unconfirmed','succeeded','rejected_final')),
+  provider_charge_id text, provider_result jsonb, payment_result jsonb,
+  UNIQUE (provider_scope,provider_key),
+  UNIQUE (charge_id,purchase_id),
+  CHECK (evidence_state='unconfirmed' OR provider_result IS NOT NULL),
+  CHECK (evidence_state<>'succeeded' OR provider_charge_id IS NOT NULL)
+);
+\end{BookCode}
+
+C 对 P 的唯一外键落实一笔购买至多一个支付操作。C/P 联合唯一键允许订单把两个编号作为一个归属整体来引用。原结果与证据终态的对应、等待状态下的空结果，以及终态结果不可覆盖，都在下面的 R 中共同检查和提交。
+
+\begin{BookCode}
+CREATE TABLE orders (
+  order_id text PRIMARY KEY,
+  purchase_id text NOT NULL UNIQUE, charge_id text NOT NULL UNIQUE,
+  provider_scope text NOT NULL, provider_charge_id text NOT NULL,
+  amount_minor bigint NOT NULL, currency text NOT NULL,
+  fulfillment_state text NOT NULL CHECK (fulfillment_state='unfulfilled'),
+  FOREIGN KEY (charge_id,purchase_id)
+    REFERENCES external_payments(charge_id,purchase_id),
+  UNIQUE (provider_scope,provider_charge_id),
+  UNIQUE (order_id,purchase_id,charge_id)
+);
+\end{BookCode}
+
+订单最后的联合唯一键供第九章 Outbox 同时引用 O/P/C，避免分别检查三个存在的编号却拼出错误归属。当前 \code{fulfillment\_state} 只允许 \code{unfulfilled}。第十章接入可信履约回报时，会显式扩展这个检查约束，再让受控回报入口推进履约阶段。

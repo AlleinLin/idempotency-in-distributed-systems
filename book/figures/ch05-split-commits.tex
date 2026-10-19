@@ -1,0 +1,14 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3cm] (a) at (0,0) {先提交扣款\\余额已为 7000};
+\node[booknode,text width=3cm] (b) at (6,0) {崩溃：结果未保存\\恢复时缺少结论};
+\node[booknode,text width=3cm] (c) at (0,-1.7) {先提交成功结果\\声明 D1 已扣款};
+\node[booknode,text width=3cm] (d) at (6,-1.7) {崩溃：扣款未发生\\余额仍为 10000};
+\node[bookresult,text width=9cm] at (3,-3.3) {共同事务：身份、扣款、订单、流水\\原结果与终态一起提交};
+\draw[bookalert] (a)--node[above,font=\footnotesize] {两次提交之间} (b);
+\draw[bookalert] (c)--node[above,font=\footnotesize] {两次提交之间} (d);
+\end{tikzpicture}
+\caption{分开提交会留下业务事实与完成结果不相符的崩溃窗口。}
+\label{fig:ch05-split-commits}
+\end{figure}

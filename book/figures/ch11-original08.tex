@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,2) {领导资格\\本任期项已提交\\本批读取联系多数};
+\node[box] (b) at (5,2) {应用边界\\读取边界 r=45\\等待 \mbox{lastApplied}\\达到 45};
+\node[good] (c) at (10,2) {读取业务状态\\按完整 S 查绑定\\核对原输入并取原结果};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[warn,text width=5.6cm] at (2.2,-.5) {旧主自称领导者，或应用只到 43\\都不足以解释位置 44 的 S1};
+\node[note,text width=5.8cm] at (9,-.5) {读取边界安排观察次序\\身份绑定决定是否为同一购买};
+
+\end{tikzpicture}

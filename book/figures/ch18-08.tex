@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {执行修改\\内存状态};
+\node[box] (b) at (3.8,0) {AOF 缓冲\\用户态};
+\node[box] (c) at (7.6,0) {write\\内核与文件};
+\node[good] (d) at (11.4,0) {fsync\\可靠同步层};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\node[warn,text width=4.4cm] (reply) at (5.7,-2.2) {客户端收到回复的位置\\由正常同步策略及例外配置约束};
+\draw[ctl] (c)--(reply);\draw[ctl] (d)--(reply);
+\node[note] at (5.7,-3.6) {进程退出与机器断电切断的保存层不同。};
+
+\end{tikzpicture}

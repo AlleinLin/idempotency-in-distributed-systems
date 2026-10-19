@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=4.8cm] at (0,3.2) {先提交，再放入内存队列};
+\node[box,text width=4.8cm] at (6.5,3.2) {先放入内存队列，再提交};
+\node[good,text width=4.8cm] (a1) at (0,1.7) {A 已提交 P1/C1\\内存中尚无待办};
+\node[warn,text width=4.8cm] (a2) at (0,0) {进程退出，重启队列为空\\购买等待，执行机会丢失};
+\node[box,text width=4.8cm] (b1) at (6.5,1.7) {工作者先取得 C1\\A 尚未提交};
+\node[warn,text width=4.8cm] (b2) at (6.5,0) {工作者调用平台后 A 回滚\\外部付款失去本地受理依据};
+\draw[arr] (a1)--(a2);
+\draw[arr] (b1)--(b2);
+\draw[lane] (3.25,3.9)--(3.25,-.9);
+\node[note,text width=11.6cm] at (3.25,-1.4) {共同提交恢复任务后，退出只留下可扫描的持久记录；内存通知用于提早唤醒};
+\end{tikzpicture}

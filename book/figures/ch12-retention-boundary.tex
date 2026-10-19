@@ -1,0 +1,20 @@
+\begin{tikzpicture}
+\draw[arr] (0,0)--(14,0) node[right,note] {时间};
+\foreach \x/\lab in {0/09:00,4/09:10,7/09:20,12/10:00}
+  {\draw (\x,.12)--(\x,-.12); \node[note,below] at (\x,-.18) {\lab};}
+\node[note,anchor=east] at (-.2,4.2) {缓存副本};
+\fill[black!8] (0,3.9) rectangle (4,4.5);
+\node[note] at (2,4.2) {09:10 可删此副本};
+\node[note,anchor=east] at (-.2,3.2) {可重建结果};
+\fill[Blue!13] (0,2.9) rectangle (12,3.5);
+\node[note] at (6,3.2) {本例尚未确认：原回放保留至 10:00，可由档案接手};
+\node[note,anchor=east] at (-.2,2.1) {逐笔依据};
+\fill[green!12] (0,1.8) rectangle (12,2.4);
+\node[note] at (6,2.1) {活动 E1 保留 S 与输入/编码依据，09:20 找到原购买};
+\node[note,anchor=east] at (-.2,1) {整段资格};
+\draw[Blue,thick] (0,1)--(12,1);
+\draw[Gold,thick] (12,.6)--(12,4.8);
+\node[note,anchor=west,text width=2.1cm] at (12.3,2.4) {关闭决定\\接手拒绝旧 E1};
+\draw[arr,Gold] (7,.2)--(7,1.7);
+\node[note,anchor=west] at (7.2,.5) {旧副本到达};
+\end{tikzpicture}

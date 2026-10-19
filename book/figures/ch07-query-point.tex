@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+\node[anchor=east] at (-.3,2.4) {先完成};
+\node[anchor=east] at (-.3,0) {相互重叠};
+\draw[arr] (0,2.4)--(12,2.4);
+\draw[arr] (0,0)--(12,0);
+\fill[Blue] (2,2.4) circle (2.3pt);
+\node[note,above,text width=2.7cm] at (2,2.8) {E 提交 X1\\成功已返回};
+\draw[Blue,line width=2pt] (5,2.4)--(10,2.4);
+\draw[Blue] (5,2.1)--(5,2.7) (10,2.1)--(10,2.7);
+\fill[Gold] (7,2.4) circle (2.5pt);
+\node[note,above] at (7,2.7) {Q 的读取点};
+\node[note,below] at (7.5,2.1) {查询调用至返回：应找到 X1};
+\draw[Blue,line width=2pt] (2,0)--(10,0);
+\draw[Blue] (2,-.3)--(2,.3) (10,-.3)--(10,.3);
+\fill[Gold] (4,0) circle (2.5pt);
+\node[note,above] at (4,.3) {Q 读取点：空};
+\fill[Blue] (7,0) circle (2.3pt);
+\node[note,above] at (7,.3) {E 随后提交};
+\node[note,text width=12cm] at (6,-1.3)
+  {初态均无收款记录，记录保留且覆盖全部受理路径\\重叠查询可以准确查空；读取点以后仍可发生 E};
+\end{tikzpicture}

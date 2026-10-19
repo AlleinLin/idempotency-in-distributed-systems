@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=13cm] (base) at (4,4.4) {基础状态：余额 10000，P/O/D 与 M 为空，E1 有效\\$b=b_0-\sum a(d)$；每个 S 至多一份绑定};
+\node[good,text width=3.9cm,minimum height=1.75cm] (s) at (-.9,2.1) {新 S 首次成功\\余额 $-3000$，D 增加 3000\\同时保存 P/O/D 与 M};
+\node[good,text width=3.9cm,minimum height=1.75cm] (d) at (4,2.1) {同参恢复\\读取原 M 与 R(S)\\余额、D 与原绑定保持};
+\node[good,text width=3.9cm,minimum height=1.75cm] (r) at (8.9,2.1) {首次余额不足\\保存稳定拒绝 P 与 M\\余额与 D 保持};
+\draw[arr] (base.south)--(4,3.2)-|(s.north);
+\draw[arr] (base)--(d);
+\draw[arr] (base.south)--(4,3.2)-|(r.north);
+\node[box,text width=13cm] (end) at (4,-.2) {异参冲突保留原绑定；空命令保持业务状态；追赶重建同一转换\\每项成功恰有一张 O、一条 D，原结果可按完整 S 恢复};
+\draw[arr] (s.south)--(-.9,.8)-|(end.north);
+\draw[arr] (d)--(end);
+\draw[arr] (r.south)--(8.9,.8)-|(end.north);
+\end{tikzpicture}

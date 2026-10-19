@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm] (stop) at (0,4) {停止旧 R 入口\\等待在途事务结束};
+\node[box,text width=3.4cm] (cohort) at (4.4,4) {持久登记旧成功集合\\C1＋原事实摘要};
+\node[box,text width=3.7cm] (work) at (9.1,4) {逐项锁 C→T 核原事实\\事件＋该项补建完成\\共同提交};
+\draw[arr] (stop)--(cohort);\draw[arr] (cohort)--(work);
+\node[warn,text width=3.4cm] (resume) at (0,1.3) {中途退出：按登记恢复\\冲突：保留负责核查\\入口保持暂停};
+\node[good,text width=3.4cm] (new) at (4.4,1.3) {屏障通过后\\开放新 R 入口};
+\node[box,text width=3.7cm] (barrier) at (9.1,1.3) {检查全部登记已完成\\原事实、事件逐项一致\\保存屏障通过依据};
+\draw[arr] (work)--(barrier);\draw[arr] (barrier)--(new);
+\draw[arr] (work.south)--++(0,-.3)-|(resume.north);
+\node[note,text width=12.5cm] at (4.5,-1.1) {只读结果查询可继续；尚未决的 C 在开放后走新 R\\旧通知与新补发的同一履约效果由消费端另设屏障与约束};
+\end{tikzpicture}

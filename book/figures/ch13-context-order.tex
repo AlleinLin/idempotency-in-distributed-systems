@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[box,text width=3cm] (a) at (0,3.4) {空初态\\$E=\emptyset,\ C=\emptyset$\\$R_{\mathrm{del}}=\emptyset$\\显示为空};
+\node[box,text width=3cm] (b) at (5,3.4) {添加 gift:A1\\$E=\{(\mathrm{gift},A1)\}$\\$C=\{A1\}$\\$R_{\mathrm{del}}=\emptyset$};
+\node[good,text width=3cm] (c) at (10,3.4) {移除已见 gift\\$E=\emptyset,\ C=\{A1\}$\\$R_{\mathrm{del}}=\{A1\}$\\显示再次为空};
+\draw[arr] (a)--node[note,above]{加入新标记}(b);
+\draw[arr] (b)--node[note,above]{移除活项}(c);
+\node[good,text width=12cm] at (5,.9) {按 $(C,R_{\mathrm{del}})$ 比较：$(\emptyset,\emptyset)\preceq(\{A1\},\emptyset)\preceq(\{A1\},\{A1\})$\\最初为空表示尚未知；最后为空表示已知 A1 已删除};
+\end{tikzpicture}

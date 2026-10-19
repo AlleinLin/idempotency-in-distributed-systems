@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[box,text width=12.2cm] (log) at (3.5,6.3)
+  {同一 Kafka 日志：order-events，分区 2\\offset 100 \quad 101 \quad 102\\记录是否保留由主题保留策略决定};
+\node[good,text width=5.4cm] (group) at (0,3.1)
+  {履约组 G\\初始已提交 next=100\\W1 完成 100 后提交 101\\G 的恢复起点移到 101};
+\node[box,text width=5.4cm] (audit) at (7,3.1)
+  {独立审计组\\自己的已提交 next=100\\读取同一分区中的记录\\履约组提交不推进审计位置};
+\draw[arr] (log.south west)--(group.north);
+\draw[arr] (log.south east)--(audit.north);
+\node[good,text width=5.4cm] (takeover) at (0,-.1)
+  {W1 退出，分区重新分配给 W2\\W2 沿原 G 的已提交位置\\从 101 恢复，不取 W1 的内存位置};
+\node[box,text width=5.4cm] (auditnext) at (7,-.1)
+  {审计沿自己的位置继续\\100 尚未完成，就从 100 恢复\\日志保留才有原记录可读};
+\draw[arr] (group.south)--(takeover.north);
+\draw[arr] (audit.south)--(auditnext.north);
+\node[note,text width=12.2cm] at (3.5,-2.1)
+  {各组的位置独立，记录保留与组进度独立；日志已清理时，由原事实补取或核查缺失输入};
+\end{tikzpicture}

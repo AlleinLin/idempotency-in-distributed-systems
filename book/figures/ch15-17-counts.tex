@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+\node[note] at (0,2.3) {消息投递};
+\node[note] at (5,2.3) {消费事务 Q};
+\node[note] at (10,2.3) {已提交事实};
+\draw[lane] (0,1.9)--(0,-2.4);
+\draw[lane] (5,1.9)--(5,-2.4);
+\node[box,text width=3.5cm] (q1) at (5,1.0) {首次 EV1\\提交 I／B／F501};
+\node[good,text width=3.2cm] (f) at (10,1.0) {初次履约一份\\实际编号 501};
+\draw[arr] (0,1.0)--node[note,above]{投递 1}(q1);
+\draw[arr] (q1)--(f);
+\draw[Gold,thick] (3.9,.1)--(6.1,.1);
+\node[note,text=Gold] at (5,-.35) {提交后、ACK 前退出};
+\node[box,text width=3.5cm] (q2) at (5,-1.5) {再次 EV1\\按 I/B 取得原 F501};
+\draw[arr] (0,-1.5)--node[note,above]{投递 2}(q2);
+\draw[arr] (q2.east) -| (f.south);
+\draw[arr] (q2.south)--(5,-2.5)--node[note,below]{再次 ACK}(0,-2.5);
+\end{tikzpicture}

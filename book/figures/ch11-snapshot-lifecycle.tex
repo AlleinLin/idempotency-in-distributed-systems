@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\foreach \x/\id/\title/\detail in {
+0/a/捕获/同一完整状态至 k,
+3.5/b/写临时文件/格式与完整性检查,
+7/c/持久发布/快照完成依据有效,
+10.5/d/截断/删除被覆盖日志}{
+\node[box,text width=2.7cm,minimum height=1.4cm] (\id) at (\x,3.2) {\title\\[4pt]\detail};}
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\draw[Gold,densely dashed,thick] (5.25,1.9)--(5.25,-.4);
+\node[good,text width=5.1cm] at (1.5,.5) {发布前崩溃\\旧快照 + 未删除日志\\恢复原提交前缀};
+\node[good,text width=5.1cm] at (9,.5) {发布并截断后崩溃\\新快照 + k 后提交后缀\\恢复同一完整状态};
+\node[note,text width=13cm] at (5.25,-1.5) {应用交回已保存至 k 的完成依据，复制层再按该边界截断\\临时文件写到一半时，旧恢复依据继续保留};
+\end{tikzpicture}

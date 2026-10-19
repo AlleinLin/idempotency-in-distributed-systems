@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[box,text width=3.7cm] (u) at (0,0) {RF1 未决，占用 1000\\平台也许已返还\\本地尚未取得终态};
+\node[good,text width=3.7cm] (s) at (5.6,1.5) {可信成功\\核对 RF1／C1／X1\\1000 从未决转入成功};
+\node[warn,text width=3.7cm] (r) at (5.6,-1.5) {足够最终拒绝\\过去／在途／未来已终结\\释放未决的 1000};
+\node[box,text width=3.7cm] (q) at (-5.5,0) {查询暂未查到\\临时故障／响应丢失\\保留原键与占用};
+\draw[arr] (u)--(s);\draw[arr] (u)--(r);\draw[arr] (q)--(u);
+\end{tikzpicture}

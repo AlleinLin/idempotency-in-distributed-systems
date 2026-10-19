@@ -1,0 +1,24 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode] (zero) at (.7,1.5) {初始};
+\node[booknode] (a) at (3.3,2.4) {状态 A};
+\node[booknode] (b) at (3.3,.6) {状态 B};
+\node[booknode] (c) at (6.5,2.4) {状态 C};
+\node[booknode] (d) at (6.5,.6) {状态 D};
+\node[bookresult] (bad) at (10.1,2.4) {违反不变量};
+\draw[bookarrow] (zero) -- (a);
+\draw[bookarrow] (zero) -- (b);
+\draw[bookarrow] (a) -- (c);
+\draw[bookarrow] (b) -- (d);
+\draw[bookarrow] (b) -- (c);
+\draw[bookalert] (c) -- (bad);
+\node[booknote] at (.7,-.4) {第 0 层};
+\node[booknote] at (3.3,-.4) {第 1 层};
+\node[booknote] at (6.5,-.4) {第 2 层};
+\node[booknote] at (10.1,-.4) {第 3 层};
+\node[booknote,text width=10.5cm] at (5.6,-1.3) {逐层展开，完整状态去重；首次发现时保存前驱与动作\\沿前驱回溯得到最短抽象迁移轨迹；队列清空表示当前有限图遍历结束};
+\end{tikzpicture}
+\caption{广度优先搜索按抽象动作数逐层展开并保留反例前驱}
+\label{fig:ch06-bfs}
+\end{figure}

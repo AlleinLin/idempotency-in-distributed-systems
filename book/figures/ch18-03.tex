@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\foreach \x/\n in {0/旧读者 A,4/数据库,8/缓存} {
+ \node[font=\bfseries] at (\x,0) {\n};\draw[lane] (\x,-.4)--(\x,-5.2);}
+\draw[arr] (4,-1)--node[above,note]{版本1／paid} (0,-1);
+\node[good,text width=2.5cm] at (4,-2) {提交版本2\\fulfilled};
+\draw[arr] (4,-3)--node[above,note]{删除旧缓存} (8,-3);
+\draw[arr] (0,-4)--node[above,note]{迟到 SET：版本1／paid} (8,-4);
+\node[warn,text width=3.1cm] at (8,-5.2) {重新命中旧投影};
+
+\end{tikzpicture}

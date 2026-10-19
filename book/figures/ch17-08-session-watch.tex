@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[box] (a) at (0,1.5) {A 会话连接\\候选0000};
+\node[warn] (d) at (4.3,1.5) {TCP 断开\\客户端先观察\\连接暂停};
+\node[box] (e) at (8.6,1.5) {集群判会话过期\\删除临时候选0000\\B 候选0001接任};
+\draw[arr] (a)--(d);\draw[arr] (d)--(e);
+\node[box] (w) at (0,-1.5) {B 读取目录\\同时设置 watch};
+\node[warn] (n) at (4.3,-1.5) {收到一次通知\\其间可能已发生\\多次变化};
+\node[good] (r) at (8.6,-1.5) {重读当前事实\\同时重新设置\\watch};
+\draw[arr] (w)--(n);\draw[arr] (n)--(r);
+\draw[ctl] (r.south)--(8.6,-3.25)--(0,-3.25)--(w.south);
+\node[note] at (4.3,-4) {上：候选资格的生命周期。下：当前事实的观察循环。};
+\end{tikzpicture}

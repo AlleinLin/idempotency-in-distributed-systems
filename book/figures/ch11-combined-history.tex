@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\node[note,text width=13cm] at (4,5.1) {共同初态：10000，M/D 为空，E1 全程有效；S1 与 S2 各 3000};
+\node[box,text width=5.5cm] (a) at (0,3.5) {1. S1 首次提交并应用\\P1/O1/D1，余额 7000\\原结果 7000，响应丢失};
+\node[box,text width=5.5cm] (b) at (8,3.5) {2. 原主退出，新主接班\\S1 再入日志，读取原 M\\返回原 7000，当前 7000};
+\node[box,text width=5.5cm] (c) at (8,1) {3. S2 首次提交并应用\\P2/O2/D2，余额 4000\\S1 再试返回原 7000};
+\node[good,text width=5.5cm] (d) at (0,1) {4. 完整快照、截断、全部恢复\\当前余额 4000，两条 D\\S1 继续返回 P1/O1/D1、原 7000};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\node[note,text width=13cm] at (4,-.9) {每次 S1 可以占新日志位置，M 保持同一原绑定\\坏快照入口若遗漏 M 且未重建，步骤 4 后的 S1 会再形成 P3/O3/D3};
+\end{tikzpicture}

@@ -1,0 +1,292 @@
+\subsection*{来源、退款与额度怎样保存在同一权威域}
+
+沿用第~\ref{section:14-3}~节的教学布局，退款来源表由受控结果入口从可信 $R_J$ 建立。它保存原 C、所属账户、X、币种与原收款额，客户端提交的 X 或可退金额不能直接填入来源表。\code{result\_position} 指向该来源的原成功决定。退款表保存完整身份、输入版本和原输入，原金额与平台身份一旦受理便固定：
+
+% SQL15-REFUND-DDL
+\begin{BookCode}
+CREATE TABLE j.refund_sources(
+ c text PRIMARY KEY REFERENCES j.results(c),
+ g text NOT NULL, result_position bigint NOT NULL,
+ account_id bigint NOT NULL, x text NOT NULL UNIQUE,
+ currency text NOT NULL, amount bigint NOT NULL CHECK(amount>0),
+ FOREIGN KEY(g,result_position) REFERENCES j.decisions(g,position));
+CREATE TABLE j.refunds(
+ rf text PRIMARY KEY, g text NOT NULL REFERENCES j.directory(g),
+ s jsonb NOT NULL UNIQUE CHECK(j.valid_s(s) IS TRUE),
+ source_c text NOT NULL REFERENCES j.refund_sources(c),
+ source_x text NOT NULL, input_version text NOT NULL,
+ input jsonb NOT NULL, amount bigint NOT NULL CHECK(amount>0),
+ status text NOT NULL CHECK(status IN ('pending','succeeded','rejected')),
+ provider_scope text NOT NULL, provider_key text NOT NULL,
+ provider_input jsonb NOT NULL,
+ provider_result jsonb, result jsonb,
+ UNIQUE(provider_scope,provider_key));
+\end{BookCode}
+
+下面给出首次预占和已有身份恢复的 SQL 入口，隔离级别取 PostgreSQL 的 READ COMMITTED。已有 RF 的恢复用同一条查询的快照读取目录、会话与原退款，先核对代次、开放状态、活动会话与截止时间，再比较全部原输入。快照读到的会话已经关闭时，原 RF 也不会使客户端越过准入。查询以后发生的并发关闭，排在这次读取之后；这条只读恢复的线性化点就是该查询的快照。已有结果和未决进度都按该快照返回。
+
+没有找到 RF 时，写入分支按目录、会话、来源的固定顺序取锁，再重新检查资格与已有身份。登记、关闭、冻结和其他退款写入者遵守相同顺序，成功/拒绝合流也先锁目录再锁来源。这样不会出现持有来源锁再反向等待目录的环。已有身份的读取不持有分片目录排他锁，首次预占为分配连续决定位置付出整分片串行的代价。会话判期使用可信数据库时钟，需要区间时间源的部署改用前节的可信上界。授权者通过受限权限调用函数，从认证上下文构造 S，函数继续检查四个分量的规范类型，并按会话重建相同表示。
+
+% SQL15-RESERVE
+\begin{BookCode}
+CREATE FUNCTION j.reserve_refund(
+ p_g text,p_epoch bigint,p_s jsonb,p_input jsonb)
+ RETURNS j.refunds LANGUAGE plpgsql AS $$
+DECLARE d j.directory%ROWTYPE; e j.sessions%ROWTYPE;
+        src j.refund_sources%ROWTYPE; r j.refunds%ROWTYPE;
+        used_amount bigint; x_amount bigint; pos bigint; r_seq bigint;
+        canonical_s jsonb; gate record; n bigint;
+BEGIN
+ IF j.valid_s(p_s) IS DISTINCT FROM true THEN
+   RAISE EXCEPTION 'invalid refund identity encoding';
+ END IF;
+ SELECT dir.route_epoch,dir.mode,ses.account_id,ses.action,
+        ses.session_id,ses.state,ses.deadline,to_jsonb(original.*) AS refund
+ INTO STRICT gate
+ FROM j.directory dir JOIN j.sessions ses ON ses.session_id=p_s->>2
+ LEFT JOIN j.refunds original ON original.s=p_s WHERE dir.g=p_g;
+ IF gate.route_epoch<>p_epoch OR gate.mode<>'open' THEN
+   RAISE EXCEPTION 'admission closed';
+ END IF;
+ IF gate.state<>'active' OR clock_timestamp()>=gate.deadline
+    OR gate.account_id IS DISTINCT FROM (p_s->>0)::bigint
+    OR gate.action<>'refund.create.v1'
+    OR p_s->>1 IS DISTINCT FROM gate.action THEN
+   RAISE EXCEPTION 'invalid refund session';
+ END IF;
+ canonical_s:=jsonb_build_array(gate.account_id,gate.action,
+                               gate.session_id,p_s->>3);
+ IF canonical_s IS DISTINCT FROM p_s THEN
+   RAISE EXCEPTION 'noncanonical refund identity';
+ END IF;
+ IF gate.refund IS NOT NULL THEN
+   r:=jsonb_populate_record(NULL::j.refunds,gate.refund);
+   IF r.g<>p_g OR r.input_version<>'refund-v1'
+      OR r.input IS DISTINCT FROM p_input THEN
+     RAISE EXCEPTION 'refund input conflict';
+   END IF;
+   RETURN r;
+ END IF;
+\end{BookCode}
+
+快照中尚无原退款时，进入固定锁序的写入分支；等待锁以后重新取得目录和会话，并再次查找原身份：
+
+% SQL15-RESERVE-CONT1
+\begin{BookCode}
+ SELECT * INTO STRICT d FROM j.directory WHERE g=p_g FOR UPDATE;
+ IF d.route_epoch<>p_epoch OR d.mode<>'open' THEN
+   RAISE EXCEPTION 'admission closed';
+ END IF;
+ SELECT * INTO STRICT e FROM j.sessions
+  WHERE session_id=p_s->>2 FOR UPDATE;
+ IF e.state<>'active' OR clock_timestamp()>=e.deadline
+    OR e.account_id IS DISTINCT FROM (p_s->>0)::bigint
+    OR e.action<>'refund.create.v1' OR p_s->>1 IS DISTINCT FROM e.action THEN
+   RAISE EXCEPTION 'invalid refund session';
+ END IF;
+ canonical_s:=jsonb_build_array(e.account_id,e.action,e.session_id,p_s->>3);
+ IF canonical_s IS DISTINCT FROM p_s THEN
+   RAISE EXCEPTION 'noncanonical refund identity';
+ END IF;
+ SELECT * INTO r FROM j.refunds WHERE s=canonical_s;
+ IF FOUND THEN
+   IF r.g<>p_g OR r.input_version<>'refund-v1'
+      OR r.input IS DISTINCT FROM p_input THEN
+     RAISE EXCEPTION 'refund input conflict';
+   END IF;
+   RETURN r;
+ END IF;
+\end{BookCode}
+
+首次预占再锁来源，比较累计责任，分配实际 RF 并共同保存原受理决定：
+
+% SQL15-RESERVE-CONT2
+\begin{BookCode}
+ SELECT * INTO STRICT src FROM j.refund_sources
+  WHERE c=p_input->>'source_charge_id' FOR UPDATE;
+ x_amount:=(p_input->>'amount_minor')::bigint;
+ IF src.g<>p_g OR src.account_id<>e.account_id
+    OR p_input->>'currency' IS DISTINCT FROM src.currency
+    OR x_amount IS NULL OR x_amount<=0
+    OR p_input->>'reason' IS NULL THEN
+   RAISE EXCEPTION 'invalid refund input or source';
+ END IF;
+ SELECT COALESCE(sum(amount),0) INTO used_amount FROM j.refunds
+  WHERE source_c=src.c AND status IN ('pending','succeeded');
+ IF x_amount>src.amount OR used_amount>src.amount-x_amount THEN
+   RAISE EXCEPTION 'refund_capacity_unavailable';
+ END IF;
+ UPDATE j.directory
+  SET next_refund=next_refund+1,last_position=last_position+1
+  WHERE g=p_g AND route_epoch=p_epoch AND mode='open'
+  RETURNING next_refund,last_position INTO r_seq,pos;
+ GET DIAGNOSTICS n=ROW_COUNT;
+ IF n<>1 THEN RAISE EXCEPTION 'refund allocation count %',n; END IF;
+ INSERT INTO j.refunds VALUES(
+  'RF'||p_epoch||':'||r_seq,p_g,canonical_s,src.c,src.x,
+  'refund-v1',p_input,x_amount,'pending',
+  'simulator:merchant-7:test:refund.v1',
+  'refund-RF'||p_epoch||':'||r_seq,
+  jsonb_build_object('source_provider_charge_id',src.x,
+    'currency',src.currency,'amount_minor',x_amount),NULL,NULL)
+ RETURNING * INTO r;
+ INSERT INTO j.decisions VALUES
+  (p_g,pos,p_epoch,'refund_accept',to_jsonb(r));
+ RETURN r;
+END $$;
+\end{BookCode}
+
+调用者以一个事务执行函数，提交确认后返回实际保存的 RF。本例的新编号可能是 \code{RF8:1}，它对应前面协议中的第一项 RF1。异常使整个事务回滚，额度不足分支没有新 RF、没有新位置。同参恢复先于当前额度判断，取回原 RF 与原未决占用；输入或来源改变时完整比较报告冲突。\code{pending} 行本身就是持久恢复待办，扫描器按原范围和键继续，不以客户端连接存活作为条件。
+
+结果合流先取可信成功或足够最终拒绝证据，再锁目录与来源，核对原 RF 的来源、金额和平台身份。下面展示已核验成功后的条件写入，演示限定第 8 路由代次的开放资格，冻结或换代即从失败出口回滚；实际入口把 \code{RF8:1} 替换为读取的原 RF，把完整原平台响应和接口原结果保存下来：
+
+% SQL15-RESULT
+\begin{BookCode}
+BEGIN;
+DO $$
+DECLARE r j.refunds%ROWTYPE; d j.directory%ROWTYPE;
+        src j.refund_sources%ROWTYPE; pos bigint; n bigint;
+BEGIN
+ SELECT * INTO STRICT d FROM j.directory WHERE g='g7' FOR UPDATE;
+ IF d.route_epoch<>8 OR d.mode<>'open' THEN
+   RAISE EXCEPTION 'stale refund result authority';
+ END IF;
+ SELECT * INTO STRICT src FROM j.refund_sources WHERE c='C1' FOR UPDATE;
+ IF src.g<>d.g OR src.x<>'X1' OR src.currency<>'CNY' THEN
+   RAISE EXCEPTION 'refund source ownership conflict';
+ END IF;
+ SELECT * INTO STRICT r FROM j.refunds WHERE rf='RF8:1' FOR UPDATE;
+ IF r.g<>d.g OR r.status<>'pending' OR r.source_c<>'C1'
+    OR r.source_x<>'X1' OR r.amount<>1000
+    OR r.provider_scope<>'simulator:merchant-7:test:refund.v1'
+    OR r.provider_key<>'refund-RF8:1' THEN
+   RAISE EXCEPTION 'unexpected original refund';
+ END IF;
+ UPDATE j.refunds SET status='succeeded',
+  provider_result='{"refund_id":"PX-RF1","source":"X1",
+                    "currency":"CNY","amount_minor":1000}',
+  result='{"refund_id":"RF8:1","source_charge_id":"C1",
+           "source_provider_charge_id":"X1","status":"succeeded",
+           "provider_refund_id":"PX-RF1","currency":"CNY",
+           "amount_minor":1000}'
+ WHERE rf=r.rf AND status='pending' AND input=r.input
+ RETURNING * INTO r;
+ GET DIAGNOSTICS n=ROW_COUNT;
+ IF n<>1 THEN RAISE EXCEPTION 'refund result update count %',n; END IF;
+ UPDATE j.directory SET last_position=last_position+1
+  WHERE g=d.g AND route_epoch=d.route_epoch AND mode='open'
+  RETURNING last_position INTO pos;
+ GET DIAGNOSTICS n=ROW_COUNT;
+ IF n<>1 THEN RAISE EXCEPTION 'refund decision count %',n; END IF;
+ INSERT INTO j.decisions VALUES
+  (d.g,pos,d.route_epoch,'refund_result',to_jsonb(r));
+END $$;
+COMMIT;
+\end{BookCode}
+
+已有终态的重复证据走另外的恢复分支：逐字段比较原两类结果，相同就返回原结果，不再写一项新决定。相反终态或字段冲突保留原决定并进入核查。最终拒绝只有在原退款的过去、全部已受理与在途、未来路径都取得相应终结依据后，才把同一行从 \code{pending} 改为 \code{rejected}。状态改变与完整结果决定共同提交，使扫描器停止、额度释放和后续重试使用同一事实。
+
+\subsection*{本地退款投影按原决定恢复}
+
+W 中另建只读退款投影，列与权威退款行对应。普通查询通过 RF 或完整 S 读取，首次预占、额度汇总和平台发送都由 J 中的原退款承担。只有受限恢复角色可以调用下面的物化入口，业务查询角色只有读取权限。投影缺失或回退时，恢复者按同一分片的决定顺序重放 \code{refund\_accept} 与 \code{refund\_result}，中间其他种类的决定也各自物化并推进同一游标。
+
+% SQL15-W-REFUND-DDL
+\begin{BookCode}
+CREATE TABLE w.refunds(
+ rf text PRIMARY KEY,g text NOT NULL,s jsonb NOT NULL UNIQUE,
+ source_c text NOT NULL,source_x text NOT NULL,
+ input_version text NOT NULL,input jsonb NOT NULL,
+ amount bigint NOT NULL CHECK(amount>0),
+ status text NOT NULL CHECK(status IN ('pending','succeeded','rejected')),
+ provider_scope text NOT NULL,provider_key text NOT NULL,
+ provider_input jsonb NOT NULL,provider_result jsonb,result jsonb,
+ CHECK(j.valid_s(s) IS TRUE),
+ UNIQUE(provider_scope,provider_key),
+ CHECK((status='pending' AND provider_result IS NULL AND result IS NULL)
+    OR (status IN ('succeeded','rejected')
+        AND provider_result IS NOT NULL AND result IS NOT NULL)));
+REVOKE ALL ON w.refunds FROM PUBLIC;
+\end{BookCode}
+
+物化参数 \code{p\_decision} 是已核验来源的完整决定，包含原分片 \code{g}、位置 \code{position}、代次 \code{route\_epoch}、类型 \code{kind} 和行图像 \code{body}。\code{p\_epoch} 则是本地当前恢复资格，两者的代次可以不同：第 9 代的恢复者会重放第 8 代的原退款。终态推进还携带同一 RF 的原受理行图像 \code{p\_previous}，只允许改变状态和两类结果。源 C 的成功、X、币种、金额及账户要先与本地已经恢复的原付款对应：
+
+% SQL15-W-REFUND
+\begin{BookCode}
+CREATE FUNCTION w.materialize_refund(
+ p_g text,p_epoch bigint,p_position bigint,p_decision jsonb,
+ p_previous jsonb DEFAULT NULL) RETURNS bigint
+ LANGUAGE plpgsql AS $$
+DECLARE r w.refunds%ROWTYPE; old_r w.refunds%ROWTYPE;
+        c w.facts%ROWTYPE; p w.facts%ROWTYPE; n bigint;
+        image jsonb; old_image jsonb; decision_kind text;
+BEGIN
+ PERFORM 1 FROM w.cursor WHERE g=p_g AND accepted_epoch=p_epoch
+   AND mode='recovering' AND last_position=p_position-1 FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'invalid refund recovery gate'; END IF;
+ IF p_decision->>'g' IS DISTINCT FROM p_g
+    OR p_decision->>'position' IS DISTINCT FROM p_position::text
+    OR p_decision->>'route_epoch' IS NULL THEN
+   RAISE EXCEPTION 'refund decision source conflict';
+ END IF;
+ decision_kind:=p_decision->>'kind';
+ image:=p_decision->'body';
+ r:=jsonb_populate_record(NULL::w.refunds,image);
+ IF image IS DISTINCT FROM to_jsonb(r) OR r.g IS DISTINCT FROM p_g
+    OR (decision_kind='refund_accept' AND r.status<>'pending')
+    OR (decision_kind='refund_result'
+        AND r.status NOT IN ('succeeded','rejected'))
+    OR decision_kind IS NULL
+    OR decision_kind NOT IN ('refund_accept','refund_result') THEN
+   RAISE EXCEPTION 'invalid refund decision image';
+ END IF;
+\end{BookCode}
+
+完整原图像通过编码检查以后，物化者从本地原付款核对退款来源，再比较已存退款：
+
+% SQL15-W-REFUND-CONT1
+\begin{BookCode}
+ SELECT * INTO STRICT c FROM w.facts
+  WHERE kind='C' AND id=r.source_c;
+ SELECT * INTO STRICT p FROM w.facts
+  WHERE kind='P' AND id=c.parent_id;
+ IF c.body->>'state' IS DISTINCT FROM 'succeeded'
+    OR c.body->'provider_result'->>'provider_charge_id'
+       IS DISTINCT FROM r.source_x
+    OR c.body->'provider_result'->>'currency'
+       IS DISTINCT FROM r.input->>'currency'
+    OR c.body->'provider_result'->>'amount_minor' IS NULL
+    OR (c.body->'provider_result'->>'amount_minor')::bigint<r.amount
+    OR p.body->'s'->0 IS DISTINCT FROM r.s->0 THEN
+   RAISE EXCEPTION 'refund projection source conflict';
+ END IF;
+ SELECT * INTO old_r FROM w.refunds WHERE rf=r.rf FOR UPDATE;
+ IF NOT FOUND THEN
+   IF decision_kind<>'refund_accept' THEN
+     RAISE EXCEPTION 'missing original refund acceptance';
+   END IF;
+   INSERT INTO w.refunds SELECT r.*;
+ ELSIF to_jsonb(old_r)=image THEN
+   NULL;
+ ELSE
+   old_image:=to_jsonb(old_r);
+   IF decision_kind<>'refund_result'
+      OR old_image IS DISTINCT FROM p_previous
+      OR old_r.status<>'pending'
+      OR (old_image-ARRAY['status','provider_result','result'])
+         IS DISTINCT FROM (image-ARRAY['status','provider_result','result']) THEN
+     RAISE EXCEPTION 'refund projection full image conflict';
+   END IF;
+   UPDATE w.refunds AS existing SET status=r.status,
+     provider_result=r.provider_result,result=r.result
+    WHERE existing.rf=r.rf AND to_jsonb(existing.*)=p_previous;
+   GET DIAGNOSTICS n=ROW_COUNT;
+   IF n<>1 THEN RAISE EXCEPTION 'refund projection update count %',n; END IF;
+ END IF;
+ -- Empty purchase/ledger batches still use the same atomic cursor gate.
+ RETURN w.materialize(p_g,p_epoch,p_position,'[]','[]');
+END $$;
+REVOKE ALL ON FUNCTION w.materialize_refund(
+ text,bigint,bigint,jsonb,jsonb) FROM PUBLIC;
+\end{BookCode}
+
+例如 J 在位置 3 保存 \code{RF8:1} 的原受理，位置 4 保存其成功，W 的位置 2 已经包含原成功 C1。恢复者先传入位置 3 的完整决定，再传入位置 4 的完整决定与位置 3 的原行图像。两次都保留 \code{RF8:1/refund-RF8:1}，第二次保存原 \code{PX-RF1} 及全部原结果。W 回退到位置 2 以后重复这两步，得到相同的退款行，J 的预占、编号和决定位置没有变化。任何字段冲突、来源错配或游标零行，都回滚该次投影与游标。提交未知时先重读游标与完整原行，已越过的位置核对后确认，尚未越过的位置沿原决定继续。

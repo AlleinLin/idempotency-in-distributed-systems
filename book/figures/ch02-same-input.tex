@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=9cm] at (5.6,0) {两次请求体相同：\texttt{\{"product\_id":"paper-001"\}}};
+\node[font=\small\sffamily\bfseries] at (2,-1) {响应丢失后的再次尝试};
+\node[font=\small\sffamily\bfseries] at (9.2,-1) {买完一包，再买一包};
+\node[booknode,text width=3cm] (u) at (2,-1.9) {一个购买意图 $u$};
+\node[booknode,text width=1.4cm] (a) at (.5,-3.2) {R1};
+\node[booknode,text width=1.4cm] (b) at (3.5,-3.2) {R2};
+\draw[bookarrow] (u)--(a);
+\draw[bookarrow] (u)--(b);
+\node[booknode,text width=2.6cm] (u1) at (7.5,-1.9) {购买意图 $u_1$};
+\node[booknode,text width=2.6cm] (u2) at (10.9,-1.9) {购买意图 $u_2$};
+\node[booknode,text width=1.4cm] (c) at (7.5,-3.2) {R1};
+\node[booknode,text width=1.4cm] (d) at (10.9,-3.2) {R2};
+\draw[bookarrow] (u1)--(c);
+\draw[bookarrow] (u2)--(d);
+\node[bookresult,text width=4.4cm] at (2,-4.6) {预期：一笔购买\\累计扣除 3000};
+\node[booknode,text width=4.4cm] at (9.2,-4.6) {预期：两笔购买\\累计扣除 6000};
+\end{tikzpicture}
+\caption{相同参数既可能属于同一操作的重试，也可能属于两次独立购买。区分两者需要请求体以外的操作关系。}
+\label{fig:ch02-same-input}
+\end{figure}

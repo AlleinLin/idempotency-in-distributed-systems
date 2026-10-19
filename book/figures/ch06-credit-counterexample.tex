@@ -1,0 +1,13 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=3.1cm] (a) at (1.7,2) {1. A 判断不足\\初始余额 2000};
+\node[bookresult,text width=3.1cm] (b) at (5.7,2) {2. B 充值 4000\\提交到 6000};
+\node[booknode,text width=3.1cm] (c) at (9.7,2) {3. A 提交拒绝\\提交时余额已足够};
+\draw[bookarrow] (a) -- (b);
+\draw[bookalert] (b) -- (c);
+\node[booknode,text width=10.5cm] at (5.7,-.1) {扩展若仍统一采用提交点：首次判断先保护账户行，\\所有充值与购买遵守同一保护，保持到各自终态提交};
+\end{tikzpicture}
+\caption{并发充值打断不足条件的延续，需要另行设计与证明}
+\label{fig:ch06-credit-counterexample}
+\end{figure}

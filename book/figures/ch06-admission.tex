@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=8cm] (entry) at (5.5,4.2) {核验资格与输入；开始事务；按完整 S 受约束插入};
+\node[booknode,text width=4.4cm] (new) at (2.6,2.5) {实际插入一行\\条件更新余额};
+\node[booknode,text width=4.4cm] (old) at (8.4,2.5) {插入零行\\下一条独立 SELECT};
+\draw[bookarrow] (entry) -- (new);
+\draw[bookarrow] (entry) -- (old);
+\node[bookresult,text width=4.4cm] (write) at (2.6,.5) {成功：P、O、D、原结果\\或拒绝：P、原因、原结果\\全部在同一事务提交};
+\node[booknode,text width=4.4cm] (read) at (8.4,.5) {按原版本比较输入\\同参读取原结果\\异参返回 409，保留旧记录};
+\draw[bookarrow] (new) -- (write);
+\draw[bookarrow] (old) -- (read);
+\node[booknote,text width=10.5cm] at (5.5,-1) {右侧只读取与比较；只有实际插入身份的左侧进入首次扣款};
+\end{tikzpicture}
+\caption{身份插入决定首次处理与结果恢复的分支}
+\label{fig:ch06-admission}
+\end{figure}

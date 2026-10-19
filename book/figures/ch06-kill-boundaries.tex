@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknode,text width=10.7cm] (pre) at (5.5,3.1) {1.身份前　2.身份后　3.余额后　4.订单后\\5.流水后　6.终态后　7.提交前};
+\node[booknote] at (8.4,1.75) {七处均在提交以前终止工作进程};
+\node[booknode,text width=4.6cm] (rollback) at (2.7,.8) {数据库撤销内部组\\余额 10000；P、O、D 为空};
+\node[bookresult,text width=4.6cm] (restore) at (8.4,.8) {同 S 首次恢复\\各一份 P、O、D；余额 7000};
+\draw[bookarrow] (pre.south) -- (rollback.north);
+\draw[bookarrow] (rollback) -- (restore);
+\node[booknode,text width=4.6cm] (post) at (2.7,-1.2) {8.提交确认后、交付前退出\\完整成功；余额 7000};
+\node[bookresult,text width=4.6cm] (replay) at (8.4,-1.2) {同 S 读取原结果\\P、O、D 与余额保持};
+\draw[bookarrow] (post) -- (replay);
+\end{tikzpicture}
+\caption{八个终止位置按提交边界分为共同回滚与完整恢复}
+\label{fig:ch06-kill-boundaries}
+\end{figure}

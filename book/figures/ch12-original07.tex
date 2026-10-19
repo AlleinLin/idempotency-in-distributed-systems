@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\node[good] (a) at (0,3.5) {S1/K1 编码为 1\\完成 3000 分购买\\客户端确认 $h_{\rm ack}$=1};
+\node[warn] (b) at (5.5,3.5) {错误回收：删 M 与 U\\只剩 $h_{\rm ack}$=1\\失去 K1 的反向依据};
+\node[warn] (c) at (11,3.5) {同一 S1 改编码为 2\\2 大于 $h_{\rm ack}$，误判首次\\又执行一笔购买};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);
+\node[good,text width=12.6cm] at (5.5,1.1) {可选适配：活动 E1 保留 U(S1)=1 与 $M_{\min}$(S1)\\S1 改用 2 → encoding\_conflict；原编码异参 → conflict};
+\node[note,text width=13cm] at (5.5,-.5) {任意 K 继续需要逐键依据；可核验序号键属于另一个显式接口版本};
+\end{tikzpicture}

@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[good,text width=4.8cm] (nn) at (4.3,2.7) {NameNode\\文件 $\to$ 有序块与位置\\写入租约／\mbox{EditLog}／FsImage};
+\node[box,text width=2.1cm] (c) at (0,0) {客户端\\唯一写入者};
+\node[box,text width=2cm] (d1) at (3.6,0) {DataNode 1\\块副本};
+\node[box,text width=2cm] (d2) at (7.1,0) {DataNode 2\\块副本};
+\node[box,text width=2cm] (d3) at (10.6,0) {DataNode 3\\块副本};
+\draw[ctl] (c.north)--(0,2.7)--node[above,note]{创建／位置} (nn.west);
+\draw[ctl] (d3.north)--(10.6,2.7)--node[above,note]{心跳／块报告} (nn.east);
+\draw[arr] (c)--node[above,note]{数据包} (d1);
+\draw[arr] (d1)--node[above,note]{转发} (d2);
+\draw[arr] (d2)--node[above,note]{转发} (d3);
+\draw[arr] (d3.south)--(10.6,-1.4)--node[below,note]{确认逐级返回} (0,-1.4)--(c.south);
+\node[note,text width=11.5cm] at (5.3,-2.6) {命名空间与写入者由NameNode协调；大量字节经过DataNode流水线。\\同步、可见与关闭按相应接口解释。};
+\end{tikzpicture}

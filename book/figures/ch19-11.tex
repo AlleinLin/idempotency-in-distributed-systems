@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (p) at (0,1) {参与者\\已投 yes\\持久 prepared};
+\node[warn] (c) at (4,1) {协调组不可读\\本地无法区分\\commit／abort 历史};
+\node[good] (r) at (8,1) {协调组恢复\\读取原 TX 决定\\重复通知参与者};
+\node[warn] (g) at (0,-2) {付款资格未释放\\原 C／T 等待};
+\node[good,text width=6.6cm] (pay) at (6,-2) {核对共同 commit 并推进协议\\释放原 C／T → 原 scope／pay-C 付款};
+\draw[arr] (p)--(c);\draw[arr] (c)--(r);
+\draw[ctl] (p)--(g);\draw[arr] (r.south)--(pay.north);
+
+\end{tikzpicture}

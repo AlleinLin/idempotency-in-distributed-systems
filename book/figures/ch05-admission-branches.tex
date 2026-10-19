@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode] (a) at (0,0) {认证、格式与受理检查};
+\node[booknote,text width=3.3cm] (e) at (6,0) {前置失败：本次未受理\\不能据此判断其他同 S 尝试};
+\node[booknode] (b) at (0,-1.4) {完整 S 竞争并核对原输入};
+\node[booknote,text width=3.3cm] (f) at (6,-1.4) {同 S 异参：409\\保留已有绑定与终态};
+\node[bookresult] (c) at (0,-2.8) {首次取得身份，执行事务};
+\node[booknode] (g) at (-2,-4.2) {成功：订单与扣款};
+\node[booknode] (h) at (3,-4.2) {终态拒绝：保存原因};
+\draw[bookarrow] (a)--(b);
+\draw[bookarrow] (a)--(e);
+\draw[bookarrow] (b)--(f);
+\draw[bookarrow] (b)--(c);
+\draw[bookarrow] (c)--(g);
+\draw[bookarrow] (c)--(h);
+\end{tikzpicture}
+\caption{前置拒绝、同身份异参冲突与业务终态拒绝分别发生在不同步骤。}
+\label{fig:ch05-admission-branches}
+\end{figure}

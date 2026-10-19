@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.7cm] (k) at (1.8,0) {完整身份 S1\\账户、动作、K1};
+\node[booknode,text width=6.8cm] (m) at (8,0) {已保存绑定 $M(S_1)$\\版本 V1、输入 X1、购买 P1、原结果 $R(S_1)$};
+\draw[bookarrow] (k)--(m);
+\node[booknode,text width=3.7cm] (same) at (1.8,-1.9) {恢复 S1、X1\\命中原绑定};
+\node[bookresult,text width=4.2cm] (diff) at (7,-1.9) {恢复 S1、X2\\输入不同，报告冲突};
+\node[booknode,text width=3.5cm] (new) at (11.6,-1.9) {新身份 S2、X1\\可另建购买};
+\draw[bookarrow] (same.north)--(m.south west);
+\draw[bookalert] (diff.north)--(m.south);
+\node[booknote,text width=12cm] at (6.5,-3.3)
+ {已保存绑定保持稳定；输入指纹用于核对绑定，输入相同的不同身份仍可各自成立};
+\end{tikzpicture}
+\caption{身份决定定位哪项操作，输入核对决定本次请求是否符合原绑定。}
+\label{fig:ch03-binding}
+\end{figure}

@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.7cm] (s) at (2,0) {插入 S、原输入\\内部 pending};
+\node[booknode,text width=3.7cm] (b) at (7,0) {条件更新账户\\10000 → 7000};
+\node[booknode,text width=3.7cm] (od) at (12,0) {建立 O1、D1\\引用 P1};
+\draw[bookarrow] (s)--(b);
+\draw[bookarrow] (b)--(od);
+\node[bookresult,text width=7cm] (result) at (7,-1.8) {保存 succeeded 与原结果\\P1、O1、D1、Q7、3000、当次 7000};
+\draw[bookarrow] (od.south)--++(0,-.55)-|(result.east);
+\begin{scope}[on background layer]
+\node[draw=Accent!70,dashed,rounded corners=4pt,fit=(s)(b)(od)(result),inner sep=8pt] {};
+\end{scope}
+\node[booknote,text width=13cm] at (7,-3.2) {同一数据库事务：全部提交，或全部回滚\\余额不足分支保留 S、输入与拒绝结果，不创建订单和扣款};
+\end{tikzpicture}
+\caption{身份插入与购买效果、终态和原结果处于共同提交边界。}
+\label{fig:ch04-atomic-boundary}
+\end{figure}

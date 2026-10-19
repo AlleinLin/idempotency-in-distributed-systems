@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote,anchor=west] at (-1.1,.7) {先提交，再报告成功};
+\node[booknode,text width=2.6cm] (a) at (.4,0) {数据库提交成功};
+\node[bookresult,text width=2.6cm] (b) at (4.9,0) {响应传递中断};
+\node[booknode,text width=3cm] (c) at (9.8,0) {已扣款\\客户端结果未知};
+\draw[bookarrow] (a)--(b);
+\draw[bookalert] (b)--(c);
+\node[booknote,anchor=west] at (-1.1,-1.3) {先报告成功，再提交};
+\node[booknode,text width=2.6cm] (d) at (.4,-2) {客户端收到成功};
+\node[bookresult,text width=2.6cm] (e) at (4.9,-2) {事务随后回滚};
+\node[bookresult,text width=3cm] (f) at (9.8,-2) {报告了成功\\数据库却无购买};
+\draw[bookarrow] (d)--(e);
+\draw[bookalert] (e)--(f);
+\node[booknote,anchor=west] at (-1.1,-3.3) {等待客户端再确认};
+\node[booknode,text width=2.6cm] (g) at (.4,-4) {先发送结果};
+\node[bookresult,text width=2.6cm] (h) at (4.9,-4) {客户端确认丢失};
+\node[booknode,text width=3cm] (i) at (9.8,-4) {服务仍需决定\\怎样继续事务};
+\draw[bookarrow] (g)--(h);
+\draw[bookalert] (h)--(i);
+\end{tikzpicture}
+\caption{调整先后次序会改变故障后果。成功响应需要已提交事实支撑，结果丢失则需要后续恢复路径。}
+\label{fig:ch02-ordering}
+\end{figure}

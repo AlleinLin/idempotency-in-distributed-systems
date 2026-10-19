@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {旧 Actor\\内存计数5\\执行 reserve};
+\node[good] (d) at (4,0) {持久业务事务\\S／原输入／P-C-T\\预留与原结果};
+\node[warn] (x) at (8,0) {提交后退出\\调用方没有结果};
+\node[box] (n) at (0,-2.8) {新 Actor 构造\\内存重新从0开始};
+\node[good,text width=6.7cm] (r) at (6,-2.8) {原 S 读取持久绑定\\返回原预留结果，资源不再减少};
+\draw[arr] (a)--(d);\draw[arr] (d)--(x);\draw[arr] (n)--(r);
+\draw[ctl] (x.south)--(8,-1.5)--(0,-1.5)--(n.north);
+\draw[ctl] (d.south)--(r.north);
+
+\end{tikzpicture}

@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+
+\node[box,text width=3cm] (p) at (0,1.6) {P1 购买\\S、Q7、CNY 3000};
+\node[box,text width=3cm] (c) at (4.1,1.6) {C1 支付\\固定范围与 pay-C1};
+\node[box,text width=3cm] (t) at (8.2,1.6) {T1 恢复任务\\引用 C1、ready};
+\begin{scope}[on background layer]
+\node[draw=Blue,fill=Blue!3,rounded corners,fit=(p)(c)(t),inner sep=12pt,label={[font=\small,text=Blue]above:A 的同一事务}] (a) {};
+\end{scope}
+\draw[arr] (p)--(c);\draw[arr] (c)--(t);
+\node[good,text width=4.4cm] (commit) at (1.5,-.6) {A 提交：三者共同可见\\进程退出后仍可扫描 T1};
+\node[warn,text width=4.4cm] (rollback) at (7,-.6) {A 回滚：三者共同撤销\\尚无外部发送资格};
+\draw[arr] (a.south) -- ++(0,-.3) -| (commit.north);
+\draw[arr] (a.south) -- ++(0,-.3) -| (rollback.north);
+\node[box,text width=10.4cm] at (4.1,-2.2) {扫描候选 → 事务领取 → 查询或原身份发送 → 可信证据 R\\未决则再次安排；终态与 T1 完成共同提交};
+
+\end{tikzpicture}

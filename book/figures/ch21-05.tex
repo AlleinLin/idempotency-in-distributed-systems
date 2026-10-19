@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[cell] (a) at (0,0) {新 S／秒};
+\node[cell] (b) at (3,0) {同 S 重试／秒};
+\node[cell] (c) at (6,0) {外部尝试／秒};
+\node[cell] (d) at (9,0) {消费投递／秒};
+\node[box] (t) at (0,-2) {未决 T\\数量／字节／年龄};
+\node[box] (e) at (4.5,-2) {未发布 EV\\数量／字节／年龄};
+\node[box] (f) at (9,-2) {dispatch未决\\数量／年龄};
+\node[warn,text width=10.8cm] at (4.5,-4) {业务占用：prepared 件数；退款成功额度＋未知占额};
+\draw[ctl] (a)--(t);\draw[ctl] (c)--(t);\draw[ctl] (d)--(f);
+
+\end{tikzpicture}

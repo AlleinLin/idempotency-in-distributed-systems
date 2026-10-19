@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=9cm] (ins) at (7,0) {INSERT ... ON CONFLICT（完整 S）DO NOTHING RETURNING};
+\node[booknode,text width=3.7cm] (one) at (2,-1.6) {返回一行\\实际插入候选 P1};
+\node[booknode,text width=3.7cm] (zero) at (7,-1.6) {返回零行\\目标身份已被占用};
+\node[bookresult,text width=3.7cm] (err) at (12,-1.6) {其他约束或执行错误\\事务进入错误路径};
+\draw[bookarrow] (ins.south west)--(one.north);
+\draw[bookarrow] (ins.south)--(zero.north);
+\draw[bookalert] (ins.south east)--(err.north);
+\node[booknode,text width=3.7cm] (buy) at (2,-3.2) {验证报价、条件扣款\\写终态后提交};
+\node[booknode,text width=3.7cm] (read) at (7,-3.2) {下一语句读取 S\\核对输入、返回原结果};
+\node[booknode,text width=3.7cm] (abort) at (12,-3.2) {回滚\\按具体原因恢复或修正};
+\draw[bookarrow] (one)--(buy);
+\draw[bookarrow] (zero)--(read);
+\draw[bookalert] (err)--(abort);
+\end{tikzpicture}
+\caption{插入的行数参与控制流，其他数据库错误保留独立的处理出口。}
+\label{fig:ch04-insert-branches}
+\end{figure}

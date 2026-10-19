@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/前驱 H,4.4/配置管理者,8.8/后继 T}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.4)--(\x,-4.8);}
+\node[warn,text width=2.4cm] at (0,-1) {Sent=$\{42\}$};
+\node[warn,text width=2.4cm] at (8.8,-1) {只收到41};
+\draw[arr] (4.4,-1.9)--node[above,note]{先询问已收序号} (8.8,-1.9);
+\draw[arr] (8.8,-2.65)--node[above,note]{SN=41} (4.4,-2.65);
+\draw[arr] (4.4,-3.4)--node[above,note]{再通知前驱接新链路} (0,-3.4);
+\draw[arr] (0,-4.25)--node[above,note]{补发42，接好后才放行43} (8.8,-4.25);
+\node[note] at (4.4,-5.35) {旧中间节点已失效停止，管理者串行完成本次配置。};
+\end{tikzpicture}

@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box] (ss) at (0,1.7) {购买会话\\准入期限／关闭};
+\node[good] (s) at (4.2,1.7) {完整 $S$ 绑定／$A_J$\\原输入／P-C-T\\scope／pay-C};
+\node[box] (w) at (8.4,1.7) {付款待办\\当前工作者／代次\\原平台输入};
+\node[box] (r) at (4.2,-1.1) {$R_J$／原证据与结果\\O-EV／事件原报文\\发布标记／交接回执};
+\node[box] (f) at (0,-1.1) {退款\\原 C/X／占额\\RF／原退款键};
+\node[box] (tx) at (8.4,-1.1) {库存／事务责任\\prepare／决定\\原恢复位置};
+\draw[arr] (ss)--(s);\draw[arr] (s)--(w);
+\draw[arr] (w.south)--(r.north east);
+\draw[arr] (r)--(f);\draw[arr] (s.south east)--(tx.north west);
+\node[note,anchor=north] at ([yshift=-.6cm]r.south)
+ {图像沿关联闭合，包含尚未取得结果的责任。};
+\end{tikzpicture}

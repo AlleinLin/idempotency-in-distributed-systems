@@ -1,0 +1,12 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=7cm] (p) at (0,0) {保存的原结果：P1 / O1 / D1 / 成功\\CNY 3000 / 当次余额 7000};
+\node[booknode,text width=4.5cm] (a) at (-3,-2) {首次响应：201\\R1 / 10:00:01\\Replayed=false};
+\node[booknode,text width=4.5cm] (b) at (3,-2) {恢复响应：200\\R2 / 10:10:01\\Replayed=true};
+\draw[bookarrow] (p)--(a);
+\draw[bookarrow] (p)--(b);
+\end{tikzpicture}
+\caption{两个响应包装同一份业务结果，各自记录本次通信尝试。}
+\label{fig:ch05-response-attempts}
+\end{figure}

@@ -1,0 +1,20 @@
+\newcommand{\CEighteenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=2.8cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=orange!60!black,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    ctl/.style={arr,dashed},
+    note/.style={font=\footnotesize\sffamily,align=center},
+    lane/.style={draw=black!35,densely dashed},
+    cell/.style={draw=Blue,minimum width=1.7cm,minimum height=.68cm,
+      fill=blue!3,inner sep=4pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}

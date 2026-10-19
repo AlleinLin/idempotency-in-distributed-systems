@@ -1,0 +1,14 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknote] at (1,1.05) {实际扣款均为 D1};
+\node[booknode] at (-3,0) {首次 D1\\恢复 D1};
+\node[bookresult] at (-3,-1.5) {真实，且保持不变};
+\node[booknode] at (1,0) {首次 D9\\恢复 D9};
+\node[booknode] at (1,-1.5) {保持不变，但错误};
+\node[booknode] at (5,0) {首次 D1\\恢复 D9};
+\node[booknode] at (5,-1.5) {恢复结果发生变化};
+\end{tikzpicture}
+\caption{结果真实性与结果不变性需要分别检查。}
+\label{fig:ch05-truth-stability}
+\end{figure}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\node[note,text width=14cm] at (5,4.1) {共同初态：余额 10000，E1 有效，购买库空，Q7 金额 3000};
+\node[box,text width=4.4cm] (a) at (1,2.6) {历史 A：09:00 K1 完成\\P1/O1/D1，余额 7000\\响应丢失，M 被清理};
+\node[box,text width=4.4cm] (b) at (9,2.6) {历史 B：09:00 K2 完成\\P1/O1/D1，余额 7000\\K1 未到，M 被清理};
+\node[warn,text width=12cm] (v) at (5,.5) {09:20 相同观察 $\mathcal O$：同一 K1 与原输入、有效 E1、M(S1) 为空、余额 7000};
+\draw[arr] (a)--(v);\draw[arr] (b)--(v);
+\node[good,text width=4.4cm] (x) at (1,-1.4) {A：保护原购买\\恢复或依规则拒绝旧身份};
+\node[good,text width=4.4cm] (y) at (9,-1.4) {B：K1 可以首次仲裁\\完成后余额可为 4000};
+\draw[arr] (v.south)--++(0,-.25)-|(x.north);
+\draw[arr] (v.south)--++(0,-.25)-|(y.north);
+\node[note,text width=13cm] at (5,-2.8) {若 P 保存 S，就把该索引接入恢复和仲裁；本图比较的是明确的入口观察 $\mathcal O$};
+\end{tikzpicture}

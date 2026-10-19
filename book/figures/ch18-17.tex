@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,0) {源：生成槽快照\\继续接收写入};
+\node[box] (b) at (4,0) {目标：加载快照\\缓冲／应用增量};
+\node[warn] (c) at (8,0) {源暂停写入\\目标排空后缀};
+\node[good] (d) at (8,-2.7) {目标接管\\传播新归属};
+\node[box] (e) at (4,-2.7) {源观察新归属\\完成／清理旧槽};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);\draw[arr] (d)--(e);
+\node[note] at (1,-2.7) {目标发起 IMPORT\\任务 ID 跟踪阶段};
+
+\end{tikzpicture}

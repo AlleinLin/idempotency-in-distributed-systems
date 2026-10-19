@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[good,text width=5.4cm] (s) at (0,3) {前缀安全\\持久任期、投票与日志\\多数交集 + 合法继承规则};
+\node[box,text width=5.4cm] (p) at (7.7,3) {形成新提交\\足够长的多数可用区间\\选举、消息交换与存储能推进};
+\node[box,text width=5.4cm] (a) at (0,.5) {取得业务结果\\状态机按已提交序列追赶\\M 与 W 共同发布};
+\node[box,text width=5.4cm] (c) at (7.7,.5) {客户端获知\\客户端可达有效入口并持续重试\\响应传输最终有机会完成};
+\draw[arr] (s)--(a);
+\draw[arr] (p)--(c);
+\draw[arr] (a)--node[above,note]{返回原结果}(c);
+\node[note,text width=13cm] at (3.85,-1.1) {分区少数一侧暂停提交可以保持安全；进展依赖后来可持续工作的多数};
+\end{tikzpicture}

@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=3.3cm] (s) at (2,0) {完整身份 S\\四列均非空};
+\node[booknode,text width=3.7cm] (p) at (7,0) {购买 P1\\唯一记录};
+\node[booknode,text width=3.5cm] (x) at (12,0) {版本与规范化输入\\paper-001、1、Q7};
+\draw[bookarrow] (s)--(p);
+\draw[bookarrow] (p)--(x);
+\node[booknode,text width=3.7cm] (o) at (4.5,-1.8) {订单 O1、扣款 D1\\共同引用 P1};
+\node[bookresult,text width=4.8cm] (y) at (10.5,-1.8) {原结果与成交快照\\Q7、CNY、3000、当次 7000};
+\draw[bookarrow] (p.south)--(o.north);
+\draw[bookarrow] (p.south)--(y.north);
+\node[booknote,text width=13cm] at (7,-3.2) {身份定位原购买；保存版本与输入核对本次请求；原结果保留成交时的记录};
+\end{tikzpicture}
+\caption{完整身份、原输入、业务记录与原结果连接到同一购买。}
+\label{fig:ch04-binding}
+\end{figure}

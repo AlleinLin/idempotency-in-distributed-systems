@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=8cm] (a) at (0,0) {COMMIT 已发出，确认丢失；应用暂时不知道数据库结局};
+\node[bookresult] (b) at (0,-1.3) {新连接携带原 S 进入唯一插入};
+\node[booknode,text width=3cm] (c) at (-4,-3) {原事务已提交\\插入零行\\下一 SELECT 读 P1};
+\node[booknode,text width=3cm] (d) at (0,-3) {原事务已回滚\\插入成功\\才进入购买分支};
+\node[booknode,text width=3cm] (e) at (4,-3) {原事务尚未结束\\唯一检查等待\\或暂时错误后恢复};
+\draw[bookarrow] (a)--(b);
+\draw[bookarrow] (b)--(c);
+\draw[bookarrow] (b)--(d);
+\draw[bookarrow] (b)--(e);
+\end{tikzpicture}
+\caption{提交确认丢失后，恢复仍由原身份的唯一约束与已提交记录决定。}
+\label{fig:ch05-unknown-commit}
+\end{figure}

@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+
+\foreach \x/\name in {0/旧消费者 A,4.2/Kafka 协调,8.4/新消费者 B,12.6/消费数据库} {
+ \node[font=\bfseries] at (\x,0) {\name};\draw[lane] (\x,-.4)--(\x,-6.5);
+}
+\draw[arr] (4.2,-1)--node[above,note]{分配 p0} (0,-1);
+\node[warn,text width=2.8cm] at (0,-2.1) {持有 EV\\停止 poll\\进程继续活着};
+\draw[arr] (4.2,-2.7)--node[above,note]{重分配 p0} (8.4,-2.7);
+\draw[arr] (0,-3.5)--node[above,note]{旧 HTTP 继续到达} (12.6,-3.5);
+\draw[arr] (8.4,-4.1)--node[above,note]{新 HTTP 同 EV} (12.6,-4.1);
+\node[good,text width=3cm] at (12.6,-5.1) {同一事务核验 I／B\\两次调用回同一 F501};
+\draw[arr] (0,-6.2)--node[below,note]{旧成员 commit 被拒} (4.2,-6.2);
+
+\end{tikzpicture}

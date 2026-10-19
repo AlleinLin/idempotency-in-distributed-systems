@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[booknote] at (5.6,3.5) {两次独立确认：S1、S2，商品与 Q7 相同，各需 3000};
+\node[booknode,text width=2.8cm] (a) at (1.6,2.3) {初始 10000};
+\node[bookresult,text width=2.8cm] (b) at (5.6,2.3) {S1 成功\\余额 7000};
+\node[bookresult,text width=2.8cm] (c) at (9.6,2.3) {S2 成功\\余额 4000};
+\draw[bookarrow] (a) -- (b);
+\draw[bookarrow] (b) -- (c);
+\node[booknode,text width=2.8cm] (d) at (1.6,.3) {初始 5000};
+\node[bookresult,text width=2.8cm] (e) at (5.6,.3) {S1 成功\\余额 2000};
+\node[booknode,text width=2.8cm] (f) at (9.6,.3) {S2 拒绝\\余额仍 2000};
+\draw[bookarrow] (d) -- (e);
+\draw[bookarrow] (e) -- (f);
+\node[booknote] at (5.6,-.9) {不同身份各自进入判断；账户排队决定资金条件，输入相同不合并身份};
+\end{tikzpicture}
+\caption{同参不同身份分别判断，初始资金决定两成或一成一拒}
+\label{fig:ch06-distinct-identities}
+\end{figure}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=2.6cm] (c) at (0,0) {提交者\\持 Actor 句柄};
+\node[box,text width=3cm] (q) at (4,0) {运行时待执行方法\\恢复 $C_1$／查询 $C_2$\\各带原身份};
+\node[good,text width=3.3cm] (a) at (8.5,0) {Actor 实例进程\\方法＋内存状态\\缓存／连接池／局部进度};
+\node[good,text width=10.4cm] (p) at (4.5,-2.9)
+ {持久权威：$C_1/T_1$、$C_2/T_2$、执行代次与原结果\\实例退出后，新实例扫描原待办重新组织执行};
+\draw[arr] (c)--(q);\draw[arr] (q)--(a);
+\draw[arr] (a.south)--(8.5,-1.5)--(p.north);
+\draw[ctl] (p.west)--(-1.6,-2.9)--(-1.6,-1.5)--(q.south);
+\end{tikzpicture}

@@ -1,0 +1,15 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=11.5cm] (key) at (7,0) {唯一组合 S =（账户、动作、会话、键）\\（1，purchase.create.v1，E1，K1）};
+\node[booknode,text width=3.7cm] (a) at (2,-1.9) {账户 2\\同动作、E1、K1};
+\node[booknode,text width=3.7cm] (b) at (7,-1.9) {账户 1、退款动作\\E1、K1};
+\node[booknode,text width=3.7cm] (c) at (12,-1.9) {账户 1、购买动作\\E2、K1};
+\draw[bookarrow] (key.south west)--(a.north);
+\draw[bookarrow] (key.south)--(b.north);
+\draw[bookarrow] (key.south east)--(c.north);
+\node[booknote,text width=13cm] at (7,-3.3) {下方三个组合分别属于其他身份范围；每个入口先核对权限与许可，再以完整组合受理};
+\end{tikzpicture}
+\caption{四列共同确定唯一范围，换账户、动作或会话都会改变完整身份。}
+\label{fig:ch04-unique-scope}
+\end{figure}

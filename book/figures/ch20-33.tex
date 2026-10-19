@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[box,text width=3.4cm] (img) at (0,0)
+ {部署镜像\\Linux 基础文件\\语言运行时／RIC\\handler 与依赖};
+\node[good,text width=3.2cm] (e1) at (4.8,1)
+ {环境 A：同一版本\\运行时进程／局部内存\\只读代码＋可写 /tmp};
+\node[good,text width=3.2cm] (e2) at (4.8,-1.7)
+ {环境 B：同一版本\\独立运行时进程\\独立内存与 /tmp};
+\node[box,text width=2.5cm] (i1) at (9.1,1) {调用1 → 调用2\\先后复用 A};
+\node[box,text width=2.5cm] (i2) at (9.1,-1.7) {并发调用3\\使用 B};
+\draw[ctl] (img)--(e1);\draw[ctl] (img)--(e2);
+\draw[arr] (e1)--(i1);\draw[arr] (e2)--(i2);
+\node[note,text width=11.4cm] at (4.5,-3.6)
+ {代码版本、环境实例和调用各有身份；持久业务责任从外部权威读取。};
+\end{tikzpicture}

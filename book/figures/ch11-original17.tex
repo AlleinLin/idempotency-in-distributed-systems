@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[note] at (-1.2,3.5) {位置};
+\foreach \x/\n in {1/1--40,4/41,7/42,10/43}{\node[note] at (\x,3.5) {\n};}
+\node[cell,minimum width=2.6cm,fill=green!8] at (1,2.5) {连续已知前缀};
+\node[cell,minimum width=2.6cm,fill=orange!8] at (4,2.5) {空洞：待恢复};
+\node[cell,minimum width=2.6cm,fill=orange!8] at (7,2.5) {空洞：待恢复};
+\node[cell,minimum width=2.6cm] at (10,2.5) {已决定 S1};
+\node[warn,text width=12cm] at (5.5,.8) {此刻只应用到 40；先恢复 41/42，继承候选或在允许时填入空命令\\完整前缀形成以后，再按位置应用到 43};
+\node[good,text width=12cm] at (5.5,-1) {另一条完整历史：41=S1，42=空命令，43=S1\\两个位置各有唯一命令；应用 43 时由 M 恢复 41 已形成的原结果};
+
+\end{tikzpicture}

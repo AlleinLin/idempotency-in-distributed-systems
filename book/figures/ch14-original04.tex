@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+\node[box] (a) at (0,1.6) {H0：S 从未到达\\平台余额 10000\\没有 X1};
+\node[warn] (b) at (0,-1.2) {H1：A、E 已提交\\X1 扣款 3000\\平台余额 7000};
+\node[box,text width=4cm] (r) at (5,0.2) {两者均恢复同一 B0\\本地查询 S 都为空\\客户端都带原 E1/K1};
+\node[good,text width=3.4cm] (j) at (10,0.2) {独立关联与账本\\先区分原历史\\再恢复或判断准入};
+\draw[arr] (a)--(r);\draw[arr] (b)--(r);\draw[arr] (r)--(j);
+\node[note,text width=13cm] at (5,-2.8) {相同旧数据库无法区分这两条历史；新地域的路由代次也没有包含 X1 的存在性。};
+
+\end{tikzpicture}

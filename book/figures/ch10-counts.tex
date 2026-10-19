@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+\node[box,text width=3.2cm] (ev) at (0,5.8) {R 提交一次\\O1＋原结果＋EV1};
+\node[box,text width=3cm] (pa1) at (4.5,7) {PA1 发布 EV1\\受理确认丢失};
+\node[box,text width=3cm] (pa2) at (4.5,4.6) {PA2 发布同 EV1\\代理另存一副本};
+\node[box,text width=2.5cm] (m1) at (8.6,7) {M1\\首次交付、重投};
+\node[box,text width=2.5cm] (m2) at (8.6,4.6) {M2\\首次交付};
+\draw[arr] (ev.north east)--(pa1.west);
+\draw[arr] (ev.south east)--(pa2.west);
+\draw[arr] (pa1)--(m1);
+\draw[arr] (pa2)--(m2);
+\node[good,text width=7.4cm] (q) at (6.55,1.8) {三次调用同一履约处理器\\首次 Q 保存 I1.done＋F1(501)＋唯一回报\\后两次按 I1 恢复原结果，各自确认投递};
+\draw[arr] (m1.east)--++(.7,0)--++(0,-3.9)--(q.east);
+\draw[arr] (m2.south)--(q.north east);
+\node[box,text width=3.2cm] at (0,1.8) {上游：购买请求 3 次\\新增受理 1 次\\平台调用 2 次\\资金效果 1 次};
+\node[warn,text width=10.6cm] at (4.4,-.5) {截至此刻：发布 2、代理副本 2、交付 3、处理调用 3、接收终态 1、F 1\\回报待办 1，实际发货 0；后续发货沿自己的 dispatch 身份计数};
+\end{tikzpicture}

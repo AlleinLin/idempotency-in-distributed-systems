@@ -1,0 +1,189 @@
+\subsection*{同一次成功怎样只产生一项事件}
+
+让改进后的系统重新从本节共同空初态运行，平台一次扣去 3000 分，余额为 7000。成功回调先到，查询响应后到，旧工作者最后又带回同一 X1。三个入口都足以报告付款成功，业务上只形成一份 O1。
+
+若每次收到成功观察就插入事件，即使 O1 保持唯一，也会出现三项不同编号的付款成功事件。消费者按事件编号去重，会把它们看成三项合法输入。事件的创建位置应放在 C1 从 \code{unconfirmed} 首次转成 \code{succeeded} 的 R 内，已终态的观察沿原 C1 恢复原事件。
+
+为这次业务事实建立稳定关系：\code{fact\_type=payment.succeeded}，\code{fact\_id=C1}。前一字段指出事实种类，后一字段指出产生该事实的业务操作。R 写入它们，重复合流与补建程序据此查找。表上的 \code{UNIQUE(fact\_type,fact\_id)} 使同一支付成功事实至多占据一行。
+
+同一 O1 后来可以产生其他种类的事件。退款 RF1 成功时，事实种类为 \code{refund.\allowbreak succeeded}。它与事实编号 RF1 配成唯一关系，并取得另一事件身份。Alice 用 K2 另买一份相同商品，则有另一 P2/C2/O2，付款成功事实属于 C2。商品、金额和报价相同，两次购买也各有自己的事件。
+
+每行还保存 \code{event\_id}，作为这项事件在消息链路中的身份。R 首次插入时由购买服务分配它，发布器在所有尝试中读取原值，消费者据它关联重复副本。示例把实际返回值记为 EV1。第七章的平台通知 PEV1、PEV2 可以共同报告 X1，经核对后都汇合到 C1 的同一成功事实，由这项事实建立本地 EV1。这里的因果链保留了三个系统对象各自的身份。候选编号随事务回滚时，只留下编号分配的历史。数据库插入实际返回哪个编号，后续关联就使用哪个编号。
+
+\code{event\_type} 指出消息种类，本例取值为 \code{order.\allowbreak payment\_succeeded}。
+
+对象种类字段 \code{object\_type} 取值 \code{order}，对象编号字段 \code{object\_id} 取值 O1，指出变化所涉及的订单。事实身份回答为什么只创建一次，事件身份回答哪些副本属于同一事件，对象身份让下游知道要处理哪份订单。
+
+第一次发布与后来的重发都读取同一个 EV1 及其完整报文，分别产生自己的通信尝试，图中先用两次发布表示这层关系。
+
+\CNineFigure{ch09-original02}{S、支付成功事实、事件与发布尝试各有稳定关联}{fig:ch09-identities}
+
+\subsection*{消息中保存哪个时刻的内容}
+
+发布器可能几小时以后才运行。届时商品已改名、报价已更新，O1 的当前履约状态也可能变化。若发送时重新查询当前商品和价格拼消息，同一 EV1 的两次发布便可能携带不同金额或商品描述。
+
+因此 R 同时保存事件输入快照 \code{payload}。它包含本次通知依据的原购买与支付事实，由 R 写入，发布器只读取。本例保存商品编号、数量、Q7、CNY 3000，以及 P1/C1/O1、原平台范围与 X1。即使当前报价已改为 3500 分，下游收到 EV1 时，也会按快照中的 Q7 与 3000 分解释原成交。需要了解当前库存或履约进度的操作，再查询各自的当前状态。
+
+\CNineFigure{ch09-snapshot-time}{当前状态可以继续变化，EV1 的每次发布都读取 R 保存的成交快照}{fig:ch09-snapshot}
+
+\code{schema\_version} 表示消息内容的结构与字段含义版本。事件创建者写入它，读取者据它选择解释规则。发布器升级后重发 EV1，整数 3000 继续按原版本解释为人民币分。若新格式改用元，创建者就要定义新版本和对应读取规则，旧 EV1 保留版本 1 及原快照。购买响应的 \code{purchase-result-external-v2} 单独描述接口结果格式。
+
+\code{occurred\_at} 在本章记录本地首次形成这行通知事实的时刻，由 R 创建事件时写入。受控补建记录的是补建时刻。这个字段用于识别事件建行时间，提交先后由数据库实际提交决定。业务若要表达 X1 的资金发生时刻，就另存平台提供并经核对的时间，使平台事实和本地建行各有自己的字段。
+
+下面是 EV1 的完整语义报文。传输时，每次发布还会添加本次尝试的属性，报文中的事件身份和内容在重试间保持：
+
+\begin{BookCode}
+{
+  "event_id": "EV1",
+  "event_type": "order.payment_succeeded",
+  "object_type": "order",
+  "object_id": "O1",
+  "schema_version": 1,
+  "occurred_at": "2026-10-17T08:00:00+08:00",
+  "payload": {
+    "purchase_id": "P1",
+    "charge_id": "C1",
+    "order_id": "O1",
+    "account_id": 1,
+    "product_id": "paper-001",
+    "quantity": 1,
+    "quote_id": "Q7",
+    "currency": "CNY",
+    "amount_minor": 3000,
+    "provider_scope": "simulator:merchant-7:test:charge.v1",
+    "provider_charge_id": "X1"
+  }
+}
+\end{BookCode}
+
+\code{simulator:merchant-7:test:charge.v1} 沿用前章支付示例的范围，表示既定模拟商户、环境和付款动作。生产系统使用自己已保存并核对的真实范围。事件只传递解释事实所需的标识，平台访问密钥由支付系统保存。发布权限与消费者权限分别由对应系统授权。
+
+\subsection*{先看 R 新增的事件写入}
+
+与第八章比较，本章在首次成功分支取得真实 O 以后，再插入一项成功事件，并把实际返回的 EV 与 O/P/C 关联起来。已有成功的恢复分支增加原事件完整性核对；首次拒绝与未决观察保持原证据规则。这三处增量由图~\ref{fig:ch09-r-delta} 标出，下面再把它们放回完整事务。
+
+\CNineFigure{ch09-r-delta}{首次成功新增 EV，重复成功恢复原 EV，拒绝与未决分支保持各自的事件范围}{fig:ch09-r-delta}
+
+\subsection*{加入事件后的完整合流过程}
+
+R 先验证平台观察的来源与原固定输入，再按 C→T 锁定实际记录。支付恢复资格与可信证据的分工沿用第八章：旧工作者失去调度资格后，可以经授权证据入口报告真实 X1。事件创建由支付事实决定，事实身份使用 C1。
+
+成功分支插入 O 时，实际 \code{RETURNING order\_id} 得到 O1。事件的 \code{object\_id}、\code{order\_id} 和快照随这个实际值填写。事件插入也要求实际返回一行 EV1 及事实、订单关联。所有返回值核对一致以后，才继续保存结果并提交。
+
+同一入口先区分原 C 已有的终态与本次新观察，再决定恢复、继续等待或首次提交。图~\ref{fig:ch09-r-decisions} 把这些证据分支放在一起，后面的完整过程保留每条分支的写入与异常出口。
+
+\CNineFigure{ch09-r-decisions}{R 先恢复原终态，未决 C 再按证据选择首次成功、最终拒绝或继续等待}{fig:ch09-r-decisions}
+
+\clearpage
+
+\begin{BookCode}
+开始 R；核验原观察，锁实际 C，再锁对应 T，读取关联 P
+若 C 已终态：
+    核对 T.done 与保存结果、唯一订单的关系
+    C 成功时：
+        按 (payment.succeeded,C) 读取恰好一个事件
+        核对事件的 P/C/O、版本及完整原快照；恢复原事件与原结果
+    C 已拒绝时，核对原拒绝结果及无成功订单、成功事件
+    成功分支缺事件或任一关联矛盾则回滚，登记完整性核查
+    保存本次观察并提交；返回原结果，结束本次 R
+若证据表示处理中、只拒绝某次调用，或仅未来关闭而既往未明：
+    保存该观察；保留原非 done 的 T；提交，返回当前进度并结束 R
+若首次成功：
+    INSERT 订单(P,C,unfulfilled)，要求 RETURNING 恰好一行真实 O
+    INSERT 事件(新 event_id,payment.succeeded,C,
+        order.payment_succeeded,order,O,P,C,O,版本1,记录时刻,
+        按原输入与实际 P/C/O/X 构造的完整快照,原目标与拓扑版本)
+    要求 RETURNING 恰好一行，逐项核对真实 event_id 与关联
+    构造完整 payment_result：
+      {purchase_id:P,charge_id:C,order_id:O,status:succeeded,
+       provider_scope:原范围,provider_charge_id:已核对X,
+       currency:原币种,amount_minor:原金额}
+    条件更新实际 C：unconfirmed → succeeded
+        保存已核对 X、原平台 provider_result 与完整 payment_result
+        要求恰好一行
+    条件更新 P，仅将 business_state 从 awaiting_payment 改为 paid
+        要求恰好一行
+若首次固定身份最终拒绝：
+    核对证据确认固定身份此前无成功，排除已受理、在途及未来成功
+    核对不存在成功订单与成功事件
+    构造完整 payment_result：
+      {purchase_id:P,charge_id:C,status:rejected_final,
+       reason:已核对原因,currency:原币种,amount_minor:原金额}
+    条件更新实际 C：unconfirmed → rejected_final
+        保存原平台 provider_result 与完整 payment_result，要求恰好一行
+    条件更新 P，仅将 business_state 改为 payment_rejected
+        要求原状态为 awaiting_payment，且恰好影响一行
+任一首次终态分支：
+    条件更新实际 T，要求 charge_id=C 且 phase 为 ready 或 leased
+    令 phase=done，清 owner 与 lease_until，lease_epoch 加一
+    要求 RETURNING 恰好一行并核对 T/C/新代次
+保存观察；订单、事件、支付证据、原结果、P 与 T 共同提交
+\end{BookCode}
+
+成功与最终拒绝分支都把原平台结果和完整 \code{payment\_result} 保存在实际 C，P 只推进 \code{business\_state}，沿用第七章的数据结构。仅关闭未来资格而未查明既往结果的观察保留未决 C 和非 \code{done} 的 T，后续继续查询或对账。成功事件只由已核对的成功事实产生。以后若要向其他系统通知拒绝，就为拒绝事实定义自己的事件种类、内容和唯一关系，让消费者据事件种类进入对应业务路径。
+
+订单或事件插入返回零行，C/P/T 条件更新少于一行，或任一主键、事实唯一、平台 X 唯一、归属外键发生冲突，都回滚整个 R。临时插入的 O 和 EV 同样撤销。随后按原 C 重读已提交结局，已成功的真实关联走恢复，跨操作冲突或无法解释的状态进入核查。若事件插入使用 \code{ON CONFLICT DO NOTHING}，调用方也要读出冲突事实、比较完整关联，再决定恢复或回滚。无条件继续提交，会把唯一冲突与未创建待办混在一起。
+
+如果 R 的提交确认丢失，恢复者按原 C 查找。已提交时，原 O、C 中的原结果和 EV1 一起存在。未提交时，三者一起撤销，可以按同一可信证据重做。新分配的候选编号可能变化，已提交事件的身份保持不变。外部购买响应按 \code{purchase-result-external-v2} 在同一读取快照内取得固定 \code{acceptance}、P 的当前 \code{progress} 与 C 保存的 \code{payment\_result}，其中的原 P/C/O/X 继续来自原受理和原结果。事件及其发布进度通过独立记录关联这份结果。
+
+\subsection*{当前事件表怎样约束关联}
+
+事件还要保存目的地，使恢复后的发送指向原业务范围。\code{target\_name} 保存本章指定的履约队列 \code{fulfillment.paid}，\code{topology\_version} 保存其受控路由配置版本 \code{fulfillment-v1}。它们由 R 根据已启用的配置写入，发布器恢复时核对。配置升级涉及旧目标时，管理流程先保存原事件与新配置之间的迁移依据，再按该依据继续发布。
+
+发布工作稍后会改变状态。\code{phase} 表示待发布、已领取、已受理或待核查。\code{publish\_epoch} 与 \code{owner\_incarnation} 识别某次发布领取，\code{lease\_until}、\code{next\_run\_at} 安排接管和重试。\code{acceptance} 保存已验证的代理受理证据，\code{case\_id} 关联有负责者处理的核查单。这些字段由发布状态入口写入，扫描器和恢复者读取。支付任务 T1 已结束，发布记录承担通知的继续工作。
+
+\begin{BookCode}
+CREATE TABLE outbox_events (
+  event_id text PRIMARY KEY,
+  fact_type text NOT NULL, fact_id text NOT NULL,
+  event_type text NOT NULL,
+  object_type text NOT NULL, object_id text NOT NULL,
+  purchase_id text NOT NULL, charge_id text NOT NULL,
+  order_id text NOT NULL,
+  schema_version integer NOT NULL,
+  occurred_at timestamptz NOT NULL, payload jsonb NOT NULL,
+  target_name text NOT NULL, topology_version text NOT NULL,
+  phase text NOT NULL DEFAULT 'ready'
+    CHECK (phase IN ('ready','leased','accepted','check')),
+  publish_epoch bigint NOT NULL DEFAULT 0 CHECK (publish_epoch >= 0),
+  owner_incarnation text, lease_until timestamptz,
+  next_run_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  acceptance jsonb, case_id text,
+  UNIQUE (fact_type,fact_id),
+  FOREIGN KEY (order_id,purchase_id,charge_id)
+    REFERENCES orders(order_id,purchase_id,charge_id),
+  CHECK (object_type='order' AND object_id=order_id),
+  CHECK ((phase='leased' AND owner_incarnation IS NOT NULL
+                          AND lease_until IS NOT NULL)
+    OR (phase IN ('ready','accepted','check')
+        AND owner_incarnation IS NULL AND lease_until IS NULL)),
+  CHECK ((phase='accepted') = (acceptance IS NOT NULL)),
+  CHECK (isfinite(next_run_at)),
+  CHECK (lease_until IS NULL OR isfinite(lease_until))
+);
+\end{BookCode}
+
+这里要求订单表已有 \code{(order\_id,purchase\_id,charge\_id)} 的唯一键，供联合外键核对三者归属。表中保留当前订单类事件的范围。退款等后续事实可以引用同一订单，采用自己的事实身份。事实种类与事件种类的对应、消息版本的内容校验、快照不可覆盖及允许的状态迁移，由受控写入口负责。普通发布账号只取得读取语义字段和调用发布状态入口的权限。
+
+图~\ref{fig:ch09-outbox-schema} 对照这些实际保存位置。事件行引用订单的 O/P/C 联合键，支付原结果继续保存在 C，已经结束的 T 与待发布事件各自承担对应阶段的工作。
+
+\CNineFigure{ch09-outbox-schema}{事件表以订单联合外键核对归属，同一 EV 分别保存固定语义与可推进的发布状态}{fig:ch09-outbox-schema}
+
+\begin{table}[htbp]
+\centering\small
+\caption{成功支付以后，各保存对象的关联与写入时点}
+\begin{tabularx}{\linewidth}{@{}p{.18\linewidth}XX@{}}
+\toprule
+保存对象 & 当前关联 & 主要写入时点\\
+\midrule
+P、C、T & 原 S、固定付款身份与支付恢复工作 & A 建立，R 保存终态并结束 T\\
+O 与稳定结果 & 真实 P/C/O/X 和原成交内容 & 首次成功 R 共同提交\\
+成功事件 & 唯一事实、EV1、O1 与不可变快照 & 首次成功 R，或有登记的旧记录补建\\
+发布尝试与受理 & EV1、运行身份、代次、通道序号和证据 & 发布领取与受理合流分别提交\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\CNineFigure{ch09-original03}{R 的首次成功使订单、稳定结果、事件和支付任务终态共同可见}{fig:ch09-r-atomic}
+
+在这个范围内，可以逐次检查三个关系。初态没有成功、订单或事件。A 只建立未决购买，处理中的观察保留未决。首次成功 R 共同建立唯一 O、保存结果和唯一成功事件，拒绝 R 共同保存拒绝。重复观察读取原绑定，发布操作只改调度与受理字段。于是每个按新规则提交的成功 C，都对应同一项付款成功事件。进程在提交前退出，两者共同回滚。提交以后退出，恢复者从持久记录中同时读到成功结果和发布依据。

@@ -1,0 +1,22 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[note,text width=6cm] at (0,2.6) {历史一：旧支付先在平台受理};
+\node[note,text width=6cm] at (8,2.6) {历史二：关闭先在平台提交};
+\draw[arr] (-2.8,1.4)--(2.8,1.4);
+\draw[arr] (5.2,1.4)--(10.8,1.4);
+\foreach \x/\t in {-1.8/受理 pay-C1,.9/SealPayment,6.2/SealPayment,9/迟到 pay-C1} {
+  \fill[Blue] (\x,1.4) circle(2.5pt);
+  \node[note,text width=2.5cm,above] at (\x,1.55) {\t};
+}
+\node[warn,text width=5.6cm] (h) at (0,-.3)
+  {关闭新的首次受理\\返回 accepted\_pending/H1\\原已受理工作继续终结};
+\node[good,text width=5.6cm] (closed) at (8,-.3)
+  {先保存关闭状态\\后到请求失去首次受理资格\\核对全部旧路径的终结证据};
+\draw[arr] (.9,1.15)--(h.north);
+\draw[arr] (9,1.15)--(closed.north);
+\node[good,text width=5.6cm] (end) at (0,-2.7)
+  {按 H1 查询原成功或原拒绝\\沿原 C1 固定唯一 $R_J$};
+\node[good,text width=5.6cm] (reject) at (8,-2.7)
+  {过去、在途和未来均无成功路径\\才固定 closed\_without\_success};
+\draw[arr] (h)--(end);\draw[arr] (closed)--(reject);
+\draw[lane] (4,2.8)--(4,-3.6);
+\end{tikzpicture}

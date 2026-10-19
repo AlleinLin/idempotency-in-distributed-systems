@@ -1,0 +1,16 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode] (p1) at (0,0) {购买 P1};
+\node[booknode] (p2) at (6,0) {购买 P2};
+\node[booknode] (o1) at (0,-1.6) {订单 O1 属于 P1};
+\node[booknode] (o2) at (6,-1.6) {订单 O2 属于 P2};
+\draw[bookarrow] (p1)--(o1);
+\draw[bookarrow] (p2)--(o2);
+\node[bookresult,text width=4.2cm] at (0,-3.3) {组合引用 (O1,P1)\\匹配同一行，允许};
+\node[booknode,text width=4.2cm] at (6,-3.3) {组合引用 (O2,P1)\\没有匹配行，拒绝};
+\draw[bookalert,dashed] (p1)--node[above,font=\footnotesize,sloped] {分别存在仍不足够} (o2);
+\end{tikzpicture}
+\caption{组合外键检查订单归属，避免把另一笔购买的订单接到 P1。}
+\label{fig:ch05-composite-foreign-key}
+\end{figure}

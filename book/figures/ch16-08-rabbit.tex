@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\node[box] (p) at (0,0) {发布器\\原 EV\\confirm.select};
+\node[box] (e) at (4.2,0) {direct exchange\\purchases\\按 routing key 路由};
+\node[good] (q) at (8.4,0) {quorum queue\\purchase.paid\\三成员，多数复制};
+\node[box] (c) at (12.6,0) {消费保存域\\提交 I／B／F\\然后 basic.ack};
+\draw[arr] (p)--node[above,note,text width=.9cm,font=\scriptsize\sffamily]{basic.\\publish} (e);
+\draw[arr] (e)--(q);\draw[arr] (q)--node[above,note,text width=.9cm,font=\scriptsize\sffamily]{basic.\\deliver} (c);
+\draw[ctl] (q.north) to[bend right=28] node[above,note]{发布确认：队列承担保存责任} (p.north);
+\draw[ctl] (c.north) to[bend right=15] node[above,note]{消费 ACK：本次投递完成} (q.north);
+\node[warn,text width=6.2cm] at (4,-2.5) {无匹配队列时\\mandatory 触发 basic.return\\随后也可能收到 publisher confirm\\发布器同时核对退回与确认};
+
+\end{tikzpicture}

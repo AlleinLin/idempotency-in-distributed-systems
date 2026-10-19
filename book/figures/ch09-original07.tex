@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[box,text width=3.3cm] (db) at (0,3.5) {购买库的 EV1\\ready／leased\\原快照};
+\node[good,text width=3.3cm] (mq) at (4.8,3.5) {指定履约队列\\持久受理的 EV1 副本};
+\node[box,text width=3.3cm] (consumer) at (9.6,3.5) {消费者自己的提交\\效果与处理依据};
+\draw[arr] (db)--(mq);\node[note] at (2.4,2.15) {代理受理确认};
+\draw[arr] (mq)--(consumer);\node[note] at (7.2,2.15) {消费提交后确认};
+\node[warn,text width=3.3cm] (check) at (0,.25) {check＋持久核查单\\原 EV1、负责角色\\失败原因};
+\draw[arr] (db)--node[note,right,pos=.7]{持续失败}(check);
+\draw[arr] (check.west)--++(-.7,0)|-(db.west);
+\node[note,text width=1.2cm,anchor=east] at (-2.6,1.8) {授权修复\\后重试};
+\node[box,text width=8cm] at (7,.25) {目标存续：关闭自动丢弃，容量压力拒收新发布\\失败后保留持久位置；消费者完成规则见第十章};
+\node[warn,text width=12cm] at (4.8,-2) {采用 TTL、容量淘汰、交付上限或有损死信时，副本可能随策略删除\\有限保留方案另设消费完成证据与核对、补发路径};
+
+\end{tikzpicture}

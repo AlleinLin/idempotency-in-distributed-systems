@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (n) at (0,0) {新受理开关\\作用域／版本};
+\node[warn] (p) at (4,0) {新平台发送开关\\发送前核验资格};
+\node[good] (q) at (8,0) {查询／回填\\消除原未知};
+\node[box] (e) at (0,-2.5) {Outbox发布开关\\未发布 EV 保留};
+\node[box] (f) at (4,-2.5) {外部履约开关\\dispatch意图保留};
+\node[good] (a) at (8,-2.5) {审计／对账\\原身份＋完整证据};
+\draw[ctl] (p)--(q);\draw[ctl] (q)--(a);
+\node[note,text width=11cm] at (4,-4.4) {配置传播展示已见版本与在途数；不同开关保留各自的责任和恢复者。};
+
+\end{tikzpicture}

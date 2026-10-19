@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\node[box,text width=12.2cm] (entry) at (3.5,7.5)
+  {R 核验原观察的来源与固定输入\\锁实际 C，再锁对应 T，读取 C 关联的 P};
+\node[good,text width=5.4cm] (terminal) at (0,4.6)
+  {C 已有终态：核对并恢复\\成功：原 O、结果与唯一 EV\\拒绝：原结果，无成功 O／EV\\缺失或矛盾则回滚并登记核查};
+\node[box,text width=5.4cm] (pending) at (7,4.6)
+  {C 未决，证据尚未给出终局\\处理中、只拒绝本次调用，或\\仅关闭未来而既往结果未明\\保存观察，保留非 done 的 T};
+\node[good,text width=5.4cm] (success) at (0,1.1)
+  {C 未决，首次核对到成功 X\\沿真实 RETURNING 建立 O 与 EV\\C 保存完整原结果，P 置 paid\\T 置 done，全部共同提交};
+\node[warn,text width=5.4cm] (refusal) at (7,1.1)
+  {C 未决，取得固定身份最终拒绝\\证据确认此前无成功，且排除\\已受理、在途及未来成功\\无成功 O／EV，保存拒绝并结束 T};
+\draw[arr] (entry.south west)--(terminal.north);
+\draw[arr] (entry.south east)--(pending.north);
+\draw[arr] (entry.west)--++(-.6,0)|-(success.west);
+\draw[arr] (entry.east)--++(.6,0)|-(refusal.east);
+\node[note,text width=12.2cm] at (3.5,-1.3)
+  {四条路径都先核对原 C 的当前状态；首次终态中的零行、约束冲突或关联异常使整个 R 回滚\\成功提交建立事件，未决观察保留后续查询与对账的工作};
+\end{tikzpicture}

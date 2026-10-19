@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[booknode,text width=2.3cm] (a) at (0,0) {发送端 TCP};
+\node[booknode,text width=2.3cm] (b) at (9.5,0) {接收端 TCP};
+\draw[bookarrow] (b)--node[above,font=\small]{ACK：对应序号之前的字节已接收}(a);
+\node[booknote] at (4.75,-.6) {应用读取、业务校验和数据库处理仍在后续路径中};
+\node[booknode,text width=2.3cm] (c) at (0,-1.8) {购买服务};
+\node[booknode,text width=2.3cm] (d) at (9.5,-1.8) {数据库};
+\draw[bookarrow] (d)--node[above,font=\small]{COMMIT 成功确认：本事务已提交}(c);
+\node[booknote] at (4.75,-2.4) {服务取得提交结果，客户端还在等待};
+\node[booknode,text width=2.3cm] (e) at (0,-3.6) {客户端};
+\node[booknode,text width=2.3cm] (f) at (9.5,-3.6) {购买服务};
+\draw[bookarrow] (f)--node[above,font=\small]{完整业务响应：P1 成功，O1、D1}(e);
+\node[booknote] at (4.75,-4.2) {客户端依据服务先提交再返回的规则，获知购买结果};
+\end{tikzpicture}
+\caption{三种确认分别说明字节接收、事务提交和业务结果。每一层确认都有自己的对象。}
+\label{fig:ch02-ack-layers}
+\end{figure}

@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (s) at (0,0) {相同 S\\原来件与重试\\E1 有效};
+\node[box] (a) at (5,1.5) {购买库 A\\本地唯一 S\\C1 / pay-C1};
+\node[box] (b) at (5,-1.5) {购买库 B\\本地唯一 S\\C2 / pay-C2};
+\node[warn] (e) at (10,0) {平台两个身份\\X1：10000→7000\\X2：7000→4000};
+\draw[arr] (s)--node[above,sloped,note]{旧路由}(a);
+\draw[arr] (s)--node[below,sloped,note]{新路由}(b);
+\draw[arr] (a)--(e);\draw[arr] (b)--(e);
+\node[note,text width=13cm] at (5,-3) {共同初态：平台余额 10000；两购买库为空；两个本地唯一索引分别仲裁};
+
+\end{tikzpicture}

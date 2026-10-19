@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\foreach \x/\n in {0/客户端与旧主M,5/副本R,10/Sentinel多数}{
+  \node[font=\bfseries] at (\x,0) {\n};
+  \draw[lane] (\x,-.5)--(\x,-5.8);
+}
+\node[box,text width=3.5cm] at (0,-1.4) {接受写入w\\本地AOF同步并回复};
+\node[warn,text width=3.5cm] at (5,-1.4) {与M断连\\尚未收到w};
+\draw[arr] (10,-2.8)--node[above,note]{授权并提升} (5,-2.8);
+\node[good,text width=3.5cm] at (5,-4) {新主历史\\不含w};
+\draw[arr] (5,-5.1)--node[above,note]{M重连后跟随R，替换分叉} (0,-5.1);
+\node[warn,text width=9cm] at (5,-6.7)
+  {本地同步回答M保存到了哪里。\\最终接管历史取决于R已获得的数据以及接替配置。};
+\end{tikzpicture}

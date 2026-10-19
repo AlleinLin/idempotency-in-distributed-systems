@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+
+\foreach \x/\id/\lab/\detail in {0/a/接收/形成候选,3.1/b/复制/持久保存到副本,6.2/c/提交/进入持续前缀,9.3/d/应用/产生 P1 与原结果,12.4/e/客户端获知/收到完整响应}{
+\node[box,text width=2.35cm,minimum height=1.4cm] (\id) at (\x,1.8) {\lab\\[5pt]\detail};}
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);\draw[arr] (d)--(e);
+\node[warn,text width=5.4cm] at (2,-.4) {只在原主保存：可能被替换\\应用等待协议提交};
+\node[warn,text width=5.4cm] at (10.2,-.4) {已应用却丢响应：客户端仍未知\\重发原 S1 恢复原结果};
+
+\end{tikzpicture}

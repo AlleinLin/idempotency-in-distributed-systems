@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\draw[bookarrow] (0,0) -- (11.8,0);
+\node[booknote,anchor=east] at (0,1.8) {数据库};
+\node[bookresult,text width=2.8cm] (one) at (2,1.8) {S1 提交\\D1 当次余额 7000};
+\node[bookresult,text width=2.8cm] (two) at (6,1.8) {S2 提交\\D2 当次余额 4000};
+\draw[bookarrow] (one) -- (two);
+\draw[dashed,draw=Muted] (2,1.1) -- (2,0);
+\draw[dashed,draw=Muted] (6,1.1) -- (6,0);
+\node[booknode,text width=3cm] (learn) at (9.8,-1.2) {R2 恢复 S1\\客户端才获知原 7000};
+\draw[bookarrow] (one.south) -- (2,-1.2) -- (learn.west);
+\node[booknote] at (5,-.6) {R1 响应丢失；原结果继续保留};
+\end{tikzpicture}
+\caption{提交次序固定资金历史，较晚获知仍报告原位置的结果}
+\label{fig:ch06-commit-learning}
+\end{figure}

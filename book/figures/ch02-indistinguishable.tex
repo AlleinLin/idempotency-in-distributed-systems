@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=11.7cm] (view) at (5.2,0)
+ {客户端观察 $L$：发送相同请求 $\to$ 等待 $\to$ 到达相同截止时间};
+\node[booknode,text width=4.8cm] (h0) at (1.6,-1.7) {H0：请求未进入业务执行\\没有购买提交};
+\node[booknode,text width=4.8cm] (h1) at (8.8,-1.7) {H1：购买已经提交\\响应未到客户端};
+\draw[bookarrow] (view.south)--++(0,-.35)-|(h0.north);
+\draw[bookarrow] (view.south)--++(0,-.35)-|(h1.north);
+\node[booknode,text width=4.8cm] (s0) at (1.6,-3.2) {余额 10000\\成功扣款 0 次};
+\node[bookresult,text width=4.8cm] (s1) at (8.8,-3.2) {余额 7000\\成功扣款 1 次};
+\draw[bookarrow] (h0)--(s0);
+\draw[bookalert] (h1)--(s1);
+\node[booknote,text width=11.6cm] at (5.2,-4.5) {只以同一份 $L$ 作出同一个二值结论，会在其中一条历史中出错\\查询或后续响应可以增加证据，改变此时的判断依据};
+\end{tikzpicture}
+\caption{客户端的观察相同，业务效果不同。不可区分只针对当前观察点可用的信息。}
+\label{fig:ch02-indistinguishable}
+\end{figure}

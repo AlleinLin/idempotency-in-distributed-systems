@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+
+\node[box] (old) at (0,1.3) {旧 manifest\\旧 BASE／INCR};
+\node[box] (child) at (4,1.3) {子进程\\生成新 BASE};
+\node[box] (parent) at (4,-1.3) {父进程继续写\\新 INCR};
+\node[good] (pub) at (8,0) {发布新 manifest\\引用新完整集合};
+\node[box] (gc) at (8,-2.5) {之后清理\\旧历史文件};
+\draw[arr] (old)--(child);\draw[arr] (old)--(parent);\draw[arr] (child)--(pub);\draw[arr] (parent)--(pub);\draw[arr] (pub)--(gc);
+\node[note] at (2,-3) {发布之前，旧入口及其引用文件保持完整。};
+
+\end{tikzpicture}

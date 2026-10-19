@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=12cm] (a) at (5,4.2) {同一份操作记录可能同时支持三项能力};
+\node[box] (b) at (0,2.2) {回放原结果\\R(S) 或原结果档案\\精确重建当时字段};
+\node[good] (c) at (5,2.2) {拒绝重复首次执行\\已见 S / 稳定编码\\或已结束的 E1 资格};
+\node[warn] (d) at (10,2.2) {继续已受理工作\\原 S/P/C/T、平台身份\\原输入、证据与待办};
+\draw[arr] (a.south)--++(0,-.3)-|(b.north);
+\draw[arr] (a)--(c);
+\draw[arr] (a.south)--++(0,-.3)-|(d.north);
+\node[note,text width=14cm] at (5,.3) {回放结束后旧身份继续被识别；客户端入口关闭后已受理 C/T 继续恢复};
+\end{tikzpicture}

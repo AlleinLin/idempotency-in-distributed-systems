@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\node[box,text width=3.5cm] (g) at (0,0) {具体保证\\同 S 恢复原购买\\同 RF 恢复原退款};
+\node[box,text width=3.5cm] (p) at (5,1.5) {决定与保存位置\\身份／事务／平台／消费\\复制／回收／旧历史恢复};
+\node[good,text width=3.5cm] (e) at (5,-1.5) {相应证据\\集成历史／有限状态图\\原章节产品运行};
+\node[warn,text width=3.5cm] (c) at (10,0) {具体前提\\故障域／版本／窗口\\输入与恢复责任};
+\draw[arr] (g)--(p);\draw[arr] (g)--(e);\draw[arr] (p)--(c);\draw[arr] (e)--(c);
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[box,text width=3.0cm] (spec) at (0,1.6) {独立规格\\共同初态／完整预期\\允许的并发胜者};
+\node[box,text width=3.0cm] (run) at (4.5,1.6) {执行入口\\命名故障／原始历史\\每步全部表快照};
+\node[good,text width=3.0cm] (check) at (9,1.6) {独立检查器\\每表每字段\\资金与引用关系};
+\draw[arr] (spec)--(run);\draw[arr] (run)--(check);
+\foreach \x/\txt in {0/{权威 J},3/{本地 W},6/{平台 L},9/{消费 Q}}{
+ \node[cell] at (\x,-.6) {\txt};
+}
+\node[note,text width=13cm] at (4.5,-1.9) {一个逻辑购买分区、四个事务域。保存 SQL、输出、故障点、前后快照、模型配置与服务清理。};
+\end{tikzpicture}

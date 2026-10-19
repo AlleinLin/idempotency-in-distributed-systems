@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[box] (in) at (0,1) {完整 S / 原输入\\Γ 与当前 g7 资格\\进入权威仲裁};
+\node[good] (j) at (5,1) {$A_J$ 已提交\\固定 P1/C1/T1\\原范围 / pay-C1};
+\node[box] (p) at (10,1) {本地 A 投影\\共同保存 P/C/T\\缺失可由 J 重建};
+\draw[arr] (in)--(j);\draw[arr] (j)--(p);
+\node[box] (scan) at (5,-1.6) {J 中持久恢复责任\\扫描未物化与未完成项\\付款只读取固定关联};
+\node[good] (e) at (10,-1.6) {平台原身份\\E 建立或恢复 X1\\调用次数可多于效果数};
+\draw[arr] (j)--(scan);\draw[arr] (scan)--(e);
+\node[note,text width=4cm] at (0,-1.6) {本次回退只替换购买库\\J 与平台独立保存\\本地失败不撤销 $A_J$};
+
+\end{tikzpicture}

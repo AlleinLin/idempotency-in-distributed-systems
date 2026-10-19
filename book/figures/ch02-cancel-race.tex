@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[font=\small\sffamily\bfseries] at (2,1.1) {取消先被执行者处理};
+\node[font=\small\sffamily\bfseries] at (9,1.1) {购买提交先完成};
+\node[booknode,text width=4.7cm] (a) at (2,0) {事务尚未提交};
+\node[booknode,text width=4.7cm] (b) at (2,-1.5) {执行者取消并回滚\\调用方取得回滚结果};
+\node[booknode,text width=4.7cm] (c) at (2,-3) {购买无效果\\余额 10000};
+\draw[bookarrow] (a)--(b);
+\draw[bookarrow] (b)--(c);
+\node[booknode,text width=4.7cm] (d) at (9,0) {P1、O1、D1 提交\\余额 7000};
+\node[bookresult,text width=4.7cm] (e) at (9,-1.5) {取消消息随后到达\\原购买已完成};
+\node[booknode,text width=4.7cm] (f) at (9,-3) {查询原结果\\返还另建退款操作};
+\draw[bookalert] (d)--(e);
+\draw[bookarrow] (e)--(f);
+\node[booknote,text width=11.7cm] at (5.5,-4.2) {客户端停止等待发生在本地；远端取消需要执行者处理，并取得明确业务结果};
+\end{tikzpicture}
+\caption{取消与提交之间需要仲裁顺序。已提交购买保留原记录，后续返还另记一项操作。}
+\label{fig:ch02-cancel-race}
+\end{figure}

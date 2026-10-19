@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[warn] (b) at (0,0) {旧备份\\可能缺 S／C／计数};
+\node[box] (i) at (4,0) {隔离恢复\\确定各域恢复点};
+\node[good] (l) at (8,0) {重放可用日志\\补身份／决定／额度};
+\node[good] (q) at (8,-2.6) {按原身份对账\\平台／消费／履约};
+\node[good] (t) at (4,-2.6) {核对关闭会话\\原结果／编号};
+\node[box] (o) at (0,-2.6) {逐项开放恢复\\最后放新受理};
+\draw[arr] (b)--(i);\draw[arr] (i)--(l);\draw[arr] (l)--(q);\draw[arr] (q)--(t);\draw[arr] (t)--(o);
+\node[note,text width=11cm] at (4,-4.5) {RPO标记允许的恢复点；RTO按只读、原结果查询、新受理等具体能力计时。};
+
+\end{tikzpicture}

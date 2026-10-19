@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[warn] (a) at (0,0) {库存推测确认\\版本 v1 未持久};
+\node[warn] (b) at (4,0) {控制流程／订单\\依赖 v1 的消息};
+\node[good] (c) at (8,0) {Barrier\\等待依赖闭包持久};
+\node[box,text width=6cm] (p) at (6.4,-2.6) {外部平台请求\\原键恢复效果与本地结果间的窗口};
+\node[warn] (r) at (0,-2.6) {故障丢失版本\\依赖回滚＋故障序号};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(p);
+\draw[ctl] (a)--(r);\draw[ctl] (r.east)--(2.2,-2.6)--(2.2,-1.1)--(b.south);
+\node[note,text width=11cm] at (4,-4.5) {StateObject保存／恢复版本；协调器持久记录故障与回滚，外部效果越过屏障后执行。};
+
+\end{tikzpicture}

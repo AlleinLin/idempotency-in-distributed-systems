@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\node[box,text width=4.3cm] (lock) at (5.3,5.3) {锁 C1，再锁 T1\\核对可信观察与当前状态};
+\node[good,text width=3.6cm] (repeat) at (0,3.1) {已有成功终态\\核对并恢复原 O1、结果、EV1};
+\node[box,text width=5.7cm] (write) at (8.6,3.1) {首次成功：读取插入 O 的真实编号\\沿 O 插入唯一 EV，保存原结果\\更新 C、P、T，逐项核对行数};
+\draw[arr] (lock.west)--++(-1,0)-|node[note,near start,above]{重复观察}(repeat.north);
+\draw[arr] (lock.south)--++(0,-.4)-|(write.north);
+\node[good,text width=5.6cm] (commit) at (4,.2) {全部写入有效后共同提交 R\\O1、稳定结果、EV1、C1 成功\\P1.paid、T1.done 与观察一起可见};
+\node[warn,text width=4cm] (rollback) at (11.3,.2) {提交前零行／冲突\\或归属异常：整笔回滚\\临时 O 与 EV 共同撤销};
+\draw[arr] (write.south)--++(0,-.5)-|(commit.north);
+\draw[arr] (write.east)--++(2.8,0)|-(rollback.east);
+\node[note,text width=12.4cm] at (5.8,-1.5) {成功路径在提交处建立共同事实；回滚分支发生在提交以前\\已终态观察直接核对原关联，沿重复分支恢复};
+
+\end{tikzpicture}

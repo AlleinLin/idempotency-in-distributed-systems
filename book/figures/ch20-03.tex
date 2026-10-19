@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+
+\node[good] (m) at (4,1.8) {master\\任务状态\\中间片段位置};
+\node[box] (a) at (0,-1) {map worker A\\输入 split A\\本地片段 A1／A2};
+\node[box] (b) at (4,-1) {map worker B\\输入 split B\\本地片段 B1／B2};
+\node[good] (r) at (8,-1) {reduce worker\\取片段／归并\\按键产生输出};
+\draw[ctl] (a.north)--(m.west);\draw[ctl] (b.north)--(m.south);
+\draw[ctl] (m.east)-|node[pos=.3,above,note]{分配与位置} (r.north);
+\draw[arr] (b)--(r);
+\draw[arr] (a.south)--(0,-2.7)--node[below,note]{实际中间字节直接传输} (8,-2.7)--(r.south);
+
+\end{tikzpicture}

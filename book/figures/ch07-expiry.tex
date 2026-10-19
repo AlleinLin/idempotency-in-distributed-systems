@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+\node[box,text width=6.3cm] (start) at (3.5,4.0)
+  {共同初态：C1 已成功，余额 7000\\重试在 99 发出，101 才到达};
+\node[box,text width=6.3cm] (deadline) at (3.5,2.0)
+  {本地在 100 停止新发\\平台也在 100 清除去重键};
+\node[warn,text width=5.3cm] (bad) at (0,-.4)
+  {执行端只按清键后的记录受理\\旧包取得新资格，再扣 3000\\余额 4000};
+\node[good,text width=5.3cm] (good) at (7,-.4)
+  {执行端原子检查固定截止 100\\101 到达被拒，余额 7000\\原 C1 仍是成功};
+\draw[arr] (start)--(deadline);
+\draw[arr] (deadline)--(bad);
+\draw[arr] (deadline)--(good);
+\node[note,text width=12.5cm] at (3.5,-2.1)
+  {右分支增加执行端能力：截止不可延后，判期与执行资格原子衔接\\拒绝的是迟到尝试，恢复继续核对原 X1};
+\end{tikzpicture}

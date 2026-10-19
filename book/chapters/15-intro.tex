@@ -1,0 +1,26 @@
+\newcommand{\CFifteenFigure}[3]{%
+  \begin{figure}[htbp]
+  \centering
+  \begingroup
+  \definecolor{Blue}{HTML}{315E76}
+  \definecolor{Gold}{HTML}{A96B34}
+  \tikzset{every node/.style={font=\small\sffamily,align=center},
+    box/.style={draw=Blue,rounded corners=2pt,fill=blue!3,inner sep=6pt,
+      text width=3.4cm,minimum height=.8cm},
+    good/.style={box,draw=green!35!black,fill=green!4},
+    warn/.style={box,draw=Gold,fill=orange!5},
+    arr/.style={-{Stealth[length=2mm]},thick,draw=Blue},
+    note/.style={font=\footnotesize\sffamily,align=center,text=black!75},
+    lane/.style={draw=black!30,densely dashed},
+    cell/.style={draw=Blue,minimum width=2.2cm,minimum height=.7cm,
+      fill=blue!3,inner sep=3pt}}
+  \resizebox{.98\linewidth}{!}{\input{figures/#1.tex}}
+  \endgroup
+  \caption{#2}\label{#3}
+  \end{figure}}
+
+Alice 的购买已经经过了几个不同的决定。完整身份 $S$ 让服务认出原来的业务意图，$A_J$ 固定原输入和实际 P1/C1/T1，平台用原范围内的 \code{pay-C1} 形成 X1，$R_J$ 固定 O1、原结果和 EV1。购买库将这些决定物化为本地记录，履约消费者再用 I/B 取得实际编号为 501 的 F1。接口返回成功时，调用方应当能够沿这些关联找到相应的受理、资金与履约事实。
+
+现在为这套系统写一份可以兑现的说明。设 Alice 的平台账户初始有 CNY 10000 分，本地购买库和履约库为空，E1 有效。她确认一份 \code{paper-001}、数量 1、报价 Q7、金额 3000 分。请求可能重复，响应可能丢失，工作者可能退出，购买库甚至可能恢复到尚无这项购买的旧备份。说明要分别回答：哪些事实最多形成一份，原结果从哪里恢复，什么时候应当等待，以及等待者在什么条件下能够继续。
+
+本章先把这些问题放回各自的提交域，再加入退款。退款会改变净资金，也会在原收款上争用有限额度。随后把不变量、执行历史、有限模型和恢复演练连起来，使同一项保证能从正文中的允许迁移一直核对到配套实现保存的实际记录。

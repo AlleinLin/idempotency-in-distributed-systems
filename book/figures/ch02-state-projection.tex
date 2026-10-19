@@ -1,0 +1,18 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[font=\small\sffamily\bfseries] at (2.5,.7) {第一次设置余额并记流水};
+\node[font=\small\sffamily\bfseries] at (10,.7) {第二次重复处理};
+\node[booknode,text width=4.7cm] (a) at (2.5,-.2) {余额：7000};
+\node[booknode,text width=4.7cm] (b) at (10,-.2) {余额：7000};
+\draw[bookarrow] (a)--node[above,font=\scriptsize]{只看余额：相同}(b);
+\node[booknode,text width=4.7cm] (c) at (2.5,-1.8) {扣款流水\\D1：3000};
+\node[bookresult,text width=4.7cm] (d) at (10,-1.8) {扣款流水\\D1：3000\\D2：3000};
+\draw[bookalert] (c)--node[above,font=\scriptsize]{流水多一条}(d);
+\draw[Ink!25,dashed] (-.2,-3.1)--(12.7,-3.1);
+\node[booknote,text width=5cm] at (2.5,-3.8) {完整状态\\余额与一条扣款记录};
+\node[booknote,text width=5cm] at (10,-3.8) {完整状态\\余额与两条扣款记录};
+\end{tikzpicture}
+\caption{只比较余额会漏掉新增流水。状态集合的选择决定幂等等式实际检查了哪些变化。}
+\label{fig:ch02-state-projection}
+\end{figure}

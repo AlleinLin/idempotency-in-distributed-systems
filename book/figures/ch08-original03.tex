@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+
+\foreach \x/\lab in {0/工作者 W2,5/证据入口与购买库,10/平台} {
+ \node[box,text width=2.4cm] at (\x,4) {\lab};\draw[lane] (\x,3.4)--(\x,-2.3);}
+\draw[arr] (0,2.8)--node[note,above]{第 8 代领取已提交}(5,2.8);
+\draw[arr] (0,1.9)--node[note,above]{主动查询 C1}(10,1.9);
+\draw[arr] (10,.9)--node[note,above]{可信成功回调 X1}(5,.9);
+\node[good,text width=4.8cm] at (5,-.05) {R：C1 成功、P1 paid\\建立 O1；T1 done；撤销领取};
+\draw[arr] (0,-1.6)--node[note,above]{旧第 8 代安排请求}(5,-1.6);
+\draw[arr] (5,-2.4)--node[note,above]{读取 done，调度修改拒绝}(0,-2.4);
+\node[note,text width=10.8cm] at (5,-3.5) {查询响应随后到达：同一 X1 恢复原 O1；较早 processing 保留已保存成功};
+
+\end{tikzpicture}

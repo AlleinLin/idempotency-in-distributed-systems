@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+\node[note,text width=13cm] at (5,3.5) {两条独立历史共同初态：余额 10000；仅观察余额};
+\node[note] at (-1.8,2.1) {连续};
+\foreach \x/\v in {0/10000,3.3/7000,6.6/7000}{\node[cell] (a\x) at (\x,2.1) {\v};}
+\draw[arr] (1.2,2.1)--node[above,note]{赋值}(2.1,2.1);
+\draw[arr] (4.5,2.1)--node[above,note]{再赋值}(5.4,2.1);
+\node[note] at (-1.8,0) {交错};
+\foreach \x/\v in {0/10000,3.3/7000,6.6/6000,9.9/7000}{\node[cell] at (\x,0) {\v};}
+\draw[arr] (1.2,0)--node[above,note]{赋值}(2.1,0);
+\draw[arr] (4.5,0)--node[above,note]{减 1000}(5.4,0);
+\draw[arr] (7.8,0)--node[above,note]{旧赋值}(8.7,0);
+\node[warn,text width=11cm] at (5,-1.5) {恢复第一项购买时，另一项支出已存在；预期保留 6000，旧赋值却改回 7000};
+
+\end{tikzpicture}

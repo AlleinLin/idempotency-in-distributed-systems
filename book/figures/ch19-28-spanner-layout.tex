@@ -1,0 +1,11 @@
+\begin{tikzpicture}
+\node[good,text width=10.9cm] (d) at (4.9,2.6) {directory D1：共享键前缀、相同放置要求\\增长后分为fragment F1与F2};
+\node[box,text width=4.4cm] (a) at (1.6,0) {组A的tablet\\F1：D1的一部分\\另有directory D2的键\\锁表／事务管理器在leader};
+\node[box,text width=4.4cm] (b) at (8.2,0) {组B的tablet\\F2：D1的另一部分\\另有directory D3的键\\锁表／事务管理器在leader};
+\draw[arr] (d)--node[left,note]{放置F1} (a);
+\draw[arr] (d)--node[right,note]{放置F2} (b);
+\node[good,text width=4.4cm] (ar) at (1.6,-2.8) {组A：对应副本以Paxos\\复制同一tablet及事务状态};
+\node[good,text width=4.4cm] (br) at (8.2,-2.8) {组B：对应副本以Paxos\\复制同一tablet及事务状态};
+\draw[arr] (a)--(ar);\draw[arr] (b)--(br);
+\node[note,text width=11cm] at (4.9,-4.3) {一个tablet可以包含多个不连续键区间；跨组事务另行组织共同决定。};
+\end{tikzpicture}

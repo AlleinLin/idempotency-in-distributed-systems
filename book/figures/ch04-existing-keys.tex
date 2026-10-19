@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[bookresult,text width=3cm] (s) at (2,-1) {同一身份 S\\Alice 一次确认};
+\node[booknode,text width=3.2cm] (p1) at (7.2,0) {购买 P1\\编号唯一};
+\node[booknode,text width=3.2cm] (p2) at (7.2,-2) {购买 P2\\编号也唯一};
+\node[booknode,text width=3.2cm] (d1) at (12,0) {O1、D1\\只引用 P1};
+\node[booknode,text width=3.2cm] (d2) at (12,-2) {O2、D2\\只引用 P2};
+\draw[bookalert] (s.east)--(p1.west);
+\draw[bookalert] (s.east)--(p2.west);
+\draw[bookarrow] (p1)--(d1);
+\draw[bookarrow] (p2)--(d2);
+\node[booknote,text width=13cm] at (7,-3.3) {逐笔检查：$D(P1)=D(P2)=1$\\按操作检查：$N(S)=2$，$E(S)=2$};
+\end{tikzpicture}
+\caption{购买编号的唯一性保护各笔记录，完整身份才把两条路径放在一起检查。}
+\label{fig:ch04-existing-keys}
+\end{figure}
